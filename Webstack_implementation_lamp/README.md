@@ -90,3 +90,5 @@ It handles tasks like data organization, storage, retrieval, and security, allow
 It acts as a distributed database that maps domain names to their corresponding IP addresses, facilitating the routing of network traffic on the internet.
 - IP (Internet Protocol): IP is a fundamental protocol used for routing and addressing data packets across networks.  
  It assigns unique IP addresses to devices on a network, allowing them to communicate with each other. IP is part of the TCP/IP protocol suite and is essential for internet communication.
+- SDLC (Software Development Life Cycle): It is a structured approach to developing software applications, encompassing a set of phases or stages that guide the entire software development process.  
+The SDLC provides a framework for planning, designing, building, testing, deploying, and maintaining software systems.
