@@ -24,14 +24,14 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 2. **Installing Apache and Updating the Firewall**:
    - I started the process by connecting to  __EC2 to SSH__ using the terminal  
 ```
-    ssh -i <private-key-name>.pem ubuntu@<public-IP-address>
+    ssh -i <private-key-name>.pem ubuntu@16.16.212.239
    ```
    - To make the process a bit easier I created a bash script ```ssh-steghub.sh``` to ease the process
    - The next step was to change the permission of the private-key.pem  
 ```
  sudo chmod 0400 <private-key-name>.pem
  ```
-    - Install Apache using Ubuntu's package manager __'apt'__
+   - Install Apache using Ubuntu's package manager __'apt'__
 ``` bash
   #update a list of packages in package manager  
    sudo apt update  
@@ -56,7 +56,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
  - I checked if the APACHE HTTP can respond to requests from the internet        
  ``` 
-   http://<Public-ip-Address>:80
+   http://16.16.212.239:80
    ```  
 
    ![APACHE2 IS RESPONDING](apacheresponse.png)  
@@ -86,9 +86,9 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
    ![MYSQL CONFIGURATION](mysqlWorking.png)
 
-   - To exit the sever type 'exit' the console  
+   - To exit the sever type 'exit' mysql console  
 ``` 
-   mysql> exit
+   exit
    ```
 
 4. **Installing PHP**:
@@ -101,7 +101,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
   php -v
   ```
 
-    ![php version](phpversion.png)  
+   ![php version](phpversion.png)  
 
 5. **Creating a Virtual Host for the Website Using Apache**:
    - Assigned the project domain "projectlamp" to the virtual host.
