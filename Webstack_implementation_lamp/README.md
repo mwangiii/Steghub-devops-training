@@ -188,7 +188,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
   ```
 
 ## FEEDBACK AND REVIEWS
-[Link to the Word document containing the GitHub link for submission.](https://docs.google.com/document/d/1-98e9J1yoHg55tl_wsYjdrTnYiZgxbWTW239WCtrAnk/edit?usp=sharing)
+[Feedback and review from the mentors.](https://docs.google.com/document/d/1-98e9J1yoHg55tl_wsYjdrTnYiZgxbWTW239WCtrAnk/edit?usp=sharing)
 
 ## KEYWORDS
 - TCP(Transmission Control Protocol) : TCP is a communication protocol used for transmitting data reliably and accurately across networks.  
