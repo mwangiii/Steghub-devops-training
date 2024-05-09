@@ -28,8 +28,10 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
    ```
    - To make the process a bit easier I created a bash script ```ssh-steghub.sh``` to ease the process
    - The next step was to change the permission of the private-key.pem  
-   ```sudo chmod 0400 <private-key-name>.pem```
-   - Install Apache using Ubuntu's package manager __'apt'__
+```
+ sudo chmod 0400 <private-key-name>.pem
+ ```
+    - Install Apache using Ubuntu's package manager __'apt'__
 ``` bash
   #update a list of packages in package manager  
    sudo apt update  
@@ -37,56 +39,85 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
    sudo apt install apache2
 ```
  - To verify that apache is working  
- ``` sudo systemctl status apache2```  
+``` 
+  sudo systemctl status apache2
+  ```  
 
  ![APACHE2 RUNNING](apacheWorking.jpeg)  
  - I checked if it can be accessed locally using curl  
- ```curl http://localhost:80```  
+```
+ curl http://localhost:80
+ ```  
  or  
- ```curl http://127.0.0.1:80```  
+```
+  curl http://127.0.0.1:80
+  ```  
  N/B __second once uses ip address while the first DNS__
 
  - I checked if the APACHE HTTP can respond to requests from the internet        
- ``` http://<Public-ip-Address>:80```  
+ ``` 
+   http://<Public-ip-Address>:80
+   ```  
 
    ![APACHE2 IS RESPONDING](apacheresponse.png)  
 
 3. **Installing MySQL**:
    - Configuring MySQL server and databases for the project.
    - Again I used apt to install MySQL  
-   ``` sudo apt install mysql-server```  
+```  
+  sudo apt install mysql-server
+  ```  
    -To get into the sever I ran  
-   ```sudo mysql```
+```
+  sudo mysql
+  ```
    -I removed pre-installed security scripts using  
-   ```ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Password.1';
+```
+  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Password.1';
    ```
    - I then started the interactive script using  
-   ``` sudo mysql_secure_installation```
+``` 
+  sudo mysql_secure_installation
+  ```
    - I then logged into mysql using  
-   ```sudo mysql -p```  
+```
+  sudo mysql -p
+  ```  
 
       ![MYSQL CONFIGURATION](mysqlWorking.png)
 
    - To exit the sever type 'exit' the console  
-   ``` mysql> exit```
+``` 
+   mysql> exit
+   ```
 
 4. **Installing PHP**:
    - I started by installing 3 packages at once  
-   ``` sudo apt install php libapache2-mod-php php-mysql```
+``` 
+  sudo apt install php libapache2-mod-php php-mysql
+  ```
    - once done I checked the version using  
-   ```php -v```
+```
+  php -v
+  ```
 
     ![php version](phpversion.png)  
 
 5. **Creating a Virtual Host for the Website Using Apache**:
    - Assigned the project domain "projectlamp" to the virtual host.
    - I added my own directory next to the  **/var/www/html** which is the default directory.  
-   ```sudo mkdir /var/www/projectlamp```  
+```
+  sudo mkdir /var/www/projectlamp
+  ```  
    -The next thing was assign ownership to a user  
-   ```sudo chown -R $USER:$USER /var/www/projectlamp```  
+```
+  sudo chown -R $USER:$USER /var/www/projectlamp
+  ```  
    - Utilized Emacs for editing configuration files instead of the required Vim.
    - I created a new configuration file in APache's **sites-available** directory  
-   ```sudo emacs -nw /etc/apache2/sites-available/projectlamp.conf```  
+```
+  sudo emacs -nw /etc/apache2/sites-available/projectlamp.conf
+  ```  
    then I pasted the text
 ``` 
   <VirtualHost *:80>
@@ -101,20 +132,30 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
 
 - I then used a2ensite command to enable the new virtual host  
-```sudo a2ensite projectlamp```  
+```
+  sudo a2ensite projectlamp
+  ```  
  To check if the configuration site had any errors I used  
- ``` sudo apache2ctl configtest```  
+ ``` 
+   sudo apache2ctl configtest
+   ```  
  Finally to make sure the changes are effective  
- ```sudo systemctl reload apache2```  
+ ```
+   sudo systemctl reload apache2
+   ```  
  - Since the web root was still empty.I created an index.html to test it  
- ```sudo echo 'HELLO LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectlamp/index.html```
+ ```
+   sudo echo 'HELLO LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectlamp/index.html
+   ```
  
  ![It works](firstDepoyment.png)
 
 
  - For enabling PHP on the website 
  I started by editing the **/etc/apache2/mods-enabled/dir.conf** to change the order of **index.php file within **DirectoryIndex**  
- ```sudo emacs -nw /etc/apache2/mods-enabled/dir.conf```  
+ ```
+   sudo emacs -nw /etc/apache2/mods-enabled/dir.conf
+   ```  
  then 
 ```
    <IfModule mod_dir.c>
@@ -126,10 +167,14 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 ```
 
  Finally to make sure the changes are effective  
- ```sudo systemctl reload apache2```  
+ ```
+   sudo systemctl reload apache2
+   ```  
 
  - I created a new file named index.php in the web root folder  
- ```sudo emacs -nw /var/www/projectlamp/index.php```  
+ ```
+   sudo emacs -nw /var/www/projectlamp/index.php
+   ```  
  which opened a black file that I added 
  ``` php
  <?php
@@ -138,10 +183,12 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
  ![It works](phpworks.png)
 
 - Remove the index.php because it contains info about php environment  
-```sudo rm /var/www/projectlamp/index.php```
+```
+  sudo rm /var/www/projectlamp/index.php
+  ```
 
 ## FEEDBACK AND REVIEWS
-[Link to the Word document containing the GitHub link for submission.]
+[Link to the Word document containing the GitHub link for submission.](https://docs.google.com/document/d/1-98e9J1yoHg55tl_wsYjdrTnYiZgxbWTW239WCtrAnk/edit?usp=sharing)
 
 ## KEYWORDS
 - TCP(Transmission Control Protocol) : TCP is a communication protocol used for transmitting data reliably and accurately across networks.  
