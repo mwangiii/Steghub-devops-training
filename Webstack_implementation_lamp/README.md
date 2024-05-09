@@ -11,9 +11,15 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 - Installing PHP
 - Creating a Virtual Host with Apache
 
-## Steps Taken
+## STEPS TAKEN 
 1. **Registering a New AWS Account**:
    - Followed the step-by-step guide provided by AWS: [AWS Account Creation Guide](https://repost.aws/knowledge-center/create-and-activate-aws-account)
+   - I got an error **Microsoft SQL Server is not supported for the instance type t3 micro.**  
+
+    ![t3 error](awsErr.png)  
+
+    - To solve the error I changed the instance type to t3 large
+
 
 2. **Installing Apache and Updating the Firewall**:
    - I started the process by connecting to  __EC2 to SSH__ using the terminal  
@@ -40,39 +46,97 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
  - I checked if the APACHE HTTP can respond to requests from the internet        
  ``` http://<Public-ip-Address>:80```  
-  __I used the google.com to check__  
 
-   ![APACHE2 IS RESPONDING](google.com.png)  
+   ![APACHE2 IS RESPONDING](apacheresponse.png)  
 
 3. **Installing MySQL**:
    - Configuring MySQL server and databases for the project.
-   - Again use apt to install MySQL
-   ``` sudo apt install mysql-server```
-   
+   - Again I used apt to install MySQL  
+   ``` sudo apt install mysql-server```  
+   -To get into the sever I ran  
+   ```sudo mysql```
+   -I removed pre-installed security scripts using  
+   ```ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Password.1';
+   ```
+   - I then started the interactive script using  
+   ``` sudo mysql_secure_installation```
+   - I then logged into mysql using  
+   ```sudo mysql -p```  
+
+      ![MYSQL CONFIGURATION](mysqlWorking.png)
+
+   - To exit the sever type 'exit' the console  
+   ``` mysql> exit```
+
 4. **Installing PHP**:
-   - Setting up PHP environment and dependencies.
+   - I started by installing 3 packages at once  
+   ``` sudo apt install php libapache2-mod-php php-mysql```
+   - once done I checked the version using  
+   ```php -v```
+
+    ![php version](phpversion.png)  
 
 5. **Creating a Virtual Host for the Website Using Apache**:
    - Assigned the project domain "projectlamp" to the virtual host.
+   - I added my own directory next to the  **/var/www/html** which is the default directory.
+   ```sudo mkdir /var/www/projectlamp```
+   -The next thing was assign ownership to a user  
+   ```sudo chown -R $USER:$USER /var/www/projectlamp```  
    - Utilized Emacs for editing configuration files instead of the required Vim.
-   - Implemented '#' character usage as per project requirements.
+   - I created a new configuration file in APache's **sites-available** directory  
+   ```sudo emacs -nw /etc/apache2/sites-available/projectlamp.conf```  
+   then I pasted the text
+``` 
+  <VirtualHost *:80>
+        ServerName projectlamp
+        ServerAlias www.projectlamp
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/projectlamp
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+```
 
-## Challenges Faced
-[Describe any challenges encountered during the project.]
 
-## Solutions Implemented
-[Explain the solutions implemented for the challenges.]
+- I then used a2ensite command to enable the new virtual host  
+```sudo a2ensite projectlamp```  
+ To check if the configuration site had any errors I used  
+ ``` sudo apache2ctl configtest```  
+ Finally to make sure the changes are effective  
+ ```sudo systemctl reload apache2```  
+ - Since the web root was still empty.I created an index.html to test it  
+ ```sudo echo 'HELLO LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectlamp/index.html```
+ 
+ ![It works](firstDepoyment.png)
 
 
-## DAILY UPDATES
-### [Date]
-- Yesterday: [Brief summary of what you worked on yesterday.]
-- Today: [Outline what you plan to accomplish today.]
+ - For enabling PHP on the website 
+ I started by editing the **/etc/apache2/mods-enabled/dir.conf** to change the order of **index.php file within **DirectoryIndex**  
+ ```sudo emacs -nw /etc/apache2/mods-enabled/dir.conf```
+ then 
+```
+   <IfModule mod_dir.c>
+      #Change this:
+      #DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
+      #To this:
+      DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+   </IfModule>
+```
 
-## Screenshots
-<picture>
-  <!-- Include relevant screenshots here -->
-</picture>
+ Finally to make sure the changes are effective  
+ ```sudo systemctl reload apache2```  
+
+ - I created a new file named index.php in the web root folder  
+ ```sudo emacs -nw /var/www/projectlamp/index.php```  
+ which opened a black file that I added 
+ ``` php
+ <?php
+ phpinfo();
+ ```
+ ![It works](phpworks.png)
+
+- Remove the index.php because it contains info about php environment  
+```sudo rm /var/www/projectlamp/index.php```
 
 ## FEEDBACK AND REVIEWS
 [Link to the Word document containing the GitHub link for submission.]
