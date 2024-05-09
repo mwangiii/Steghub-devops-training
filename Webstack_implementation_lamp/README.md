@@ -23,7 +23,9 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
 2. **Installing Apache and Updating the Firewall**:
    - I started the process by connecting to  __EC2 to SSH__ using the terminal  
-   ``` ssh -i <private-key-name>.pem ubuntu@<public-IP-address>```
+```
+    ssh -i <private-key-name>.pem ubuntu@<public-IP-address>
+   ```
    - To make the process a bit easier I created a bash script ```ssh-steghub.sh``` to ease the process
    - The next step was to change the permission of the private-key.pem  
    ```sudo chmod 0400 <private-key-name>.pem```
@@ -78,8 +80,8 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
 5. **Creating a Virtual Host for the Website Using Apache**:
    - Assigned the project domain "projectlamp" to the virtual host.
-   - I added my own directory next to the  **/var/www/html** which is the default directory.
-   ```sudo mkdir /var/www/projectlamp```
+   - I added my own directory next to the  **/var/www/html** which is the default directory.  
+   ```sudo mkdir /var/www/projectlamp```  
    -The next thing was assign ownership to a user  
    ```sudo chown -R $USER:$USER /var/www/projectlamp```  
    - Utilized Emacs for editing configuration files instead of the required Vim.
@@ -112,7 +114,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
 
  - For enabling PHP on the website 
  I started by editing the **/etc/apache2/mods-enabled/dir.conf** to change the order of **index.php file within **DirectoryIndex**  
- ```sudo emacs -nw /etc/apache2/mods-enabled/dir.conf```
+ ```sudo emacs -nw /etc/apache2/mods-enabled/dir.conf```  
  then 
 ```
    <IfModule mod_dir.c>
