@@ -84,7 +84,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
   sudo mysql -p
   ```  
 
-      ![MYSQL CONFIGURATION](mysqlWorking.png)
+   ![MYSQL CONFIGURATION](mysqlWorking.png)
 
    - To exit the sever type 'exit' the console  
 ``` 
