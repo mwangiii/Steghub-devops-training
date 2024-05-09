@@ -175,7 +175,7 @@ The LAMP stack consists of Linux (Ubuntu 20.04), Apache HTTP server, MySQL and P
  ```
    sudo emacs -nw /var/www/projectlamp/index.php
    ```  
- which opened a black file that I added 
+ which opened a blank file that I added 
  ``` php
  <?php
  phpinfo();
