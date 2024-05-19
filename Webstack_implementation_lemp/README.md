@@ -268,3 +268,7 @@ try {
 }
 ?>
 ```
+##### Save and close then access using the browser
+```
+ http://13.60.72.1:80
+```
