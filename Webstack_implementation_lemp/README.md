@@ -6,10 +6,12 @@ The LEMP stack consists of Linux (Ubuntu 20.04), Nginx server, MySQL and PHP.
 
 # TOPICS COVERED
 AWS Account Creation  
-Installing Apache and Updating Firewall  
+Installing the nginx web server  
 Installing MySQL  
 Installing PHP  
-Creating a Virtual Host with Apache  
+Configuring Nginx to use PHP processor
+Testing PHP with Nginx
+Retrieving data from MYSQL  database with PHP
 
 # STEPS TAKEN
 ### 1.Installing the Nginx Web Server
@@ -26,6 +28,7 @@ Creating a Virtual Host with Apache
  ```
  sudo systemctl status nginx 
  ```
+ ![Check if nginx is working](nginxWorking.png)  
  Our server is running and we can access it locally and from the internet (Source 0.0.0.0/0 'from any IP address')  
  To checked if I can access the ubuntu shell locally using curl:
  ```
@@ -35,13 +38,18 @@ Creating a Virtual Host with Apache
  ```
  curl http://127.0.0.1:80
  ```
+  ![Check if nginx is responding to curl](nginxrespondstocurl.png)  
+
  __N/B Both commands do the same thing. The second one uses the IP address while the first uses DNS.__
 
  - Now to check if nginx responds to requests from the internet use the following url
  ```
  http://13.60.72.1:80
  ```
- Another way to retrieve your public address other than check the AWS console would be by using the command 
+  ![Check if nginx is responding to public requests](Repondspublicly.png)  
+ This will display nginx default page
+
+ - Another way to retrieve your public address other than check the AWS console would be by using the command  
  ```
  curl -s http://169.254.169.254/latest/meta-data/public-ipv4
  ```
@@ -56,6 +64,8 @@ Creating a Virtual Host with Apache
 ```
 sudo mysql
 ```
+  ![Log in MYSQL](loginMysql.png)  
+
 - As recommended to run a security script that comes with MYSQL.  
 The script will remove some insecure default settings and lock down access to my database system.  
 Before running the script the script I set the a password for the root user,using `mysql_native_password` as a default authentication method.
@@ -70,6 +80,8 @@ mysql> exit
 ```
 sudo mysql_secure_installation
 ```
+  ![Log in MYSQL](changeMyslqPass.png)  
+
 - Log into MySQL with Password
 ```
  sudo mysql -p
@@ -85,7 +97,17 @@ exit
 ```
 sudo apt install php-fpm php-mysql -y 
 ``` 
+- Check if php is installed
+```
+php -v
+```
+  ![Check php version](phpVersion.png)  
 
+At this point everything is installed  on our AWS EC2 instance   
+ 1.Linux (Ubuntu 24)  
+ 2.Nginx    
+ 3.MySQL  
+ 4.PHP
 ### 4.Configuring Nginx to use PHP processor
 - On ubuntu Nginx has one server block enabled by default and is configured to serve documents out of a directory  `var/www/html.`
 - Instead of modifying  `/var/www/html.` we'll create a directory `/var/www/` for the `your_domain` website 
@@ -97,9 +119,9 @@ sudo mkdir /var/www/projectLEMP
 ```
 sudo chown -R $USER:$USER /var/www/projectLEMP
 ```
-Then open a new configuration file in nginx's `sites-available` directory using emacs.
+Then open a new configuration file in nginx's `sites-available` directory using nano.
 ```
-sudo emacs -nw /etc/nginx/sites-available/projectLEMP
+sudo nano /etc/nginx/sites-available/projectLEMP
 ```
 - In the blank file paste
 ```
@@ -136,6 +158,8 @@ sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/
 ```
 sudo nginx -t 
 ```
+  ![Check if nginx has syntax errors](nginxCOnfigisOk.png)  
+
 
 - We can also disable the default Nginx host that is currently configured to listen to port 80,for this run:
 ```
@@ -145,24 +169,31 @@ sudo unlink /ect/nginx/sites-enabled/default
 ```
 sudo systemctl reload nginx
 ```
+
+  ![errorOne](nginxerror.png)  
+- I solved the error by specifying the path daemon path  
+`sudo /bin/systemctl daemon-reload`  
+
+  ![errorOne](solvedError.png)  
+
 - The website is now active but the web root /var/www/projectLEMP is still empty.  
 Create a new `index.html` file in that location so we can test if the server works as expected then:
 ```
-sudo echo 'Hello LAMP from hostname'
-$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
- 'with public IP' $(curl -s http://169.254.169.254/latest/....)> /var/www/projectlamp/index.html
+sudo echo 'Hello LEMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4) > /var/www/projectLEMP/index.html
  ```
 
 - Now using the browser
 ```
  http://13.60.72.1:80
 ```
+  ![Public Ip works](works!.png)  
 
 ### 5.Testing PHP with Nginx
 - Test using a test file called `info.pho`
 ```
 emacs /var/www/projectLEMP/info.php
 ```
+  ![Public Ip works](infophpWorks.png)  
 
 - Paste the following valid php lines into the new file.
 ```php
@@ -209,6 +240,8 @@ mysql -u example_user -p
 ```mysql
 SHOW DATABASE;
 ```
+  ![Show the db we created](showDB.png)  
+
 ###### Next create a table called `todo_list` in the `example_database`
 ```mysql
 CREATE TABLE example_database.todo_list (
@@ -223,7 +256,7 @@ The content column is a `VARCHAR` column that stores the content of the to-do li
 
 ###### Insert data into the todo_list table
 ``` mysql
-INSERT INTO example_database.todo_list (content) VALUES ('My first important item');
+INSERT INTO example_database.todo_list (content) VALUES (Task One'), ('Task two'), ('Task three');
 ```
 Todo Lists added and retrieved from the `example_database`
 
@@ -234,6 +267,8 @@ We will create a PHP script that connects to the MySQL database and retrieves th
 ```mysql
 SELECT * FROM example_database.todo_list;
 ```
+  ![Show the db we created](showEverythingDB.png)  
+
 ###### After comfirming that the data is valid,exit the console
 ```mysql
 exit
@@ -270,5 +305,9 @@ try {
 ```
 ##### Save and close then access using the browser
 ```
- http://13.60.72.1:80
+ http://13.60.72.1:80/todo_list.php
 ```
+  ![Show the db we created](phpDBWorks.png)  
+
+# Summary
+I successfully set up a LEMP stack on AWS, which includes Linux (Ubuntu 20.04), Nginx, MySQL, and PHP. He configured Nginx to use the PHP processor, tested PHP with Nginx, and demonstrated how to retrieve data from a MySQL database using PHP. This project shows a practical implementation of deploying a web server on AWS with a functioning backend database and PHP scripting
