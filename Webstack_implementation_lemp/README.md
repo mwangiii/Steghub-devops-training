@@ -6,11 +6,11 @@ The LEMP stack consists of Linux (Ubuntu 20.04), Nginx server, MySQL and PHP.
 
 # TOPICS COVERED
 AWS Account Creation  
-Installing the nginx web server  
-Installing MySQL  
-Installing PHP  
-Configuring Nginx to use PHP processor
-Testing PHP with Nginx
+Installing the nginx web server    
+Installing MySQL    
+Installing PHP    
+Configuring Nginx to use PHP processor  
+Testing PHP with Nginx  
 Retrieving data from MYSQL  database with PHP
 
 # STEPS TAKEN
@@ -69,12 +69,12 @@ sudo mysql
 - As recommended to run a security script that comes with MYSQL.  
 The script will remove some insecure default settings and lock down access to my database system.  
 Before running the script the script I set the a password for the root user,using `mysql_native_password` as a default authentication method.
-```
+```mysql
  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Password.1';
  ```
 - Exit the MYSQL console using
-```
-mysql> exit
+```mysql
+ exit
 ```
 - To start the interactive script run
 ```
@@ -172,7 +172,9 @@ sudo systemctl reload nginx
 
   ![errorOne](nginxerror.png)  
 - I solved the error by specifying the path daemon path  
-`sudo /bin/systemctl daemon-reload`  
+```
+sudo /bin/systemctl daemon-reload
+```  
 
   ![errorOne](solvedError.png)  
 
@@ -189,7 +191,7 @@ sudo echo 'Hello LEMP from hostname' $(curl -s http://169.254.169.254/latest/met
   ![Public Ip works](works!.png)  
 
 ### 5.Testing PHP with Nginx
-- Test using a test file called `info.pho`
+- Test using a test file called `info.php`
 ```
 emacs /var/www/projectLEMP/info.php
 ```
