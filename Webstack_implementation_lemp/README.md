@@ -312,4 +312,6 @@ try {
   ![Show the db we created](phpDBWorks.png)  
 
 # Summary
-I successfully set up a LEMP stack on AWS, which includes Linux (Ubuntu 20.04), Nginx, MySQL, and PHP. He configured Nginx to use the PHP processor, tested PHP with Nginx, and demonstrated how to retrieve data from a MySQL database using PHP. This project shows a practical implementation of deploying a web server on AWS with a functioning backend database and PHP scripting
+I successfully set up a LEMP stack on AWS, which includes Linux (Ubuntu 20.04), Nginx, MySQL, and PHP.   
+I configured Nginx to use the PHP processor, tested PHP with Nginx, and demonstrated how to retrieve data from a MySQL database using PHP.   
+This project shows a practical implementation of deploying a web server on AWS with a functioning backend database and PHP scripting.0
