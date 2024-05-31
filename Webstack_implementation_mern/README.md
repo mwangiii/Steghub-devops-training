@@ -749,4 +749,4 @@ npm run dev
 - Proxy: An intermediary server or software component that acts as an intermediary between clients and servers, facilitating communication and providing additional functionalities such as caching or security features.
 
 # CONCLUSION
-I now have a fully functional MERN stack application running on AWS. This guide covers the basics of setting up and deploying a MERN stack application but there are many additional features and improvements you can make, such as adding user authentication, improving error handling, and optimizing the performance of your application.
+I now have a fully functional MERN stack application running on AWS. This guide covers the basics of setting up and deploying a MERN stack application but there are many additional features and improvements I made, such as adding user authentication, improving error handling, and optimizing the performance of the application.
