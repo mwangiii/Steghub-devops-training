@@ -737,7 +737,7 @@ npm run dev
 
 - I then navigated to `http://13.60.72.1:3000/api/todos` to test it out.
 
-    ![React is working!](images/)
+    ![React is working on the browser!](images/)
 
 - The *TO-DO* app is working as expected. 
 - The user can add a new TO-DO item, retrieve all TO-DO items, update a TO-DO item, and delete a TO-DO item. 
