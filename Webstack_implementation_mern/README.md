@@ -1,6 +1,5 @@
-# MERN_WEB_STACK_101
-
-![Node is running!](images/Mern.png)
+# WEB STACK IMPLEMENTATION (MERN) in AWS
+ ![Node is running!](images/Mern.png)
 
 In this project we create a web solution using __MERN__ (MongoDB, ExpressJS, ReactJS, NodeJS)stack in AWS cloud  
 
