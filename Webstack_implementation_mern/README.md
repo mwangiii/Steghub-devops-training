@@ -1,4 +1,7 @@
 # MERN_WEB_STACK_101
+
+![Node is running!](Mern.png)
+
 In this project we create a web solution using __MERN__ (MongoDB, ExpressJS, ReactJS, NodeJS)stack in AWS cloud  
 
 # TOPICS COVERED 
