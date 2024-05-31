@@ -1,6 +1,6 @@
 # MERN_WEB_STACK_101
 
-![Node is running!](Mern.png)
+![Node is running!](images/Mern.png)
 
 In this project we create a web solution using __MERN__ (MongoDB, ExpressJS, ReactJS, NodeJS)stack in AWS cloud  
 
@@ -41,7 +41,7 @@ node -v
 ```
 npm -v
 ```
-![Node Version](NodeVersion.png)
+![Node Version](images/NodeVersion.png)
 
 - Create a new directory for the To-Do project then navigate into it:
 ```
@@ -61,7 +61,7 @@ ls
 ```
 nano package.json
 ```
-![package.json Contents](packageContents.png)
+![package.json Contents](images/packageContents.png)
 
 ## INSTALLING EXPRESS.JS
 - Express is a framework for Node.js  
@@ -121,7 +121,7 @@ node index.js
 
 - Everything is running well.  
 You can see the terminal running on __Server running on port 500__ in your terminal
-![Node is running!](nodeRunning.png)
+![Node is running!](images/nodeRunning.png)
 
 - Refer to [Project 1](https://github.com/mwangiii/Steghub-devops-training/tree/master/Webstack_implementation_lemp) to learn how to install the Nginx Web server  
 - To change the default port from **port 80**:  
@@ -160,13 +160,13 @@ You can see the terminal running on __Server running on port 500__ in your termi
     4.Change the ec2 to listen to port 5000  
     I had a little bit of a hick up here so I used a [youtube tutorial](https://www.youtube.com/watch?v=j9oDMb7S6iw)  
     I finally did it
-     ![Node is running!](listen.png)
+     ![Node is running!](images/listen.png)
 
 - Open up your browser and try access your server's public IP or Public DNS name followed by port 5000:
 ``` 
  http://13.60.72.1:5000
  ```
- ![Node is running!](browserRunning.png)
+ ![Node is running!](images/browserRunning.png)
 
 * Quick reminder how to get your server's Public IP and public DNS name:
  1. You can find it in your AWS web console in EC2  details.
@@ -333,7 +333,7 @@ module.exports = router;
 ## MONGOBD DATABASE
 - For the db we will use mLab which is ideal for our case  
 
- ![Node is running!](createDB.png)
+ ![Node is running!](images/createDB.png)
  - create a dotenv file at the root of your project.
  ```
  touch .env
@@ -347,7 +347,7 @@ module.exports = router;
 ```
 node index.js
 ```
- ![Node is running!](nodeDB.png)
+ ![Node is running!](images/nodeDB.png)
 
 ## POSTMAN TO TEST API
 - You send JSON with the necessary fields.
@@ -356,22 +356,22 @@ node index.js
 - Make sure it supports **GET** **POST** **DELETE**  
 - Testing **POST** in postman using  `POST http://13.60.72.1:5000/api/todos`
 
- ![Node is running!](postmanPost.png)
+ ![Node is running!](images/postmanPost.png)
 
 - Check if the data is in MongoDB
 
- ![Node is running!](dataInMongo.png)
+ ![Node is running!](images/dataInMongo.png)
 
  - Testing **GET** in postman  using `GET http://13.60.72.1:5000/api/todos`
 
-  ![Node is running!](getPostMan.png)
+  ![Node is running!](images/getPostMan.png)
  - Testing **PUT** in postman using by adding an item with the id `6655ca85b98d37ab118c63a2` using `PUT http://13.60.72.1:5000/api/todos/6655ca85b98d37ab118c63a2`
 
-  ![Node is running!](putPostman.png)
+  ![Node is running!](images/putPostman.png)
 
  - Finally testing **delete** in postman using `DELETE http://13.60.72.1:5000/api/todos/"6655ca85b98d37ab118c63a2` to remove things from the DB
 
-  ![Node is running!](deletePostman.png)
+  ![Node is running!](images/deletePostman.png)
 
 # FRONTEND CREATION
 - Create the user interface for our web client(browser)
@@ -464,7 +464,7 @@ npm install nodemon react-scripts --save-dev
 -  we will be running the frontend server on port 3000.
 I added a custom TCP rule for port 3000 to allow traffic from all IP addresses. 
  
-    ![React is running!](port3000.png)
+![React is running!](images/port3000.png)
 
 - When we run:
 ```
@@ -473,7 +473,7 @@ npm run dev
 
 - We should see - on the browser if we load `http://13.60.72.1:3000`
 
-![React is running!](reactApp.png)
+![React is running!](images/reactApp.png)
 
 
 - Before we test it in the browser let's update the inbound rules of the EC2 instance to allow traffic on port 3000.
@@ -482,7 +482,7 @@ npm run dev
 I added a custom TCP rule for port 3000 to allow traffic from all IP addresses.
 ## TEST IN THE BROWSER
 - If the EC2 server is still running you will see the client app working here
-- You can retrieve all the to-do items using the client side URL (http://16.171.255.38:3000/api/todos)
+- You can retrieve all the to-do items using the client side [URL](http://13.60.72.1:3000/api/todos)
 
 ## CREATE REACT COMPONENTS
 - I created a few React components to display the TO-DO items. 
@@ -736,13 +736,15 @@ li {
 npm run dev
 ```
 
-- I then navigated to http://16.171.255.38:3000/api/todos to test it out.
+- I then navigated to `http://13.60.72.1:3000/api/todos` to test it out.
 
-![React is running!](toDolist.png)
+![React is running!](images/toDolist.png)
 
-- The TO-DO app is working as expected. 
-- The user can add a new TO-DO item, retrieve all TO-DO items, update a TO-DO item, and delete a TO-DO item. We have sucessfully set up a MERN Stack Application development environment on AWS.
+- The *TO-DO* app is working as expected. 
+- The user can add a new TO-DO item, retrieve all TO-DO items, update a TO-DO item, and delete a TO-DO item. 
+- We have sucessfully set up a MERN Stack Application development environment on AWS.
 - The backend is working as expected and the frontend is also working as expected.
+
 # KEYWORDS
 - Port number: A numerical identifier used in computer networking to distinguish different communication endpoints, facilitating the routing of data between devices.
 - CRUD operations: An acronym for Create, Read, Update, Delete, representing the basic functions used in database management systems for interacting with data.
