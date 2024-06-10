@@ -1,0 +1,53 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "MEANStackSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable SSH and HTTP access",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "MEANStackServer": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-0705384c0b33c194c",
+        "InstanceType": "t3.micro",
+        "KeyName": "steghub.pem",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "#!/bin/bash\nsudo apt-get update\nsudo apt upgrade -y\nsudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates\ncurl -SL https://deb.nodesource.com/setup_14.x | sudo -E bash -\nsudo apt install -y nodejs npm\nsudo npm install -g express body-parser\nsudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6\necho \"deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/4.4 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list\nsudo apt install -y mongodb\nsudo service mongodb start\n"
+          }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "steghub.com"
+          }
+        ],
+        "SecurityGroupIds": [
+          { "Ref": "MEANStackSecurityGroup" }
+        ]
+      }
+    }
+  }
+}
