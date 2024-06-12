@@ -182,7 +182,7 @@ sudo systemctl start mongod
 sudo systemctl status mongod
 ```
 
-![Mongo is running](mongoRunning.png)
+![Mongo is running](assets/mongoRunning.png)
 
 - Install npm - Node package manager
 
