@@ -1,4 +1,5 @@
 # WEB STACK IMPLEMENTATION (MEAN) in AWS
+
 ![MEAN STACK](assets/MEAN-Stack.png)
 
 In this project we create a web solution using MEAN (MongoDB, ExpressJS, Angular, NodeJS)stack in AWS cloud
@@ -16,51 +17,62 @@ In this project we create a web solution using MEAN (MongoDB, ExpressJS, Angular
 ## PREREQUISITES
 
 Before we begin, let's ensure you have everything needed to proceed. Below are the prerequisites for this project:
-  - AWS Account: You need to have an AWS account. 
-  - Create an AWS EC2 Instance.
-  - Basic Understanding of JavaScript.
-  - Basic Understanding of Angular.
-  - Basic Understanding of Node.js
-  - Basic Understanding of Non-Relational Databases
-  - Basic Understanding of MongoDB
+
+- AWS Account: You need to have an AWS account.
+- Create an AWS EC2 Instance.
+- Basic Understanding of JavaScript.
+- Basic Understanding of Angular.
+- Basic Understanding of Node.js
+- Basic Understanding of Non-Relational Databases
+- Basic Understanding of MongoDB
 
 ![MEAN STACK](assets/letsdoit.webp)
 
 # STEPS TAKEN
-
 ## INSTALLING THE REQUIREMENTS
 
 ### Install NodeJs
+
 - Start the AWS server, Since we do this in all tasks there is an easier way to do start the servers using ssh config file  
 [you can learn more about ssh config files  here](https://linuxize.com/post/using-the-ssh-config-file/)
+
 ```
   Host server_name
     HostName your_server_ip_or_dns_name
     User your_ssh_username
     IdentityFile ~/.ssh/your_private_key_file
 ```
- - Update & Upgrade Ubuntu
+
+- Update & Upgrade Ubuntu
+
 ```
  sudo apt update && sudo apt upgrade -y
 ```
+
 - Install certifications
+
 ```
  sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 ```
+
 ```
  curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 ```
+
 - Install NodeJs
+
 ```
 sudo apt install -y nodejs
 ```
 
-### Install MongoDB
+### Install MongoDB 
 
 - MongoDB stores data in flexible, JSON-LIKE documents. Fields in a database can vary from document to document and data structure can be changed over time. For our example application, we are adding book records to MongoDB that contain book name, ISBN number, author and number of pages.
+
 ```
 sudo apt install gnupg curl
 ```
+
 ```
 curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
 ```
@@ -75,50 +87,72 @@ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gp
 ```
 
 - Install MongoDB
+
 ```
 sudo apt -y install mongodb-org
 ```
+
 ![Mongo error](assets/mongoError.png)
-- I kept getting this recurring error so I consoleted from slack and here is the step by the step I was given
+
+- I kept getting this recurring error   
+![Mongo error](assets/laptopgiphy.webp)
+
+- so I called in the "big boys" from slack and here is the step by the step solution I was given
 ![Slack conversation](assets/slack.png)
 
 - delete the previous entries
 ```
 sudo rm /etc/apt/sources.list.d/mongodb-org*.list
 ```
+
+- List the keys so that they can be deleted
 ```
 sudo apt-key list
 ```
 ```
 sudo apt-key del <key>
 ```
+
 - Add gpg keys:
+
 ```
  curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
 ```
-``` echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+- Add mongodb repo
+``` 
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 ```
+
 - Update package manager:
+
 ```
 sudo apt update
 ```
+
 - Install mongodb:
+
 ```
  sudo apt install -y mongodb-org
  ```
+
 - Verify installation:
+
 ```
 mongod --version
 ```
+
 ![Mongo error](assets/mongoVersion.png)
 
 - After you do that above, your mongodb will fail to start, but that's easy to resolve
 - Solution to failing to start after you install it.
 - Create a new service file for MongoDB.
+
 ```
 sudo nano /etc/systemd/system/mongodb.service
 ```
+
 - Add the following content to the file:
+
 ```
   [Unit]
   Description=MongoDB Database Server
@@ -135,74 +169,59 @@ sudo nano /etc/systemd/system/mongodb.service
   WantedBy=multi-user.target
 
 ```
+
 - Save and close the file `Ctrl+O` `Enter` `Ctrl+X`.
 - Reload the systemd daemon:
+
 ```
 sudo systemctl daemon-reload
 ```
+- Then start mongod
 ```
 sudo systemctl start mongod
 sudo systemctl status mongod
 ```
-![alt text](mongoRunning.png)
+
+![Mongo is running](mongoRunning.png)
+
 - Install npm - Node package manager
+
 ```
 sudo apt install -y npm
 ```
+Check if node and npm are installed
 ```
 node -v
 npm -v
 ```
+
 ![Node version](assets/nodeVersion.png)
 
 - Install body-parser package
+
 ```
 sudo npm install body-parser
 ```
-
-
-- Create a folder named 'Books'
-```
-mkdir Books && cd Books
-```
-- In the Books directory, Initialize npm projects
-```
-npm init
-```
-- Add a file to it named server.js
-```
-sudo nano server.js
-```
-- Add this code
-```js
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());
-require('./apps/routes')(app);
-app.set('port', 3300);
-app.listen(app.get('port'), function() {
-    console.log('Server up: http;//localhost:' + app.get('port'))
-});
-```
-
-- Install Express and set up routes to the server
+## Install Express.js and set up routes to the server
 
 - Install mongoose
 ```
 sudo npm install express mongoose
 ```
-
 - In Books folder we create a folder named apps
+
 ```
 mkdir apps && cd apps
 ```
+
 - Create a file named routes.js
+
 ```
-sudo nano routes.js
+nano routes.js
 ```
+
 - Paste code
+
 ```js
    // Import necessary modules
 const Book = require('./models/book');
@@ -258,15 +277,21 @@ module.exports = function(app) {
 };
 
 ```
+
 - In the apps folder, create a folder named models
+
 ```
 mkdir models && cd models
 ```
+
 - Create a file named book.js
+
 ```
-sudo nano book.js
+nano book.js
 ```
+
 - paste
+
 ```js
       var mongoose = require('mongoose');
 
@@ -280,20 +305,26 @@ sudo nano book.js
      module.exports = mongoose.model('Book', bookSchema);
 ```
 
-- Access the routes with AngularJs
+## Access the routes with AngularJs
 
 - Change directory back to Books
+
 ```
 cd ../..
 ```
+
 - Create a folder named public
+
 ```
 mkdir public && cd public
 ```
+
 - Add a file named `script.js` and paste:
+
 ```
 nano script.js
 ```
+
 ```js
 var app = angular.module('myApp', []);
     app.controller('myCtrl', function($scope, $http) {
@@ -335,9 +366,11 @@ var app = angular.module('myApp', []);
 ```
 
 In public folder create `index.html` and paste
+
 ```
 nano index.html
 ```
+
 ```html
    <!doctype html>
  <html ng-app="myApp" ng-controller="myCtrl">
@@ -390,19 +423,25 @@ nano index.html
 ```
 
 - Change the directory back up to 'Books'
+
 ```
 cd ..
 ```
+
 - Start the server by running this command:
+
 ```
 node server.js
 ```
+![Node is running](assets/nodeserver.png)
 - The server is now up and running, we can connect it via port 3300. You can launch a separate Putty or SSH console to test what curl command returns locally.
+
 ```
-curl -s http://localhost:3300
+curl -s http://16.170.173.233:3300
 ```
 
 - It shall return an HTML page, it is hardly readable in the CLI, but we can also try and access it from the Internet.
+![curl](assets/curlLocal.png)
 
 - For this - you need to open TCP port 3300 in your AWS Web Console for your EC2 Instance.
 
@@ -410,15 +449,33 @@ curl -s http://localhost:3300
 
 - Your Security group shall look like this:
 
-- Now we can access our Book Register web application from the Internet with a browser using Public IP address or Public DNS name.
+![Node version](assets/inboundrule3300.png)
 
+
+- Now we can access our Book Register web application from the Internet with a browser using Public IP address or Public DNS name.
+```
+http://16.170.173.233:3300
+```
 - Quick reminder how to get your server's Public IP and public DNS name:
 
-    You can find it in your AWS web console in EC2 details
-    Run
-``` 
+```
   curl -s http://169.254.169.254/latest/meta-data/public-ipv4 for Public IP address 
 ```
+
 ```
   curl -s http://169.254.169.254/latest/meta-data/public-hostname for Public DNS name.
 ```
+- Everything is working!
+
+![Node version](assets/everythingWorks.png)
+- As a front End developer there is no way I am leaving the page like that- Let's add a little styling
+### There you go!
+![Final work](assets/finalWork.png)
+### That was epic!  
+![congrats gif](assets/wedidit.webp)
+
+## CONCLUSION
+
+In this project, I successfully implemented a web solution using the MEAN stack (MongoDB, ExpressJS, Angular, NodeJS) on the AWS cloud platform. This project involved setting up an EC2 instance, installing and configuring the necessary components, and developing a full-fledged web application to manage a book registry.
+
+Throughout the process, I demonstrated the flexibility and scalability of MongoDB for handling dynamic data, the efficiency of ExpressJS in managing server-side operations, the robustness of Angular for building dynamic and responsive front-end interfaces, and the performance of NodeJS in running server-side JavaScript.
