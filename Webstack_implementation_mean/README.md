@@ -28,7 +28,6 @@ Before we begin, let's ensure you have everything needed to proceed. Below are t
 
 ![MEAN STACK](assets/letsdoit.webp)
 
-# STEPS TAKEN
 ## INSTALLING THE REQUIREMENTS
 
 ### Install NodeJs
