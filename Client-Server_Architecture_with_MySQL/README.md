@@ -26,7 +26,7 @@ curl -Iv steghub.com
 ```
 - You should see this output  
  ![curl Steghub](assets/curlSteghub.png)  
-- You can also see that the requests from the URL are being served by a computer with an IP address `160.153.133.153` on **port 80**.
+- You can also see that the requests from the URL are being served by a computer with an IP address `160.153.133.153` on port **80**.
 
 # LET'S IMPLEMENT A CLIENT SERVER  ARCHITECTURE USING MYSQL DATABASE MANAGEMENT SYSTEM (DBMS).
 - Now that we have a basic understanding of MySQL server let's begin
