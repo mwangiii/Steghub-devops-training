@@ -16,14 +16,15 @@
 - In `Project 1` we implemented a LAMP STACK website
 - The LAMP website server can be located anywhere in the world and we can reach it also from any part of the globe over global network - Internet.
 
-- If we go to our browser and tpe `steghub.com` It means that our browser is considered the **"Client"**.
+- If we go to our browser and type `steghub.com` It means that our browser is considered the **"Client"**.
 - Essentially, it is sending request to the remote server and in turn, would be expecting some kind of response from the remote server.
 
 - Let's see Client-Server communication in action.
 - Run
 ```
- curl -Iv steghub.com
+curl -Iv steghub.com
 ```
+
 - You should see this output
 ![curl Steghub](assets/curlSteghub.png)
 
