@@ -103,7 +103,7 @@ DROP TABLE users;  -- Drop the table (be cautious!)
 DROP DATABASE my_database;  -- Drop the database
 ```
 ![SQL queries](assets/sqlQueriesWorks.png)  
-The queries **create**, **drop**,**tables**,**insert** and **select** work  
+The queries **CREATE**, **DROP**,**TABLES**,**INSERT** and **SELECT** work  
 - Seems we have successfully completed this project.  
 Our MYSQL-Client-server is set up!
 
