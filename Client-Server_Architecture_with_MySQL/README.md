@@ -26,7 +26,7 @@ curl -Iv steghub.com
 ```
 - You should see this output  
  ![curl Steghub](assets/curlSteghub.png)  
-- You can also see that the requests from the URL are being served by a computer with an IP address 160.153.133.153 on port 80.
+- You can also see that the requests from the URL are being served by a computer with an IP address `160.153.133.153` on **port 80**.
 
 # LET'S IMPLEMENT A CLIENT SERVER  ARCHITECTURE USING MYSQL DATABASE MANAGEMENT SYSTEM (DBMS).
 - Now that we have a basic understanding of MySQL server let's begin
@@ -48,9 +48,11 @@ sudo apt install mysql-client -y
 ```
 ![MySQL installed](assets/mysqlVersion.png)
 - By default, both of our EC2 virtual servers are located in the same local virtual network, so they can communicate to each other using local IP addresses.  
-We will use  mysql server's local IP address to connect from mysql client. MySQL server uses TCP port `3306` by default, so we will have to open it by creating a new entry in 'Inbound rules' in 'mysql server' Security Groups.  
-For extra security,we did not allow all IP addresses to reach our `mysql server` we will allow access only to the specific local IP address of your 'mysql client'.
-
+- We will use  mysql server's local IP address to connect from mysql client. 
+MySQL server uses TCP port `3306` by default, so we will have to open it by creating a new entry in **Inbound rules** in **mysql server** Security Groups.  
+![security group](assets/inboundRUles.png)
+For extra security,we did not allow all IP addresses to reach our `mysql server` 
+- we will allow access only to the specific local IP address of your 'mysql client'.  
 - You might need to configure MySQL server to allow connections from remote hosts using:
 ```
 sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf 
@@ -99,8 +101,8 @@ DROP TABLE users;  -- Drop the table (be cautious!)
 
 DROP DATABASE my_database;  -- Drop the database
 ```
-![SQL queries](assets/sqlQueriesWorks.png)
-The query **create**, **drop**,**tables**,**insert** and **select** work
+![SQL queries](assets/sqlQueriesWorks.png)  
+The queries **create**, **drop**,**tables**,**insert** and **select** work  
 - Seems we have successfully completed this project.  
 Our MYSQL-Client-server is set up!
 
