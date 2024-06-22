@@ -31,11 +31,12 @@ curl -Iv steghub.com
 # LET'S IMPLEMENT A CLIENT SERVER  ARCHITECTURE USING MYSQL DATABASE MANAGEMENT SYSTEM (DBMS).
 - Now that we have a basic understanding of MySQL server let's begin
 ![let's begin](assets/let'sBegin.webp)
-- Create and configure two Linux-based virtual servers (EC2 instances in AWS).
+- We will Create and configure two Linux-based virtual servers (EC2 instances in AWS).
 ```
 Server A name - `mysql server`
 Server B name - `mysql client`
 ```
+![Servers created](assets/serversCreated.png)
 - On mysql server Linux Server install `MySQL Server` software.
 ```
 sudo apt update
