@@ -24,7 +24,7 @@
 ```
 curl -Iv steghub.com
 ```
-- You should see this output
+- You should see this output  
  ![curl Steghub](assets/curlSteghub.png)  
 - You can also see that the requests from the URL are being served by a computer with an IP address 160.153.133.153 on port 80.
 
