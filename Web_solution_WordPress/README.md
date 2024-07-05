@@ -20,16 +20,20 @@ Wordpress is a free open-source content management system written in **PHP** and
 # PROCEDURE
 ## PREPARE A WEB SERVER
 
-- Let's launch an EC2 instance that will serve as "Web Server" and create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.  
+- Let's launch  the EC2 instances 
+![AWS instances](assets/awsServers.png)  
+- In the **Web Server** create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.  
  Learn How to Add EBS Volume to an EC2 instance [here](https://www.youtube.com/watch?v=HPXnXkBzIHw)  
 - Attach all three volumes one by one to your Web Server EC2 instance
+![storage volumes](assets/storage.png)
 -  inspect what block devices are attached to the server. 
 ```
   lsblk
 ```
+![lsblk output](assets/lsbk.png)
 - The names of our newly created devices are shown.
 -  All devices in Linux reside in **/dev/** directory. 
--  make sure all 3 newly created block devices there - their names will likely be **xvdf**, **xvdh**, **xvdg**.
+-  make sure all 3 newly created block devices there
 ```
  ls /dev/ 
  ```
@@ -40,8 +44,10 @@ Wordpress is a free open-source content management system written in **PHP** and
 - Use gdisk utility to create a single partition on each of the 3 disks
 
 ```
- sudo gdisk /dev/xvdf
+ sudo gdisk /dev/nvme1n1
 ```
+![alt text](image.png)
+- follow the steps below to create a partition
 ```?
  GPT fdisk (gdisk) version 1.0.3
 
@@ -93,22 +99,24 @@ sudo lvmdiskscan
 
 - Use pvcreate utility to mark each of 3 disks as physical volumes (PVs) to be used by LVM
 ```
-sudo pvcreate /dev/xvdf1
-sudo pvcreate /dev/xvdg1
-sudo pvcreate /dev/xvdh1
+sudo pvcreate /dev/nvme1n1p1
+sudo pvcreate /dev/nvme2n1p1
+sudo pvcreate /dev/nvme3n1p1
 ```
+![pvcreate](assets/pvcreate.png)
 - Verify that your Physical volume has been created successfully by running 
 ```
 sudo pvs
 ```
 - We will use vgcreate utility to add all 3 PVs to a volume group (VG) called **VG webdata-vg**
 ```
-sudo vgcreate webdata-vg /dev/xvdh1 /dev/xvdg1 /dev/xvdf1
+sudo vgcreate webdata-vg /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
 ```
 - Verify that your VG has been created successfully by running
 ```
  sudo vgs
 ```
+![VG creation](assets/volCreate.png)
 - I used **lvcreate** utility to create 2 logical volumes. 
     1.apps-lv (Use half of the PV size)
     2.logs-lv Use the remaining space of the PV size. 
@@ -123,6 +131,7 @@ sudo lvcreate -n logs-lv -L 14G webdata-vg
 ```
 sudo lvs
 ```
+![lvs created](assets/lvsCreated.png)
 - Verify the entire setup
 ```
 sudo vgdisplay -v #view complete setup - VG, PV, and LV
@@ -133,16 +142,12 @@ sudo lsblk
 - I used mkfs.ext4 to format the logical volumes with ext4 filesystem
 ```
 sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
-```
-```
 sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
 ```
-- Run this to create a directory to store website files 
+- Run this to create a directory to store website files and another directory to store backup of log data 
+
 ```
 sudo mkdir -p /var/www/html
-```
-- Create another directory to store backup of log data 
-```
 sudo mkdir -p /home/recovery/logs
 ```
 - Mount  logical volume
@@ -169,9 +174,14 @@ sudo rsync -av /home/recovery/logs/ /var/log
 sudo blkid
 ```
 ```
-sudo vi /etc/fstab
+sudo nano /etc/fstab
 ```
-- I update **/etc/fstab** in this format using your own UUID and remember to remove the leading and ending quotes.
+- I update **/etc/fstab** in this format using your own **UUID** and remember to remove the leading and ending quotes.
+- The **UUID** looks like this:
+```
+UUID=051e7fdd-7a9e-4c64-b867-fc4ccb7582c4 /var/www/html ext4 defaults 0 0
+UUID=051e7fdd-7a9e-4c64-b867-fc4ccb7582c4 /var/log ext4 defaults 0 0
+```
 - Let's test the configuration and reload the daemon
 ```
 sudo mount -a
@@ -181,6 +191,8 @@ sudo systemctl daemon-reload
 ```
 df -h
 ```
+- All three EBS volumes partitioned and set up with physical volumes, volume groups, and logical volumes. The logical volumes have been formatted and mounted to the appropriate directories.  
+Our web server now has the necessary storage resources to host the WordPress site. Next, we will prepare the database server to store data for the WordPress site.
 
 ## PREPARE THE DATABASE SERVER 
 - Let's launch  a second RedHat EC2 instance that will have a role - **'DB Server'**  
