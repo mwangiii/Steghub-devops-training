@@ -18,7 +18,7 @@ Wordpress is a free open-source content management system written in **PHP** and
 - We will be using **Redhat OS** for this project
 
 # PROCEDURE
-## PREPARE A WEB SERVER
+## PREPARE THE WEB SERVER
 
 - Let's launch  the EC2 instances 
 ![AWS instances](assets/awsServers.png)  
