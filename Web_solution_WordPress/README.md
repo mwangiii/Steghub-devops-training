@@ -197,6 +197,7 @@ Our web server now has the necessary storage resources to host the WordPress sit
 ## PREPARE THE DATABASE SERVER 
 - Let's launch  a second RedHat EC2 instance that will have a role - **'DB Server'**  
 _Repeat the same steps as for the Web Server, but instead of apps-lv create db-lv and mount it to /db directory instead of /var/www/html/._
+ - Since its the same steps just refer to the above steps
 
 ## INSTALL WORDPRESS ON WEB SERVER EC2
 - Update the repository
