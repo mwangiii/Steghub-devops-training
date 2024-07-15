@@ -46,7 +46,7 @@ Wordpress is a free open-source content management system written in **PHP** and
 ```
  sudo gdisk /dev/nvme1n1
 ```
-![alt text](image.png)
+![alt text](assets/lsbk.png)
 - follow the steps below to create a partition
 ```?
  GPT fdisk (gdisk) version 1.0.3
@@ -214,13 +214,14 @@ sudo systemctl enable httpd sudo systemctl start httpd
 ```
 - To install PHP and it's dependencies
 ```
-sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-sudo yum module list php sudo yum module reset php
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo yum install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+sudo yum install -y yum-utils
+sudo yum module list php 
+sudo yum module reset php
 sudo yum module enable php:remi-7.4
-sudo yum install php php-opcache php-gd php-curl php-mysqlnd
-sudo systemctl start php-fpm
-sudo systemctl enable php-fpm setsebool -P httpd_execmem 1
+sudo yum install -y php php-common php-opcache php-cli php-gd php-curl php-mysqlnd
+
 ```
 - Restart Apache
 ```
@@ -257,6 +258,7 @@ sudo systemctl enable mysqld
 ```
 sudo mysql
 ```
+- Create a database and a user for the WordPress site.
 ```mysql
 CREATE DATABASE wordpress;
 CREATE USER `myuser`@`<Web-Server-Private-IP-Address>` IDENTIFIED BY 'mypass';
@@ -265,8 +267,21 @@ FLUSH PRIVILEGES;
 SHOW DATABASES;
 exit
 ```
+- Replace `private_ip_of_webserver` with the private IP of the web server instance and password with a secure password.
+- We will update the MySQL configuration file to listen on port 3306 for only the web server through a private IP.
+```
+sudo vi /etc/my.cnf
+```
+Add the following lines to the configuration file:
+```
+   [mysqld]
+   bind-address=private_ip_of_webserver
+   port=3306
+```
+Replace `private_ip_of_webserver` with the private IP of the web server instance.
+**Hint**:_Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, you shall allow access to the DB server ONLY from your Web Server's IP address, so in the Inbound Rule configuration specify source as /32_  
+
 ## CONFIGURE WORDPRESS TO CONNECT TO REMOTE DB
-**Hint**:_Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, you shall allow access to the DB server ONLY from your Web Server's IP address, so in the Inbound Rule configuration specify source as /32_
 
 - Install MySQL client and test that you can connect from your Web Server to your DB server by using **mysql-client**
 ```
@@ -277,10 +292,15 @@ sudo mysql -u admin -p -h <DB-Server-Private-IP-address>
 - Change permissions and configuration so Apache could use WordPress:
 - Enable TCP port 80 in Inbound Rules configuration for your Web Server EC2  
 (enable from everywhere 0.0.0.0/0 or from your workstation's IP)
+![alt text](assets/inbound.png)
+
+##  CONFIGURE WORDPRESS 
 - Try to access from your browser the link to your WordPress
 ```
  http://<Web-Server-Public-IP-Address>/wordpress/
 ```
-- Fill out your DB credentials:
-
+![alt text](assets/welcome%20to%20wordpress.png)
+- Fill out your DB credentials:  
+![alt text](assets/WP_Install.png)
 If you see this message - it means your WordPress has successfully connected to your remote MySQL database
+![alt text](assets/WP_Setup_Complete.png)
