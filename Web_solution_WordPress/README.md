@@ -18,8 +18,8 @@ Wordpress is a free open-source content management system written in **PHP** and
 - We will be using **Redhat OS** for this project
 
 # PROCEDURE
+![let's begin](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExam83MWY2azU5ejJyZXVvc2UycHVjdXRmcWQ1OHkwZnh1OWd5aXc1aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gLiyt8QwcHA5ZvLwaF/giphy.webp)
 ## PREPARE THE WEB SERVER
-
 - Let's launch  the EC2 instances 
 ![AWS instances](assets/awsServers.png)  
 - In the **Web Server** create 3 volumes in the same AZ as your Web Server EC2, each of 10 GiB.  
@@ -278,7 +278,7 @@ Add the following lines to the configuration file:
    bind-address=private_ip_of_webserver
    port=3306
 ```
-Replace `private_ip_of_webserver` with the private IP of the web server instance.
+Replace `private_ip_of_webserver` with the private IP of the web server instance.  
 **Hint**:_Do not forget to open MySQL port 3306 on DB Server EC2. For extra security, you shall allow access to the DB server ONLY from your Web Server's IP address, so in the Inbound Rule configuration specify source as /32_  
 
 ## CONFIGURE WORDPRESS TO CONNECT TO REMOTE DB
@@ -288,19 +288,24 @@ Replace `private_ip_of_webserver` with the private IP of the web server instance
 sudo yum install mysql
 sudo mysql -u admin -p -h <DB-Server-Private-IP-address>
 ```
-- Verify if you can successfully execute SHOW DATABASES; command and see a list of existing databases.
+- Verify if you can successfully execute SHOW DATABASES; command and see a list of existing databases.  
 - Change permissions and configuration so Apache could use WordPress:
 - Enable TCP port 80 in Inbound Rules configuration for your Web Server EC2  
-(enable from everywhere 0.0.0.0/0 or from your workstation's IP)
+(enable from everywhere 0.0.0.0/0 or from your workstation's IP)  
 ![alt text](assets/inbound.png)
 
 ##  CONFIGURE WORDPRESS 
 - Try to access from your browser the link to your WordPress
 ```
  http://<Web-Server-Public-IP-Address>/wordpress/
-```
+```  
 ![alt text](assets/welcome%20to%20wordpress.png)
-- Fill out your DB credentials:  
+- Fill out your DB credentials:    
 ![alt text](assets/WP_Install.png)
-If you see this message - it means your WordPress has successfully connected to your remote MySQL database
+If you see this message - it means your WordPress has successfully connected to your remote MySQL database  
 ![alt text](assets/WP_Setup_Complete.png)
+
+## CONCLUSION
+![alt text](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmF2bnpycnRoeGo2bDFlcjJkcXhleTY3aGE3OWp6bDZweWtjcmkzdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PZm6dpMC0TTT8anIzI/giphy.webp)  
+In this project, setting up a WordPress web solution from scratch proved to be the most challenging endeavor. However, I successfully managed to configure a physical web server, a database server and a WordPress server.  
+Additionally, I learned to optimize storage for improved performance and scalability. Implementing disk partitioning techniques using tools like **gdisk**, **mkfs** and **mount** in Linux was crucial for achieving these goals.
