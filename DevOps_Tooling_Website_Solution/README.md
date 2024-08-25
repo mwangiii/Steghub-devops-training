@@ -1,25 +1,25 @@
-# DEVOPS TOOLING WEBSITE SOLUTION - 101
-![devops](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A904%2F1*AXFR-ZWlB1Du3BrEicdIEg.jpeg&f=1&nofb=1&ipt=f0e05e29fe6ca4ce083d89f78884963be06d7041cafcf5a7dea54872acd18cb4&ipo=images)
+# LAMP STACK APPLICATION POWERED BY NFS ON AWS
+![devops](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A1200%2F1*drAs8uUX-EceGCeLtDEg1A.png&f=1&nofb=1&ipt=1c57448ae512bb4b1353f13189859fc3528df7dfe63457711c4f875c93cff499&ipo=images,)
 For this project we want to introduce a set of DevOps tools that will help our team in day to day activities in managing,developing, testing, deploying and monitoring different projects.  
 We will introduce a single DevOps Tooling Solution that will consist of:
-- Jenkins - free and open source automation server used to build CI/CD pipelines.
-- Kubernetes - an open-source container-orchestration system for automating computer application deployment, scaling, and management.
-- Jfrog Artifactory - Universal Repository Manager supporting all major packaging formats, build tools and CI servers. Artifactory.
-- Rancher - an open source software platform that enables organizations to run and manage Docker and Kubernetes in production.
-- Grafana - a multi-platform open source analytics and interactive visualization web application.
-- Prometheus - An open-source monitoring system with a dimensional data model, flexible query language, efficient time series database and modern alerting approach.
-- Kibana - Kibana is a free and open user interface that lets you visualize your Elasticsearch data and navigate the Elastic Stack.
+- **Jenkins** - free and open source automation server used to build CI/CD pipelines.
+- **Kubernetes** - an open-source container-orchestration system for automating computer application deployment, scaling, and management.
+- **Jfrog Artifactory** - Universal Repository Manager supporting all major packaging formats, build tools and CI servers. Artifactory.
+- **Rancher** - an open source software platform that enables organizations to run and manage Docker and Kubernetes in production.
+- **Grafana** - a multi-platform open source analytics and interactive visualization web application.
+- **Prometheus** - An open-source monitoring system with a dimensional data model, flexible query language, efficient time series database and modern alerting approach.
+- **Kibana** - Kibana is a free and open user interface that lets you visualize your Elasticsearch data and navigate the Elastic Stack.
 
 **Note**: _Do not feel overwhelmed by all the tools and technologies listed above,we will gradually get ourselves familiar with them in upcoming projects!_
 .
 ## SETUP AND TECHNOLOGY USED
-In this project we will implement a solution that consists of following components:  
-1.**Infrastructure**: AWS  
-2.**Webserver Linux**: Red Hat Enterprise Linux 8  
-3.**Database Server**: Ubuntu 24.04 + MySQL   
-4.**Storage Server**: Red Hat Enterprise Linux 8 + NFS Server  
-5.**Programming Language**: PHP  
-6.**Code Repository**: GitHub
+In this project we will implement a solution that consists of following components:    
+  1.**Infrastructure**: AWS  
+  2.**Webserver Linux**: Red Hat Enterprise Linux 8  
+  3.**Database Server**: Ubuntu 24.04 + MySQL   
+  4.**Storage Server**: Red Hat Enterprise Linux 8 + NFS Server  
+  5.**Programming Language**: PHP  
+  6.**Code Repository**: GitHub
 # PROCEDURE
 ## PREPARE NFS SERVER
 - Spin up a new EC2 instance with RHEL Linux 8 Operating System.
@@ -30,7 +30,11 @@ In this project we will implement a solution that consists of following componen
   -  **Mount lv-apps on /mnt/apps** - To be used by webservers Mount lv-logs on /mnt/
   -  **logs** - To be used by webserver logs 
   - **Mount lv-opt on /mnt/opt** - To be used by Jenkins server in Project 8
-
+![check mount](assets/checkMount.png)
+```
+lsblk
+```
+![lsblk](assets/checkPartition.png)
 - Install NFS server, configure it to start on reboot and make sure it is u and running
 ```
 sudo yum -y update
@@ -39,6 +43,7 @@ sudo systemctl start nfs-server.service
 sudo systemctl enable nfs-server.service
 sudo systemctl status nfs-server.service
 ```
+![installed](assets/installed.png)
 - Export the mounts for webservers' subnet cidr to connect as clients. For simplicity, you will install your all three Web Servers inside the same subnet, but in production set up you would probably want to separate each tier inside its own subnet for higher level of security. To check your subnet cidr - open your EC2 details in AWS web console and locate 'Networking' tab and open a Subnet link:
 
 - Make sure we set up permission that will allow our Web servers to read, write and execute files on NFS:
@@ -54,7 +59,7 @@ sudo systemctl restart nfs-server.service
 
 - Configure access to NFS for clients within the same subnet (example of Subnet CIDR - 172.31.32.0/20 ):
 ```
-sudo vi /etc/exports
+sudo nano /etc/exports
 ```
 ```
 /mnt/apps <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
@@ -62,7 +67,7 @@ sudo vi /etc/exports
 /mnt/opt <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
 ```
 ```
-Esc + :wq!
+ctrl + o && ctrl + x
 ```
 ```
 sudo exportfs -arv
@@ -72,8 +77,9 @@ sudo exportfs -arv
 ```
 rpcinfo -p | grep nfs
 ```
-- **Important note**: _In order for NFS server to be accessible from your client, you must also open following ports: TCP 111, UDP 111, UDP 2049_
-
+![nfs](assets/nfs.png)
+- **Important note**: _In order for NFS server to be accessible from your client, you must also open following ports: TCP 111, UDP 111, UDP 2049_  
+![add rule](assets/addRule.png)
 
 ## CONFIGURE THE DATABSE SERVER
 By now you should know how to install and configure a MySQL DBMS to work with remote Web Server
@@ -150,4 +156,26 @@ INSERT INTO 'users'
  VALUES -> 
   (1, 'myuser', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
 ```
+
 - Open the website in your browser `http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php` and make sure you can login into the websute with myuser user.
+
+### Deploy Web Application
+- The application will allow users to view and add tools to a database. The application will connect to the database server to store and retrieve data.
+
+- I forked the source code and cloned it to my local machine. I then transferred the contents of the `tooling/html` directory to the `/var/www/html` directory on one server and it became immediately available to the other web servers thanks to the NFS server. 
+- This will allow the web servers to serve the PHP application to users.
+
+![alt](assets/html-dir.png)
+
+- Let's open HTTP port 80 on the security group of the web servers to allow access to the web application.
+
+- When you open the public IP address of the web servers in a web browser, you should see the PHP application: 
+![alt](assets/php.jpeg)
+
+- At this point, we have successfully deployed a 3-tier web solution on AWS. The web solution consists of three web servers serving a PHP application from a shared directory on an NFS server. The web servers are connected to a database server running MySQL to store and retrieve data for the PHP application. 
+- The web servers are configured to access the shared directory on the NFS server, and the PHP application is connected to the database server. The web application is accessible to users and can store and retrieve data from the database server.
+![alt](assets/done.jpeg)
+We have just implemented a web solution for a DevOps team using LAMP stack with remote Database and NFS servers
+
+# CONCLUSION
+This project was a great learning experience as it allowed me to deploy a 3-tier web solution on AWS using EC2 instances. I was able to configure the web servers to access a shared directory on an NFS server and connect to a database server running MySQL. I tried to keep things interesting by using scripts to automate repetitive tasks. It was rewarding to see that the web servers were able to serve a PHP application from the shared directory and connect to the database server to store and retrieve data.
