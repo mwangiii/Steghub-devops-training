@@ -102,14 +102,14 @@ sudo systemctl restart apache2
 ```
 http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php
 ```
+![](assets/working.jpeg)
+![](assets/login.jpeg)  
 _NB: If in the previous project, you mounted /var/log/httpd/ from your Web Servers to the NFS server - unmount them and make sure that each Web Server has its own log directory._
 - Open two ssh/Putty consoles for both Web Servers and run following command:
 ```
 sudo tail -f /var/log/httpd/access_log
 ```
 - Try to refresh your browser page `http://<Load-Balancer-Public-IP-Address-or-Public-DNS-Name>/index.php` several times   
-![](assets/WhatsApp%20Image%202024-09-11%20at%2000.36.56.jpeg)  
-![](assets/WhatsApp%20Image%202024-08-25%20at%2006.29.22.jpeg)
 
 - If you have configured everything correctly your users will not even notice that their requests are served by more than one server.
 
