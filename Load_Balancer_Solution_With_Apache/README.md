@@ -114,5 +114,5 @@ sudo tail -f /var/log/httpd/access_log
 - If you have configured everything correctly your users will not even notice that their requests are served by more than one server.
 
 
-Congratulations!  
-We have just implemented a Load balancing Web Solution for your DevOps team.
+# Conclusion
+In this project, I implemented a load-balancing layer for our web infrastructure using Apache. Load balancing is an essential component of a scalable and fault-tolerant web infrastructure. It helps distribute the load across multiple servers, improving performance and reliability. Apache is a popular choice for load balancing because it is easy to configure and has a lot of features that make it a good choice for load balancing. I hope you found this project helpful and that you now have a better understanding of load balancing with Apache.
