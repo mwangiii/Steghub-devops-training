@@ -124,9 +124,11 @@ ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/
 SSH: Transferred 25 file(s)
 Finished: SUCCESS
 ```
-- This is what our sever looks like at the  moment
+- This is the process happening at the moment
 
 ![](https://miro.medium.com/v2/resize:fit:1400/1*q__g9ipApArckVp2Jo-_Ag.png)
 # Conclusion
-In this project, I set up a basic CI pipeline using Jenkins to automate the process of building and deploying our web infrastructure. The pipeline is triggered whenever a change is made to the codebase of our web infrastructure. The pipeline builds the code using Jenkins and then transfers the code to the NFS server with the help of the Publish Over SSH Jenkins plugin.
+In this project, I set up a basic CI pipeline using Jenkins to automate the process of building and deploying our web infrastructure.   
+The pipeline is triggered whenever a change is made to the codebase of our web infrastructure.   
+The pipeline builds the code using Jenkins and then transfers the code to the NFS server with the help of the Publish Over SSH Jenkins plugin.
 
