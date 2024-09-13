@@ -109,14 +109,14 @@ ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/
     - Hostname - can be private IP address of your NFS server
     - Username - ec2-user (since NFS server is based on EC2 with RHEL 8)
     - Remote directory - /mnt/apps since our Web Servers use it as a mointing point to retrieve files from the NFS server
-
+![](assets/installPublish.png)
 - Test the configuration and make sure the connection returns Success. Remember, that TCP port 22 on NFS server must be open to receive SSH connections.
 
 - Save the configuration, open your Jenkins job/project configuration page and add another one _**"Post-build Action"**_
 
 - Configure it to send all files produced by the build into our previously define remote directory. In our case we want to copy all files and directories
 - so we use **. If you want to apply some particular pattern to define which files to send - use this syntax.
-
+![](assets/post-build-actions.png)
 - Save this configuration and go ahead, change something in README.MD file in your GitHub Tooling repository.
 
 - Webhook will trigger a new job and in the "Console Output" of the job you will find something like this:
