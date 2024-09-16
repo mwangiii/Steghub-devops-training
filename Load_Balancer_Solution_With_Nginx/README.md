@@ -27,14 +27,14 @@ This project consists of two parts:
 ## STEPS
 ### Configure Nginx As A Load Balancer
 - create a fresh installation of Linux for Nginx.
-    - Create an EC2 VM based on Ubuntu Server 20.04 LTS and name it Nginx LB (do not forget to open TCP port 80 for HTTP connections, also open TCP port 443 - this port is used for secured HTTPS connections)
+    - Create an EC2 VM based on Ubuntu Server 20.04 LTS and name it Nginx LB (do not forget to open TCP `port 80` for HTTP connections, also open TCP `port 443` - this port is used for secured HTTPS connections)
     - Update /etc/hosts file for local DNS with Web Servers' names (e.g. Web1 and Web2) and their local IP addresses
     - Install and configure Nginx as a load balancer to point traffic to the resolvable DNS names of the webservers
 
 - Update the instance and Install Nginx Install Nginx
   ```
   sudo apt update
-  sudo apt install nginx
+  sudo apt install nginx -y
   ```
 - Configure Nginx LB using Web Servers' names defined in `/etc/hosts`
 
@@ -67,12 +67,13 @@ This project consists of two parts:
   sudo systemctl restart nginx
   sudo systemctl status nginx
 ```
+![nginx works](assets/nginxWorks.png)
 
 ### Register a new domain name and configure secured connection using SSL/TLS certificates
 - Let us make necessary configurations to make connections to our Tooling Web Solution secured!
 
 - In order to get a valid SSL certificate - you need to register a new domain name, you can do it using any Domain name registrar - a company that manages reservation of domain names. 
-- The most popular ones are: _**Godaddy.com**_, _**Domain.com**_, _**Bluehost.com**_.
+- The most popular ones are: [Godaddy.com](https://www.godaddy.com/en-ph), [Domain.com](https://www.domain.com/), [Bluehost.com](https://www.bluehost.com/).
 - Register a new domain name with any registrar of your choice in any domain zone (e.g. .com, .net, .org, .edu, .info, .xyz or any other)
 - Assign an Elastic IP to your Nginx LB server and associate your domain name with this Elastic IP
 - You might have noticed, that every time you restart or stop/start your EC2 instance - you get a new public IP address.
@@ -141,6 +142,7 @@ You have just implemented an Nginx Load Balancing Web Solution with secured HTTP
 - _**Elastic IP**_ -  A static public IP address in cloud platforms (like AWS) that remains consistent, even if the server changes.
 
 - _**cron configuration **_ -  A method for scheduling tasks in Unix-like systems, using a configuration file to automate commands at specific times.
+- _**Domain name registrar**_ - 
 
 # CONCLUSION
 In this project, I guided you through setting up a secure communication channel between clients and web servers using the HTTPS protocol. We used Nginx as our load balancer and obtained a free SSL certificate from Let's Encrypt via Certbot. We also configured a domain name for our web infrastructure and scheduled a cron job to automatically renew the SSL certificate. As a result, our web infrastructure is now more secure and efficient in handling client traffic.
