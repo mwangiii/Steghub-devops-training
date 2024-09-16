@@ -38,7 +38,7 @@ This project consists of two parts:
   ```
 - Configure Nginx LB using Web Servers' names defined in `/etc/hosts`
 
-**_NB: Read this blog to read about /etc/host_**
+**_NB: Read this [blog](https://linuxize.com/post/how-to-edit-your-hosts-file/) to read about /etc/host_**
 - Open the default nginx configuration file
 ```
   sudo nano /etc/nginx/nginx.conf
