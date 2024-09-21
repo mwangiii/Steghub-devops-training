@@ -79,16 +79,19 @@ After registering my domain, I assigned an Elastic IP to my Nginx load balancer 
 For anyone managing an EC2 instance, it’s important to note that a new public IP is assigned each time the instance restarts. Associating a static Elastic IP to the instance prevents this inconvenience. You can learn how to allocate and associate an Elastic IP with an EC2 server [on this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html). Be sure to update the A record in your registrar to point to your Nginx load balancer using the Elastic IP.
 - Check that your Web Servers can be reached from your browser using new domain name using HTTP protocol - 
 ```
-  http://<your-domain-name.com>
+    https://mwangiii.online
 ```
+![](assets/pointing.png)
 - Configure Nginx to recognize your new domain name
 
 - Update your nginx.conf with server_name  `www.<your-domain-name.com>` instead of server_name `www.domain.com`
+![](assets/listen.png)
 - Install certbot and request for an SSL/TLS certificate
 - Make sure snapd service is active and running
 ```
  sudo systemctl status snapd
 ```
+![](assets/snap.png)
 - Install certbot
 ```
  sudo snap install --classic certbot
@@ -129,7 +132,7 @@ For anyone managing an EC2 instance, it’s important to note that a new public 
 
 
 we have just implemented an Nginx Load Balancing Web Solution with secured HTTPS connection with periodically updated SSL/TLS certificates.  
-This is what our server looks like  
+##### Here's a visual representation of our server setup:
 ![alt](https://assets.digitalocean.com/articles/nginx_ssl_termination_load_balancing/nginx_ssl.png)
 
 ## KEYWORDS
@@ -138,11 +141,12 @@ This is what our server looks like
 
 - _**Elastic IP**_ -  A static public IP address in cloud platforms (like AWS) that remains consistent, even if the server changes.
 
-- _**cron configuration **_ -  A method for scheduling tasks in Unix-like systems, using a configuration file to automate commands at specific times.
-- _**Domain name registrar**_ - 
+- _**cron configuration**_  -  A method for scheduling tasks in Unix-like systems, using a configuration file to automate commands at specific times.
+- _**Domain name registrar**_ - A domain name registrar is a company that manages the registration and renewal of internet domain names, ensuring they are unique and linked to specific IP addresses. They often offer additional services like web hosting and DNS management.
 
 # CONCLUSION
 In this project, I guided you through setting up a secure communication channel between clients and web servers using the HTTPS protocol. We used Nginx as our load balancer and obtained a free SSL certificate from Let's Encrypt via Certbot. We also configured a domain name for our web infrastructure and scheduled a cron job to automatically renew the SSL certificate. As a result, our web infrastructure is now more secure and efficient in handling client traffic.
 
 I hope you found this project valuable.   
-If you have any questions or feedback, feel free to reach out. I'd be happy to assist. Thank you for your time.
+If you have any questions or feedback, feel free to reach out. I'd be happy to assist.  
+Thank you for your time.
