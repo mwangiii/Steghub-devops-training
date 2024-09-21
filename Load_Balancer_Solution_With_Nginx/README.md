@@ -70,16 +70,13 @@ This project consists of two parts:
 ![nginx works](assets/nginxWorks.png)
 
 ### Register a new domain name and configure secured connection using SSL/TLS certificates
-- Let us make necessary configurations to make connections to our Tooling Web Solution secured!
+Let us make the necessary configurations to secure connections to our Tooling Web Solution.
 
-- In order to get a valid SSL certificate - you need to register a new domain name, you can do it using any Domain name registrar - a company that manages reservation of domain names. 
-- The most popular ones are: [Godaddy.com](https://www.godaddy.com/en-ph), [Domain.com](https://www.domain.com/), [Bluehost.com](https://www.bluehost.com/).
-- Register a new domain name with any registrar of your choice in any domain zone (e.g. .com, .net, .org, .edu, .info, .xyz or any other)
-- Assign an Elastic IP to your Nginx LB server and associate your domain name with this Elastic IP
-- You might have noticed, that every time you restart or stop/start your EC2 instance - you get a new public IP address.
-- When you want to associate your domain name - it is better to have a static IP address that does not change after reboot. Elastic IP is the solution for this problem, learn how to allocate an Elastic IP and associate it with an EC2 server on this page.
-- Update A record in your registrar to point to Nginx LB using Elastic IP address
-- Learn how associate your domain name to your Elastic IP [on this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html).
+I chose [GoDaddy.com](https://www.godaddy.com/en-ph) for registering my domain and managing DNS due to its reputation as a trusted and user-friendly registrar. Obtaining a valid SSL certificate required a registered domain, and GoDaddy’s streamlined process made it straightforward. While other registrars like Domain.com and Bluehost.com are available, GoDaddy’s competitive pricing and reliable customer support influenced my decision.
+
+After registering my domain, I assigned an Elastic IP to my Nginx load balancer server. Since the public IP changes each time an EC2 instance restarts or is stopped, having a static IP is crucial for ensuring that my domain consistently points to the correct server. Elastic IP resolves this issue, allowing the domain to maintain access even after a reboot. I updated the A record in GoDaddy to point to my Nginx load balancer using the Elastic IP, ensuring uninterrupted access to my website.
+
+For anyone managing an EC2 instance, it’s important to note that a new public IP is assigned each time the instance restarts. Associating a static Elastic IP to the instance prevents this inconvenience. You can learn how to allocate and associate an Elastic IP with an EC2 server [on this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html). Be sure to update the A record in your registrar to point to your Nginx load balancer using the Elastic IP.
 - Check that your Web Servers can be reached from your browser using new domain name using HTTP protocol - 
 ```
   http://<your-domain-name.com>
@@ -126,14 +123,14 @@ This project consists of two parts:
 ```
   * */12 * * *   root /usr/bin/certbot renew > /dev/null 2>&1
 ```
+![alt](assets/cronJob.png)
 - We can always change the interval of this cronjob if twice a day is too often by adjusting schedule expression.
 
+![alt text](assets/working.png)
 
-You can also use this handy online cron expression editor.
-Congratulations!
-
-You have just implemented an Nginx Load Balancing Web Solution with secured HTTPS connection with periodically updated SSL/TLS certificates.
-
+we have just implemented an Nginx Load Balancing Web Solution with secured HTTPS connection with periodically updated SSL/TLS certificates.  
+This is what our server looks like  
+![alt](https://assets.digitalocean.com/articles/nginx_ssl_termination_load_balancing/nginx_ssl.png)
 
 ## KEYWORDS
 - **_Man-In-The-Middle_** (MITM) - A type of attack where a hacker intercepts and potentially alters communication between two parties.
@@ -147,4 +144,5 @@ You have just implemented an Nginx Load Balancing Web Solution with secured HTTP
 # CONCLUSION
 In this project, I guided you through setting up a secure communication channel between clients and web servers using the HTTPS protocol. We used Nginx as our load balancer and obtained a free SSL certificate from Let's Encrypt via Certbot. We also configured a domain name for our web infrastructure and scheduled a cron job to automatically renew the SSL certificate. As a result, our web infrastructure is now more secure and efficient in handling client traffic.
 
-I hope you found this project valuable. If you have any questions or feedback, feel free to reach out. I'd be happy to assist. Thank you for your time.
+I hope you found this project valuable.   
+If you have any questions or feedback, feel free to reach out. I'd be happy to assist. Thank you for your time.
