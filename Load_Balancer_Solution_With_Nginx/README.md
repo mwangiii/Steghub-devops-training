@@ -98,10 +98,11 @@ For anyone managing an EC2 instance, it’s important to note that a new public 
   sudo ln -s /snap/bin/certbot /usr/bin/certbot
   sudo certbot --nginx
 ```
-- Test secured access to your Web Solution by trying to reach 
+- Test secured access to our Web Solution by trying to reach 
 ```
-  https://<your-domain-name.com>
+  https://mwangiii.online/login.php
 ```
+![alt text](assets/working.png)
 - We will be able to access our website using the HTTPS protocol (which operates on TCP port 443) and see a padlock icon in the browser’s address bar. 
 - By clicking on the padlock, we can view the details of the certificate issued for our website.
 - Set up periodical renewal of your SSL/TLS certificate
@@ -126,7 +127,6 @@ For anyone managing an EC2 instance, it’s important to note that a new public 
 ![alt](assets/cronJob.png)
 - We can always change the interval of this cronjob if twice a day is too often by adjusting schedule expression.
 
-![alt text](assets/working.png)
 
 we have just implemented an Nginx Load Balancing Web Solution with secured HTTPS connection with periodically updated SSL/TLS certificates.  
 This is what our server looks like  
