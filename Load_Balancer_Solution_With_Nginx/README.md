@@ -132,6 +132,7 @@ For anyone managing an EC2 instance, it’s important to note that a new public 
 
 
 we have just implemented an Nginx Load Balancing Web Solution with secured HTTPS connection with periodically updated SSL/TLS certificates.  
+![alt](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdng1NjRuNDh3eHE5cXg4MWM2N3NtdWQ2ejBma3BxaHpzMnNnNmFkaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DPVjijLfZOGArKi8Kr/giphy.webp)
 ##### Here's a visual representation of our server setup:
 ![alt](https://assets.digitalocean.com/articles/nginx_ssl_termination_load_balancing/nginx_ssl.png)
 
