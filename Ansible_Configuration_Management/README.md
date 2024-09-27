@@ -206,7 +206,7 @@ Now let's  run our playbook using the command:
  cd ansible-config-mgt
  ansible-playbook -i inventory/dev.yml playbooks/common.yml
 ```
-![](assets/ansibleTestTes.png)
+![](assets/ansibleTestTes.png)  
 _**Note: Make sure you're in your ansible-config-mgt directory before you run the above command.**_
 
 Let's  ssh into   each of the servers and check if wireshark has been installed by 
@@ -219,4 +219,4 @@ wireshark --version
 ![](assets/ansible-cropped.png)
 
 # CONCLUSION
-In this project, we explored the use of Ansible to automate the configuration of a simple web architecture. We created an inventory file that contains the private IP addresses of the web servers, NFS servers, and the load balancer. Additionally, we developed a playbook to install the Wireshark package on the web servers, NFS servers, and the database server. Another playbook was created to update the APT repository on the load balancer server and ensure that Wireshark is at the latest version across all servers.
+In this project, we explored the use of Ansible to automate the configuration of a simple web architecture. We created an inventory file that contains the private IP addresses of the web servers and the load balancer. We also developed a playbook to install the Wireshark package on the web servers. A separate playbook was created to update the APT repository on the load balancer server and ensure that Wireshark is at the latest version across all servers.
