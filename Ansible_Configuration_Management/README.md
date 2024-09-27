@@ -50,7 +50,7 @@ Since the first part of 'DevOps' is 'Dev', we will need to write code and use to
   git clone https://github.com/mwangiii/ansible-config-mgt
 ```
 
-### BEGIN ANSIBLE DEVELOPMENT 
+## BEGIN ANSIBLE DEVELOPMENT 
 In our `ansible-config-mgt` GitHub repository, we will create a new branch that will be used for the development of a new feature.  
 **Tip:** We will give our branches descriptive and comprehensive names. For example, if we use Jira or Trello as a project management tool, we will include the ticket number (e.g., PRJ-145) in the name of our branch, along with a topic and a brief description of what this branch is about—whether it’s a bug fix, hotfix, feature, or release (e.g., feature/prj-145-lvm).
 
@@ -72,7 +72,7 @@ touch playbooks/common.yml
   touch inventory/uat.yml
   touch inventory/prod.yml
 ```
-### STEP UP AN ANSIBLE INVENTORY
+#### STEP UP AN ANSIBLE INVENTORY
 An **inventory file** is a straightforward **YAML file** that lists the **hosts** and **groups of hosts** Ansible will manage. It defines which **servers** Ansible can connect to and the groups they belong to.
 
 Before we organize our **inventory** of target servers and create our **playbook** of tasks, let’s first understand how Ansible helps us implement the concept of **infrastructure as code**.
@@ -132,7 +132,7 @@ Update your **inventory/dev.yml** file with this snippet of code:
 <Load-Balancer-Private-IP-Address> ansible_ssh_user=ubuntu
 ```
 
-## CREATE A COMMON PLAYBOOK
+#### CREATE A COMMON PLAYBOOK
 It is time to start giving Ansible the instructions on what you need to be performed on all servers listed in inventory/dev.
 
 In `common.yml` playbook you will write configuration for repeatable, re-usable, and multi-machine tasks that is common to systems within the infrastructure.
