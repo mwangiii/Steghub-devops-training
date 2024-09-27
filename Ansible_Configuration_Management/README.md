@@ -26,8 +26,8 @@ Check your Ansible version by running
 ```
   ansible --version
 ```
-![](assets/ansibleV.png)
-Let's configure a Jenkins build job to archive our repository content every time we make a change. We will create a new Freestyle project in Jenkins and point it to our 'ansible-config-mgt' repository while also configuring a webhook in GitHub to trigger the Ansible build automatically. We’ll set up a post-build job to save all files and test our setup by making a change to the README.md file in the master branch to ensure that the build starts automatically, with Jenkins saving the files (build artifacts) in the designated folder.
+![](assets/ansibleV.png)  
+Let's configure a Jenkins build job to archive our repository content every time we make a change. We will create a new Freestyle project in Jenkins and point it to our 'ansible-config-mgt' repository while also configuring a webhook in GitHub to trigger the Ansible build automatically. We’ll set up a post-build job to save all files and test our setup by making a change to the README.md file in the master branch to ensure that the build starts automatically, with Jenkins saving the files (build artifacts) in the designated folder.  
 
 ```
   ls /var/lib/jenkins/jobs/project_ansible/builds/6/archive
@@ -213,6 +213,7 @@ wireshark --version
 ![](assets/wireshark.png)
 #### Our updated with Ansible architecture now looks like this:
 ![](assets/ansible-cropped.png)
+
 
 # CONCLUSION
 In this project, we explored the use of Ansible to automate the configuration of a simple web architecture. We created an inventory file that contains the private IP addresses of the web servers and the load balancer. We also developed a playbook to install the Wireshark package on the web servers. A separate playbook was created to update the APT repository on the load balancer server and ensure that Wireshark is at the latest version across all servers.
