@@ -26,17 +26,13 @@ Check your Ansible version by running
 ```
   ansible --version
 ```
-- Configure Jenkins build job to archive your repository content every time you change it - this will solidify your Jenkins configuration skills acquired in Project 9.
-- Create a new Freestyle project ansible in Jenkins and point it to your 'ansible-config-mgt' repository.
-- Configure a webhook in GitHub and set the webhook to trigger ansible build.
-- Configure a Post-build job to save all (**) files, like you did it in Project 9.
-
-    Test your setup by making some change in README.md file in master branch and make sure that builds starts automatically and Jenkins saves the files (build artifacts) in following folder
+![](assets/ansibleV.png)
+Let's configure a Jenkins build job to archive our repository content every time we make a change. We will create a new Freestyle project in Jenkins and point it to our 'ansible-config-mgt' repository while also configuring a webhook in GitHub to trigger the Ansible build automatically. We’ll set up a post-build job to save all files and test our setup by making a change to the README.md file in the master branch to ensure that the build starts automatically, with Jenkins saving the files (build artifacts) in the designated folder.
 
 ```
   ls /var/lib/jenkins/jobs/project_ansible/builds/6/archive
 ```
-![](assets/archive.png) 
+![](assets/archive.png)       
 _Note: Trigger Jenkins project execution only for main (or master) branch._
 
 __Tip__: Every time you stop/start your Jenkins-Ansible server - you have to reconfigure GitHub webhook to a new IP address, in order to avoid it, it makes sense to allocate an Elastic IP to your Jenkins-Ansible server (you have done it before to your LB server in Project 10). Note that Elastic IP is free only when it is being allocated to an EC2 Instance, so do not forget to release Elastic IP once you terminate your EC2 Instance.
