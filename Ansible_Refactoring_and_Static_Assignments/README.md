@@ -287,8 +287,15 @@ or
 http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
 ```
 ![](assets/php.png)
+
+### HA!!  IT WORKED!
+
+![ALT TEXT](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXVlODR1dGo5NHY4Z3htNTZmaWlyYXI5d2dwNzc1cTlhejhmcWhjcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/120jXUxrHF5QJ2/giphy.webp)
+
 ### Our Ansible architecture now looks like this:
 ![](assets/cicdpipeline.png)
+
+
 
 ## Let's reflect on what we've accomplished so far:   
  we updated Jenkins with a new project to copy artifacts from an upstream project to a new directory on the Jenkins server, implemented a new directory structure for the Ansible project to make the playbooks more modular and reusable, and set up a parent playbook that calls child playbooks based on the server type. We also created a role for the User Acceptance Testing web servers, referenced this role in a static assignment file, and included the static assignment file in the parent playbook. Finally, we tested the refactored codebase by running the `site.yml` playbook.
