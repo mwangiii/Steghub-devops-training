@@ -277,7 +277,7 @@ Now run the playbook against your uat inventory and see what happens:
   cd /home/ubuntu/ansible-config-mgt
   ansible-playbook -i inventory/uat.yml playbooks/site.yml
 ```
-![](assets/playbookRun.png)
+![](assets/playBooook.png)
 - You should be able to see both of your UAT Web servers configured and you can try to reach them from your browser:
 ```
 http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
@@ -291,5 +291,6 @@ http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
 ![](assets/cicdpipeline.png)
 
 ## Let's reflect on what we've accomplished so far:   
-we updated Jenkins with a new project to copy artifacts from an upstream project to a new directory on the Jenkins server. Additionally, we implemented a new directory structure for the Ansible project to make the playbooks more modular and reusable. We set up a parent playbook that calls child playbooks based on the server type and created a role for the User Acceptance Testing web servers, referencing this role in a static assignment file. Furthermore, we included the static assignment file in the parent playbook and tested the refactored codebase by running the site.yml playbook.
+ we updated Jenkins with a new project to copy artifacts from an upstream project to a new directory on the Jenkins server, implemented a new directory structure for the Ansible project to make the playbooks more modular and reusable, and set up a parent playbook that calls child playbooks based on the server type. We also created a role for the User Acceptance Testing web servers, referenced this role in a static assignment file, and included the static assignment file in the parent playbook. Finally, we tested the refactored codebase by running the `site.yml` playbook.
+
 
