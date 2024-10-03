@@ -1,5 +1,7 @@
 # ANSIBLE DYNAMIC ASSIGNMENTS (INCLUDE) AND COMMUNITY ROLES
-In this project, I will introduce dynamic assignments using the include module. You may wonder about the difference between static and dynamic assignments. Previously, we learned that **static assignments** utilize the Ansible _import_ module, while the module that enables **dynamic assignments** is _include_.
+![](assets/main.png)
+In this project, I will introduce dynamic assignments using the include module. You may wonder about the difference between static and dynamic assignments. 
+Previously, we learned that **static assignments** utilize the Ansible _import_ module, while the module that enables **dynamic assignments** is _include_.
 
 - `import = Static`
 - `include = Dynamic`
