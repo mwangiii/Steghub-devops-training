@@ -51,19 +51,15 @@ To address this, instead of pulling directly from Git, we will use the **Ansible
 
 
 ## SETUP
-We will use AWS as usual to continue our Ansible work by making necessary adjustments based on the new project setup.
-This project will require multiple servers to simulate various environments from development/CI to production.
+We will use GCP instead, as our free tier is already filled up.
+This project will require multiple servers to simulate various environments, from development/CI to production.
 While this means a significant number of servers overall, we don’t need to create them all at once.
 We will only provision the servers required for the environment we’re currently working on.
-For example, during development deployments, there’s no need to create servers for _integration_, _pentesting_ or _production_ just yet.
+For example, during development deployments, there’s no need to create servers for **integration**, **pentesting**, or **production** just yet.
+Let’s make sure to utilize our GCP credits as much as possible.
+Please note that this project is not yet focused on cloud implementation. Our immediate requirement is to set up virtual machines that can be accessed via **SSH**.
 
-Let’s make sure to utilize our AWS free tier as much as possible. If we exhaust our current account, we can register a new one. 
-
-Please note that this project is not yet focused on cloud implementation. 
-Our immediate requirement is to set up virtual machines that can be accessed via **SSH**.
-
-To keep cloud server costs manageable, we don’t have to create all the servers at once.
-Instead, we can spin up a minimal server setup as we progress through the project and only add more as needed.
+To keep cloud server costs manageable, we don’t have to create all the servers at once. Instead, we can spin up a minimal server setup as we progress through the project and only add more as needed.
 
 Initially, we will concentrate on the following environments:
 
@@ -85,7 +81,31 @@ What we want to achieve, is having Nginx to serve as a **reverse proxy** for our
 ![](assets/otherEnv.png)
 
 ## DNS REQUIREMENTS
+Make DNS entries to create a subdomain for each environment. Assuming your main domain is total.com
+
+You should have a subdomains list like this:
+
+  | Server                 |                    Domain                    |
+  | :--------------------- | :-------------------------------------------:|
+  | Jenkins                |   https://ci.mwangiii.online                 |
+  | Sonarqube              |   https://sonar.mwangiii.online              |
+  | Artifactory            |   https://artifacts.mwangiii.online          |
+  | Production Tooling     |   https://tooling.mwangiii.online            |
+  | Pre-Prod Tooling       |   https://tooling.preprod.mwangiii.online    |
+  | Pentest Tooling        |   https://tooling.pentest.mwangiii.online    |
+  | UAT Tooling            |   https://tooling.uat.mwangiii.online        |
+  | SIT Tooling            |   https://tooling.sit.mwangiii.online        |
+  | Dev Tooling            |   https://tooling.dev.mwangiii.online        |
+  | Production TODO-WebApp |   https://todo.mwangiii.online               |
+  | Pre-Prod TODO-WebApp   |   https://todo.preprod.mwangiii.online       |
+  | Pentest TODO-WebApp    |   https://todo.pentest.mwangiii.online       |
+  | UAT TODO-WebApp        |   https://todo.uat.mwangiii.online           |
+  | SIT TODO-WebApp        |   https://todo.sit.mwangiii.online           |
+  | Dev TODO-WebApp        |   https://todo.dev.mwangiii.online           |
+
+![](assets/dnsRecords.png)  
 Ansible Inventory should look like this
+
 ```
 ├── ci
 ├── dev
@@ -157,51 +177,44 @@ For example, if there are variables that we need to be common between both `pent
 Since it has been created as `pentest:children` in the inventory file, Ansible recognizes this and applies the variable to both children.
 
 
+# ANSIBLE ROLES FOR CI ENVIRONMENT
+- Add two more roles to ansible:  
+  1.**SonarQube** -  an open-source platform developed by SonarSource for continuous inspection of code quality, it is used to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities. 
 
-Ansible Roles for CI Environment
+  2.**Artifactory** -  a product by JFrog that serves as a binary repository manager. The binary repository is a natural extension to the source code repository, in that the outcome of your build process is stored. It can be used for certain other automation, but we will it strictly to manage our build artifacts.
 
-Add two more roles to ansible:
+- In previous projects, you have been launching Ansible commands manually from a CLI. Now, with Jenkins, we will start running Ansible from Jenkins UI.
+- To do this,
+  - Navigate to Jenkins URL
+  - Install & Open Blue Ocean Jenkins Plugin
+    - In the Jenkins dashboard, click on Manage Jenkins -> Manage plugins and search for `Blue Ocean` plugin. Install and open Blue Ocean plugin
+    ![](assets/blueocean.png)
+  - Create a new pipeline 
+    ![](assets/startBlueOcean.png)
 
-    SonarQube (Scroll down to the Sonarqube section to see instructions on how to set up and configure SonarQube manually)
-    Artifactory
+  - Connect Jenkins with GitHub
+  - Login to GitHub & Generate an Access Token
+    - Note: Give your token a descriptive name, such as "My Personal Access Token".
+    - Expiration: Choose the expiration date for your token. You can select "No expiration" if you want the token to never expire.
+    - Select scopes: Choose the permissions you want to grant to your token. The specific scopes you need will depend on the actions you want to perform with the token. Common scopes include `repo` (for accessing private repositories),` gist`(for creating and managing gists), and user (for accessing your user profile).
+  - Copy Access Token
+  - Paste the token and connect
+  ![](assets/genToke.png)
+  - Create a new Pipeline
 
-Why do we need SonarQube?
-
-SonarQube is an open-source platform developed by SonarSource for continuous inspection of code quality, it is used to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities. Watch a short description here. There is a lot more hands on work ahead with SonarQube and Jenkins. So, the purpose of SonarQube will be clearer to you very soon.
-Why do we need Artifactory?
-
-Artifactory is a product by JFrog that serves as a binary repository manager. The binary repository is a natural extension to the source code repository, in that the outcome of your build process is stored. It can be used for certain other automation, but we will it strictly to manage our build artifacts.
-
-Watch a short description here Focus more on the first 10.08 mins
-Configuring Ansible For Jenkins Deployment
-
-In previous projects, you have been launching Ansible commands manually from a CLI. Now, with Jenkins, we will start running Ansible from Jenkins UI.
-
-To do this,
-
-    Navigate to Jenkins URL
-    Install & Open Blue Ocean Jenkins Plugin
-    Create a new pipeline 
-
-    Connect Jenkins with GitHub
-
-    Login to GitHub & Generate an Access Token
-
-    Copy Access Token
-
-    Paste the token and connect
-
-    Create a new Pipeline
-
-At this point you may not have a Jenkinsfile in the Ansible repository, so Blue Ocean will attempt to give you some guidance to create one. But we do not need that. We will rather create one ourselves. So, click on Administration to exit the Blue Ocean console.
-
-Here is our newly created pipeline. It takes the name of your GitHub repository.
+_N/B:At this point you may not have a Jenkinsfile in the Ansible repository, so Blue Ocean will attempt to give you some guidance to create one. But we do not need that. We will rather create one ourselves. So, click on Administration to exit the Blue Ocean console._
+- Here is our newly created pipeline. It takes the name of your GitHub repository.
 Let us create our Jenkinsfile
+![](assets/pipeline.png)
+- Inside the Ansible project, create a new directory `deploy`and start a new file `Jenkinsfile` inside the directory.
 
-Inside the Ansible project, create a new directory deploy and start a new file Jenkinsfile inside the directory.
+```bash
+  mkdir deploy
+  touch deploy/Jenkinsfile
+```
+- Add the code snippet below to start building the Jenkinsfile gradually. This pipeline currently has just one stage called `Build` and the only thing we are doing is using the shell script `module` to echo Building Stage
 
-Add the code snippet below to start building the Jenkinsfile gradually. This pipeline currently has just one stage called Build and the only thing we are doing is using the shell script module to echo Building Stage
-
+```groovy
 pipeline {
     agent any
 
@@ -216,28 +229,32 @@ pipeline {
     }
     }
 }
+```
+- Now go back into the Ansible pipeline in Jenkins, and select configure
+- Scroll down to Build Configuration section and specify the location of the Jenkinsfile at `deploy/Jenkinsfile`
+- Back to the pipeline again, this time click `"Build now"`
 
-Now go back into the Ansible pipeline in Jenkins, and select configure
+- This will trigger a build and you will be able to see the effect of our basic Jenkinsfile configuration by going through the console output of the build.
 
-Scroll down to Build Configuration section and specify the location of the Jenkinsfile at deploy/Jenkinsfile
+- To really appreciate and feel the difference of Cloud Blue UI, it is recommended to try triggering the build again from Blue Ocean interface.
+    - Click on Blue Ocean 
+    - Select your project
+    - Click on the play button against the branch 
 
-Back to the pipeline again, this time click "Build now"
+- Notice that this pipeline is a _multibranch_ one. 
+- This means, if there were more than one branch in GitHub, Jenkins would have scanned the repository to discover them all and we would have been able to trigger a build for each branch.
 
-This will trigger a build and you will be able to see the effect of our basic Jenkinsfile configuration by going through the console output of the build.
+- Let us see this in action.
+- Create a new git branch and name it `feature/jenkinspipeline-stages`
 
-To really appreciate and feel the difference of Cloud Blue UI, it is recommended to try triggering the build again from Blue Ocean interface.
+```bash
+  git checkout -b feature/jenkinspipeline-stages
+```
 
-    Click on Blue Ocean 
-    Select your project
-    Click on the play button against the branch 
+- Currently we only have the `Build` stage. Let us add another stage called `Test`.
+ Paste the code snippet below and push the new changes to GitHub.
 
-Notice that this pipeline is a multibranch one. This means, if there were more than one branch in GitHub, Jenkins would have scanned the repository to discover them all and we would have been able to trigger a build for each branch.
-
-Let us see this in action.
-
-    Create a new git branch and name it feature/jenkinspipeline-stages
-    Currently we only have the Build stage. Let us add another stage called Test. Paste the code snippet below and push the new changes to GitHub.
-
+```groovy
    pipeline {
     agent any
 
@@ -259,55 +276,114 @@ Let us see this in action.
     }
     }
 }
+```
 
-    To make your new branch show up in Jenkins, we need to tell Jenkins to scan the repository.
-        Click on the "Administration" button 
-        Navigate to the Ansible project and click on "Scan repository now" 
-        Refresh the page and both branches will start building automatically. You can go into Blue Ocean and see both branches there too. 
-        In Blue Ocean, you can now see how the Jenkinsfile has caused a new step in the pipeline launch build for the new branch. 
+- To make your new branch show up in Jenkins, we need to tell Jenkins to scan the repository.
+- Click on the _**"Administration"**_ button 
+- Navigate to the Ansible project and click on _**"Scan repository now" **_
+- Refresh the page and both branches will start building automatically. You can go into Blue Ocean and see both branches there too. 
+- In Blue Ocean, you can now see how the Jenkinsfile has caused a new step in the pipeline launch build for the new branch. 
+![](assets/bothBranch.png)
 
-A QUICK TASK FOR YOU!
+#### A QUICK TASK FOR YOU
 
 1. Create a pull request to merge the latest code into the `main branch`
 2. After merging the `PR`, go back into your terminal and switch into the `main` branch.
 3. Pull the latest change.
+![](assets/gitpull.png)
 4. Create a new branch, add more stages into the Jenkins file to simulate below phases. (Just add an `echo` command like we have in `build` and `test` stages)
    1. Package 
    2. Deploy 
    3. Clean up
+
+   ```groovy
+    pipeline {
+      agent any
+
+    stages {
+      stage('Build') {
+        steps {
+          script {
+            sh 'echo "Building Stage"'
+          }
+        }
+      }
+
+      stage('Test') {
+        steps {
+          script {
+            sh 'echo "Testing Stage"'
+          }
+        }
+      }
+
+
+      stage('Package') {
+        steps {
+          script {
+            sh 'echo "Package Stage"'
+          }
+        }
+      }
+
+
+      stage('Deploy') {
+        steps {
+          script {
+            sh 'echo "Deploy Stage"'
+          }
+        }
+      }
+
+      stage('Clean up') {
+        steps {
+          script {
+            sh 'echo "Clean up Stage"'
+          }
+        }
+      }
+      } 
+    }
+
+
 5. Verify in Blue Ocean that all the stages are working, then merge your feature branch to the main branch
 6. Eventually, your main branch should have a successful pipeline like this in blue ocean
 
-
-
-
-Running Ansible Playbook from Jenkins
+# RUNNING ANSIBLE PLAYBOOK FROM JENKINS
 
 Now that you have a broad overview of a typical Jenkins pipeline. Let us get the actual Ansible deployment to work by:
+    1.Installing Ansible on Jenkins
+    2.Installing Ansible plugin in Jenkins UI
+    3.Creating Jenkinsfile from scratch. (Delete all you currently have in there and start all over to get Ansible to run successfully)
 
-    Installing Ansible on Jenkins
-    Installing Ansible plugin in Jenkins UI
-    Creating Jenkinsfile from scratch. (Delete all you currently have in there and start all over to get Ansible to run successfully)
+You can watch a 10 minutes video [here](https://www.youtube.com/watch?v=PRpEbFZi7nI) to guide you through the entire setup.
 
-You can watch a 10 minutes video here to guide you through the entire setup
-
-Note: Ensure that Ansible runs against the Dev environment successfully.
-
+_**Note: Ensure that Ansible runs against the Dev environment successfully.**_
 Possible errors to watch out for:
-
-    Ensure that the git module in Jenkinsfile is checking out SCM to main branch instead of master (GitHub has discontinued the use of Master due to Black Lives Matter. You can read more here)
-    Jenkins needs to export the ANSIBLE_CONFIG environment variable. You can put the .ansible.cfg file alongside Jenkinsfile in the deploy directory. This way, anyone can easily identify that everything in there relates to deployment. Then, using the Pipeline Syntax tool in Ansible, generate the syntax to create environment variables to set. https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
-
+- Ensure that the git module in Jenkinsfile is checking out SCM to main branch instead of master
+- Jenkins needs to export the ANSIBLE_CONFIG environment variable. You can put the .ansible.cfg file alongside Jenkinsfile in the deploy directory.
+- This way, anyone can easily identify that everything in there relates to deployment.
+- Then, using the Pipeline Syntax tool in Ansible, generate the syntax to create environment variables to set. 
+```
+https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
+```
 Possible issues to watch out for when you implement this
+- Remember that `ansible.cfg` must be exported to environment variable so that Ansible knows where to find Roles.
+But because you will possibly run Jenkins from different git branches, the location of Ansible roles will change.
+Therefore, you must handle this dynamically.
+You can use Linux Stream Editor `sed` to update the section roles_path each time there is an execution.
+You may not have this issue if you run only from the main branch.
+- If you push new changes to Git so that Jenkins failure can be fixed. You might observe that your change may sometimes have no effect.
+Even though your change is the actual fix required. This can be because Jenkins did not download the latest code from GitHub.
+Ensure that you start the Jenkinsfile with a clean up step to always delete the previous workspace before running a new one.
+Sometimes you might need to login to the Jenkins Linux server to verify the files in the workspace to confirm that what you are actually expecting is there.
+Otherwise, you can spend hours trying to figure out why Jenkins is still failing, when you have pushed up possible changes to fix the error.
+- Another possible reason for Jenkins failure sometimes, is because you have indicated in the Jenkinsfile to check out the main git branch, and you are running a pipeline from another branch.
+So, always verify by logging onto the Jenkins box to check the workspace, and run git branch command to confirm that the branch you are expecting is there.
 
-    Remember that ansible.cfg must be exported to environment variable so that Ansible knows where to find Roles. But because you will possibly run Jenkins from different git branches, the location of Ansible roles will change. Therefore, you must handle this dynamically. You can use Linux Stream Editor sed to update the section roles_path each time there is an execution. You may not have this issue if you run only from the main branch.
-    If you push new changes to Git so that Jenkins failure can be fixed. You might observe that your change may sometimes have no effect. Even though your change is the actual fix required. This can be because Jenkins did not download the latest code from GitHub. Ensure that you start the Jenkinsfile with a clean up step to always delete the previous workspace before running a new one. Sometimes you might need to login to the Jenkins Linux server to verify the files in the workspace to confirm that what you are actually expecting is there. Otherwise, you can spend hours trying to figure out why Jenkins is still failing, when you have pushed up possible changes to fix the error.
-    Another possible reason for Jenkins failure sometimes, is because you have indicated in the Jenkinsfile to check out the main git branch, and you are running a pipeline from another branch. So, always verify by logging onto the Jenkins box to check the workspace, and run git branch command to confirm that the branch you are expecting is there.
-
-If everything goes well for you, it means, the Dev environment has an up-to-date configuration. But what if we need to deploy to other environments?
-
-    Are we going to manually update the Jenkinsfile to point inventory to those environments? such as sit, uat, pentest, etc.
-    Or do we need a dedicated git branch for each environment, and have the inventory part hard coded there.
+- If everything goes well for you, it means, the Dev environment has an up-to-date configuration. But what if we need to deploy to other environments?
+- Are we going to manually update the Jenkinsfile to point inventory to those environments? such as sit, uat, pentest, etc.
+- Or do we need a dedicated git branch for each environment, and have the inventory part hard coded there.
 
 Think about those for a minute and try to work out which one sounds more like a better solution.
 
@@ -336,63 +412,64 @@ ansible_python_interpreter=/usr/bin/python
 [db]
 <SIT-DB-Server-Private-IP-Address>
 
-    Update Jenkinsfile to introduce parameterization. Below is just one parameter. It has a default value in case if no value is specified at execution. It also has a description so that everyone is aware of its purpose.
+We updated the Jenkinsfile to introduce parameterization. Below is just one parameter. It had a default value in case no value was specified at execution. It also had a description so that everyone was aware of its purpose.
 
-pipeline {
+```groovy
+  pipeline {
     agent any
 
     parameters {
       string(name: 'inventory', defaultValue: 'dev',  description: 'This is the inventory file for the environment to deploy configuration')
     }
-...
+```
 
-    In the Ansible execution section, remove the hardcoded inventory/dev and replace with `${inventory}
+- In the Ansible execution section, we removed the hardcoded **inventory/dev** and replaced it with **${inventory}**.
+- From that point on, each time we hit execute, it expected an input.
+- The default value loaded up, but we could now specify which environment we wanted to deploy the configuration to. We simply typed `sit` and hit Run.
 
-From now on, each time you hit on execute, it will expect an input.
+Next, we added another parameter. This time, we introduced tagging in Ansible. We limited the Ansible execution to a specific role or playbook desired. Therefore, we added an Ansible tag to run against the webserver only.
 
-Notice that the default value loads up, but we can now specify which environment we want to deploy the configuration to. Simply type sit and hit Run
+- We tested this locally first to gain experience. To validate our changes, we modified the playbooks to create an empty file.
+ Once we understood this, we updated the Jenkinsfile and ran it from Jenkins..
+![](assets/successBuild.png)
+![](assets/buildOcean.png)
 
-    Add another parameter. This time, introduce tagging in Ansible. You can limit the Ansible execution to a specific role or playbook desired. Therefore, add an Ansible tag to run against webserver only. Test this locally first to get the experience. Once you understand this, update Jenkinsfile and run it from Jenkins.
 
 
-CI/CD Pipeline for TODO application
-
+## CI/CD PIPELINE FOR TODO APPLICATION
 We already have tooling website as a part of deployment through Ansible. Here we will introduce another PHP application to add to the list of software products we are managing in our infrastructure. The good thing with this particular application is that it has unit tests, and it is an ideal application to show an end-to-end CI/CD pipeline for a particular application.
 
-Our goal here is to deploy the application onto servers directly from Artifactory rather than from git. If you have not updated Ansible with an Artifactory role, simply use this guide to create an Ansible role for Artifactory (ignore the Nginx part). Configure Artifactory on Ubuntu 20.04
-Phase 1 - Prepare Jenkins
-
-    Fork the repository below into your GitHub account
-
-https://github.com/StegTechHub/php-todo.git
-
-    On you Jenkins server, install PHP, its dependencies and Composer tool (Feel free to do this manually at first, then update your Ansible accordingly later)
-
+Our goal here is to deploy the application onto servers directly from `Artifactory` rather than from git. If you have not updated Ansible with an Artifactory role, simply use this guide to create an Ansible role for Artifactory (ignore the Nginx part). Configure Artifactory on Ubuntu 20.04
+### Phase 1 - Prepare Jenkins
+Fork the repository below into your GitHub account
+```
+  https://github.com/StegTechHub/php-todo.git
+```
+- On you Jenkins server, install PHP, its dependencies and Composer tool (Feel free to do this manually at first, then update your Ansible accordingly later)
+```bash
     sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
+```
+- Install Jenkins plugins
+    - Plot plugin
+    - Artifactory plugin
+    ![](assets/plotPluggin.png)
+- We will use _plot plugin_ to display tests reports, and code coverage information.
+- The _Artifactory plugin_ will be used to easily upload code artifacts into an Artifactory server.
+- In Jenkins UI configure Artifactory
+- Configure the server ID, URL and Credentials, run Test Connection.
 
-    Install Jenkins plugins
-        Plot plugin
-        Artifactory plugin
-
-    We will use plot plugin to display tests reports, and code coverage information.
-    The Artifactory plugin will be used to easily upload code artifacts into an Artifactory server.
-
-    In Jenkins UI configure Artifactory
-
-Configure the server ID, URL and Credentials, run Test Connection.
-Phase 2 - Integrate Artifactory repository with Jenkins
-
-    Create a dummy Jenkinsfile in the repository
-    Using Blue Ocean, create a multibranch Jenkins pipeline
-    On the database server, create database and user
-
+### Phase 2 - Integrate Artifactory repository with Jenkins
+- Create a dummy Jenkinsfile in the repository
+- Using Blue Ocean, create a multibranch Jenkins pipeline
+- On the database server, create database and user
+```sql
 Create database homestead;
 CREATE USER 'homestead'@'%' IDENTIFIED BY 'sePret^i';
 GRANT ALL PRIVILEGES ON * . * TO 'homestead'@'%';
-
-    Update the database connectivity requirements in the file .env.sample
-    Update Jenkinsfile with proper pipeline configuration
-
+```
+- Update the database connectivity requirements in the file .env.sample
+- Update Jenkinsfile with proper pipeline configuration
+```groovy
 pipeline {
     agent any
 
@@ -423,72 +500,73 @@ pipeline {
     }
   }
 }
+```
+- Notice the _Prepare Dependencies_ section
 
-Notice the Prepare Dependencies section
+    - The required file by PHP is **.env** so we are renaming **.env.sample** to    **.env**
+    - Composer is used by PHP to install all the dependent libraries used by the application
+    - _php artisan_ uses the **.env** file to setup the required database objects - (After successful run of this step, login to the database, run show tables and you will see the tables being created for you)
 
-    The required file by PHP is .env so we are renaming .env.sample to .env
-    Composer is used by PHP to install all the dependent libraries used by the application
-    php artisan uses the .env file to setup the required database objects - (After successful run of this step, login to the database, run show tables and you will see the tables being created for you)
+- Update the _Jenkinsfile_ to include Unit tests step
+```groovy
+  stage('Execute Unit Tests') {
+    steps {
+           sh './vendor/bin/phpunit'
+    } 
+```
 
-    Update the Jenkinsfile to include Unit tests step
+### Phase 3 - Code Quality Analysis
+This is one of the areas where developers, architects and many stakeholders are mostly interested in as far as product development is concerned.
+As a DevOps engineer, you also have a role to play. Especially when it comes to setting up the tools.
 
-    stage('Execute Unit Tests') {
-      steps {
-             sh './vendor/bin/phpunit'
-      } 
+For PHP the most commonly tool used for code quality analysis is **phploc**.
 
-Phase 3 - Code Quality Analysis
+The data produced by **phploc** can be ploted onto graphs in Jenkins.
+1. Add the code analysis step in Jenkinsfile. The output of the data will be saved in `build/logs/phploc.csv` file.
+```groovy
+stage('Code Analysis') {
+  steps {
+        sh 'phploc app/ --log-csv build/logs/phploc.csv'
 
-This is one of the areas where developers, architects and many stakeholders are mostly interested in as far as product development is concerned. As a DevOps engineer, you also have a role to play. Especially when it comes to setting up the tools.
-
-For PHP the most commonly tool used for code quality analysis is phploc. Read the article here for more
-
-The data produced by phploc can be ploted onto graphs in Jenkins.
-
-    Add the code analysis step in Jenkinsfile. The output of the data will be saved in build/logs/phploc.csv file.
-
-    stage('Code Analysis') {
-      steps {
-            sh 'phploc app/ --log-csv build/logs/phploc.csv'
-
-      }
-    }
-
-    Plot the data using plot Jenkins plugin.
+  }
+}
+```
+2. Plot the data using plot Jenkins plugin.
 
 This plugin provides generic plotting (or graphing) capabilities in Jenkins. It will plot one or more single values variations across builds in one or more plots. Plots for a particular job (or project) are configured in the job configuration screen, where each field has additional help information. Each plot can have one or more lines (called data series). After each build completes the plots' data series latest values are pulled from the CSV file generated by phploc.
+```groovy
+  stage('Plot Code Coverage Report') {
+    steps {
 
-    stage('Plot Code Coverage Report') {
-      steps {
-
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)                          ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'A - Lines of code', yaxis: 'Lines of Code'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Directories,Files,Namespaces', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'B - Structures Containers', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Average Class Length (LLOC),Average Method Length (LLOC),Average Function Length (LLOC)', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'C - Average Length', yaxis: 'Average Lines of Code'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Cyclomatic Complexity / Lines of Code,Cyclomatic Complexity / Number of Methods ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'D - Relative Cyclomatic Complexity', yaxis: 'Cyclomatic Complexity by Structure'      
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Classes,Abstract Classes,Concrete Classes', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'E - Types of Classes', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'F - Types of Methods', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Constants,Global Constants,Class Constants', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'G - Types of Constants', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Test Classes,Test Methods', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'I - Testing', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Logical Lines of Code (LLOC),Classes Length (LLOC),Functions Length (LLOC),LLOC outside functions or classes ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'AB - Code Structure by Logical Lines of Code', yaxis: 'Logical Lines of Code'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Functions,Named Functions,Anonymous Functions', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'H - Types of Functions', yaxis: 'Count'
-            plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Interfaces,Traits,Classes,Methods,Functions,Constants', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'BB - Structure Objects', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Lines of Code (LOC),Comment Lines of Code (CLOC),Non-Comment Lines of Code (NCLOC),Logical Lines of Code (LLOC)                          ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'A - Lines of code', yaxis: 'Lines of Code'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Directories,Files,Namespaces', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'B - Structures Containers', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Average Class Length (LLOC),Average Method Length (LLOC),Average Function Length (LLOC)', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'C - Average Length', yaxis: 'Average Lines of Code'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Cyclomatic Complexity / Lines of Code,Cyclomatic Complexity / Number of Methods ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'D - Relative Cyclomatic Complexity', yaxis: 'Cyclomatic Complexity by Structure'      
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Classes,Abstract Classes,Concrete Classes', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'E - Types of Classes', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Methods,Non-Static Methods,Static Methods,Public Methods,Non-Public Methods', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'F - Types of Methods', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Constants,Global Constants,Class Constants', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'G - Types of Constants', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Test Classes,Test Methods', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'I - Testing', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Logical Lines of Code (LLOC),Classes Length (LLOC),Functions Length (LLOC),LLOC outside functions or classes ', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'AB - Code Structure by Logical Lines of Code', yaxis: 'Logical Lines of Code'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Functions,Named Functions,Anonymous Functions', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'H - Types of Functions', yaxis: 'Count'
+          plot csvFileName: 'plot-396c4a6b-b573-41e5-85d8-73613b2ffffb.csv', csvSeries: [[displayTableFlag: false, exclusionValues: 'Interfaces,Traits,Classes,Methods,Functions,Constants', file: 'build/logs/phploc.csv', inclusionFlag: 'INCLUDE_BY_STRING', url: '']], group: 'phploc', numBuilds: '100', style: 'line', title: 'BB - Structure Objects', yaxis: 'Count'
 
 
-      }
     }
+  }
+```
+- You should now see a Plot menu item on the left menu.
+- Click on it to see the charts. (The analytics may not mean much to you as it is meant to be read by developers. So, you need not worry much about it - this is just to give you an idea of the real-world implementation).
 
-You should now see a Plot menu item on the left menu. Click on it to see the charts. (The analytics may not mean much to you as it is meant to be read by developers. So, you need not worry much about it - this is just to give you an idea of the real-world implementation).
-
-    Bundle the application code for into an artifact (archived package) upload to Artifactory
-
+3. Bundle the application code for into an artifact (archived package) upload to Artifactory
+```groovy
 stage ('Package Artifact') {
     steps {
             sh 'zip -qr php-todo.zip ${WORKSPACE}/*'
      }
     }
-
-    Publish the resulted artifact into Artifactory
-
+```
+4. Publish the resulted artifact into Artifactory
+```groovy
 stage ('Upload Artifact to Artifactory') {
           steps {
             script { 
@@ -509,15 +587,15 @@ stage ('Upload Artifact to Artifactory') {
             }
   
         }
-
-    Deploy the application to the dev environment by launching Ansible pipeline
-
+```
+5. Deploy the application to the dev environment by launching Ansible pipeline
+```groovy
 stage ('Deploy to Dev Environment') {
     steps {
     build job: 'ansible-project/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
     }
   }
-
+```
 The build job used in this step tells Jenkins to start another job. In this case it is the ansible-project job, and we are targeting the main branch. Hence, we have ansible-project/main. Since the Ansible project requires parameters to be passed in, we have included this by specifying the parameters section. The name of the parameter is env and its value is dev. Meaning, deploy to the Development environment.
 
 But how are we certain that the code being deployed has the quality that meets corporate and customer requirements? Even though we have implemented Unit Tests and Code Coverage Analysis with phpunit and phploc, we still need to implement Quality Gate to ensure that ONLY code with the required code coverage, and other quality standards make it through to the environments.
