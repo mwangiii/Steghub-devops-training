@@ -449,6 +449,23 @@ Fork the repository below into your GitHub account
 ```bash
     sudo apt install -y zip libapache2-mod-php phploc php-{xml,bcmath,bz2,intl,gd,mbstring,mysql,zip}
 ```
+- Install Composer Globally
+```
+  sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+```
+- Remove the Installer
+```
+  php -r "unlink('composer-setup.php');"
+```
+- Verify Installation
+```
+ php -v
+```
+```
+ composer -v
+```
+![](assets/phpVersion.png)
+![](assets/composerV.png)
 - Install Jenkins plugins
     - Plot plugin
     - Artifactory plugin
@@ -456,7 +473,9 @@ Fork the repository below into your GitHub account
 - We will use _plot plugin_ to display tests reports, and code coverage information.
 - The _Artifactory plugin_ will be used to easily upload code artifacts into an Artifactory server.
 - In Jenkins UI configure Artifactory
+![](assets/jfrogLogin.png)
 - Configure the server ID, URL and Credentials, run Test Connection.
+![](assets/connectJfrog.png)
 
 ### Phase 2 - Integrate Artifactory repository with Jenkins
 - Create a dummy Jenkinsfile in the repository
