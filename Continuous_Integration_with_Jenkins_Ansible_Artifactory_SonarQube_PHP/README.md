@@ -473,8 +473,8 @@ Fork the repository below into your GitHub account
 - We will use _plot plugin_ to display tests reports, and code coverage information.
 - The _Artifactory plugin_ will be used to easily upload code artifacts into an Artifactory server.
 - In Jenkins UI configure Artifactory
-![](assets/jfrogLogin.png)
 - Configure the server ID, URL and Credentials, run Test Connection.
+![](assets/jfrogLogin.png)
 ![](assets/connectJfrog.png)
 
 ### Phase 2 - Integrate Artifactory repository with Jenkins
