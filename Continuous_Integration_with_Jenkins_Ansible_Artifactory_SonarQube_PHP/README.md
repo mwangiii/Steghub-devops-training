@@ -591,6 +591,7 @@ stage ('Package Artifact') {
     }
 ```
 ![](assets/addArts.png)
+
 4. Publish the resulted artifact into Artifactory
 ```groovy
 stage ('Upload Artifact to Artifactory') {
