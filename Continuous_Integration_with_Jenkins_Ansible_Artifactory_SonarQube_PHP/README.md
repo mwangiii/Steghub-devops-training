@@ -614,6 +614,8 @@ stage ('Upload Artifact to Artifactory') {
   
         }
 ```
+![](assets/artJenkins.png)
+![](assets/artsArt.png)
 5. Deploy the application to the dev environment by launching Ansible pipeline
 ```groovy
 stage ('Deploy to Dev Environment') {
