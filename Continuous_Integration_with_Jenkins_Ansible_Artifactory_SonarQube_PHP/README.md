@@ -796,7 +796,7 @@ sudo groupadd sonar
 ```
 - Open SonarQube configuration file using your favourite text editor (e.g., nano or vim)
 ```bash
-sudo vim /opt/sonarqube/conf/sonar.properties
+sudo nano /opt/sonarqube/conf/sonar.properties
 ```
 - Find the following lines:
 ```
