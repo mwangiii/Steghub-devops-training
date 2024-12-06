@@ -394,8 +394,8 @@ Parameterizing Jenkinsfile For Ansible Deployment
 
 To deploy to other environments, we will need to use parameters.
 
-    Update sit inventory with new servers
-
+- Update sit inventory with new servers
+```
 [tooling]
 <SIT-Tooling-Web-Server-Private-IP-Address>
 
@@ -411,7 +411,7 @@ ansible_python_interpreter=/usr/bin/python
 
 [db]
 <SIT-DB-Server-Private-IP-Address>
-
+```
 We updated the Jenkinsfile to introduce parameterization. Below is just one parameter. It had a default value in case no value was specified at execution. It also had a description so that everyone was aware of its purpose.
 
 ```groovy
