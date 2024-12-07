@@ -1098,11 +1098,11 @@ Assuming a basic gitflow implementation restricts only the develop branch to dep
 
 Let us update our __Jenkinsfile__ to implement this:
 
-    - First, we will include a When condition to run Quality Gate whenever the running branch is either develop, hotfix, release, main, or master
+- First, we will include a When condition to run Quality Gate whenever the running branch is either develop, hotfix, release, main, or master
 ```groovy
     when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
-    ```
-    - Then we add a timeout step to wait for SonarQube to complete analysis and successfully finish the pipeline only when code quality is acceptable.
+```
+- Then we add a timeout step to wait for SonarQube to complete analysis and successfully finish the pipeline only when code quality is acceptable.
 ```groovy
     timeout(time: 1, unit: 'MINUTES') {
         waitForQualityGate abortPipeline: true
