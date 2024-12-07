@@ -1083,13 +1083,11 @@ There are bugs, and there is 0.0% code coverage. (code coverage is a percentage 
 In the development environment, this is acceptable as developers will need to keep iterating over their code towards perfection. But as a DevOps engineer working on the pipeline, we must ensure that the quality gate step causes the pipeline to fail if the conditions for quality are not met.
 ### Conditionally deploy to higher environments
 In the real world, developers will work on feature branch in a repository (e.g., GitHub or GitLab). There are other branches that will be used differently to control how software releases are done. You will see such branches as:
-
-    -Develop
-    - Master or Main (The * is a place holder for a version number, Jira Ticket name or some description. It can be something like Release-1.0.0)
-    - Feature/*
-    - Release/*
-    - Hotfix/*
-
+  -Develop
+  - Master or Main (The * is a place holder for a version number, Jira Ticket name or some description. It can be something like Release-1.0.0)
+  - Feature/*
+  - Release/*
+  - Hotfix/*
 etc.
 
 There is a very wide discussion around release strategy, and git branching strategies which in recent years are considered under what is known as GitFlow (Have a read and keep as a bookmark - it is a possible candidate for an interview discussion, so take it seriously!)
@@ -1141,13 +1139,13 @@ Notice that with the current state of the code, it cannot be deployed to Integra
 
 Complete the following tasks to finish Project 14
 
-    Introduce Jenkins agents/slaves - Add 2 more servers to be used as Jenkins slave. Configure Jenkins to run its pipeline jobs randomly on any available slave nodes.
-    Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push.
-    Deploy the application to all the environments
-    Optional - Experience pentesting in pentest environment by configuring Wireshark there and just explore for information sake only. Watch Wireshark Tutorial here
+Introduce Jenkins agents/slaves - Add 2 more servers to be used as Jenkins slave. Configure Jenkins to run its pipeline jobs randomly on any available slave nodes.
+Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push.
+Deploy the application to all the environments
+Optional - Experience pentesting in pentest environment by configuring Wireshark there and just explore for information sake only. Watch Wireshark Tutorial here
 
-    Ansible Role for Wireshark:
-        https://github.com/ymajik/ansible-role-wireshark (Ubuntu)
-        https://github.com/wtanaka/ansible-role-wireshark (RedHat)
+Ansible Role for Wireshark:
+    https://github.com/ymajik/ansible-role-wireshark (Ubuntu)
+    https://github.com/wtanaka/ansible-role-wireshark (RedHat)
 
 Congratulations! You have just experienced one of the most interesting and complex projects in your Project Based Learning journey so far. The vast experience and knowledge you have acquired here will set the stage for the next 6 projects to come. You should be ready to start applying for DevOps jobs after completing Project 20.
