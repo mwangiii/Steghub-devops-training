@@ -85,25 +85,64 @@ Make DNS entries to create a subdomain for each environment. Assuming your main 
 
 You should have a subdomains list like this:
 
-  | Server                 |                    Domain                    |
-  | :--------------------- | :-------------------------------------------:|
-  | Jenkins                |   https://ci.mwangiii.online                 |
-  | Sonarqube              |   https://sonar.mwangiii.online              |
-  | Artifactory            |   https://artifacts.mwangiii.online          |
-  | Production Tooling     |   https://tooling.mwangiii.online            |
-  | Pre-Prod Tooling       |   https://tooling.preprod.mwangiii.online    |
-  | Pentest Tooling        |   https://tooling.pentest.mwangiii.online    |
-  | UAT Tooling            |   https://tooling.uat.mwangiii.online        |
-  | SIT Tooling            |   https://tooling.sit.mwangiii.online        |
-  | Dev Tooling            |   https://tooling.dev.mwangiii.online        |
-  | Production TODO-WebApp |   https://todo.mwangiii.online               |
-  | Pre-Prod TODO-WebApp   |   https://todo.preprod.mwangiii.online       |
-  | Pentest TODO-WebApp    |   https://todo.pentest.mwangiii.online       |
-  | UAT TODO-WebApp        |   https://todo.uat.mwangiii.online           |
-  | SIT TODO-WebApp        |   https://todo.sit.mwangiii.online           |
-  | Dev TODO-WebApp        |   https://todo.dev.mwangiii.online           |
 
-![](assets/dnsRecords.png)  
+   | Server                 |                    Domain                    | Type  |
+   | :--------------------- | :-------------------------------------------:| :----:|
+   | Jenkins                |   https://ci.mwangiii.online                 | A     |
+   | Sonarqube              |   https://sonar.mwangiii.online              | A     |
+   | Artifactory            |   https://artifacts.mwangiii.online          | A     |
+   | Production Tooling     |   https://tooling.mwangiii.online            | A     |
+   | Pre-Prod Tooling       |   https://tooling.preprod.mwangiii.online    | A     |
+   | Pentest Tooling        |   https://tooling.pentest.mwangiii.online    | A     |
+   | UAT Tooling            |   https://tooling.uat.mwangiii.online        | A     |
+   | SIT Tooling            |   https://tooling.sit.mwangiii.online        | A     | 
+   | Dev Tooling            |   https://tooling.dev.mwangiii.online        | A     | 
+   | Production TODO-WebApp |   https://todo.mwangiii.online               | A     | 
+   | Pre-Prod TODO-WebApp   |   https://todo.preprod.mwangiii.online       | A     |
+   | Pentest TODO-WebApp    |   https://todo.pentest.mwangiii.online       | A     | 
+   | UAT TODO-WebApp        |   https://todo.uat.mwangiii.online           | A     | 
+   | SIT TODO-WebApp        |   https://todo.sit.mwangiii.online           | A     | 
+   | Dev TODO-WebApp        |   https://todo.dev.mwangiii.online           | A     | 
+
+
+![](assets/dnsRecords.png.png)  
+
+## Configure NGINX to Manage Subdomains
+### Create NGINX Configuration Files
+For each subdomain, create a configuration file in `/etc/nginx/sites-available`. Here’s a template:
+
+```nginx
+server {
+    listen 80;
+    server_name <subdomain>;
+
+    location / {
+        proxy_pass http://127.0.0.1:<port>; # Replace with the actual backend port
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+- Replace `<subdomain>` with the actual domain (e.g., `ci.mwangiii.online`).  
+- Replace `<port>` with the backend service’s port (e.g., Jenkins: `8080`, SonarQube: `9000`).
+
+### Enable Configuration
+- Symlink each file to `/etc/nginx/sites-enabled`:
+```bash
+sudo ln -s /etc/nginx/sites-available/<subdomain> /etc/nginx/sites-enabled/
+```
+
+### Reload NGINX  
+- Test and reload the configuration:
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+![](assets/sitesEnabled.png)
+
 Ansible Inventory should look like this
 
 ```
@@ -945,7 +984,7 @@ sudo systemctl status sonar
 ```http
 http://server_IP:9000 OR http://localhost:9000
 ```
-but in our case 
+- but in our case since we are using nginx as a reverse proxy
 ```http
 http://sonar.mwangiii.online/
 ```
