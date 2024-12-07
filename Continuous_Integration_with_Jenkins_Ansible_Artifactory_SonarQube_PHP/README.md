@@ -746,6 +746,7 @@ su - postgres
 ```sql
 create user sonar
 ```
+![](assets/)
 - Switch to the PostgreSQL shell
 ```sql
 psql
@@ -895,6 +896,7 @@ INFO  app[][o.s.a.ProcessLauncherImpl] Launch process[[key='ce', ipcIndex=3, log
  INFO  app[][o.s.a.SchedulerImpl] SonarQube is up
 ```
 You can see that SonarQube is up and running
+![](assets/sonarStart.png)
 ### Configure SonarQube to run as a systemd service
 
 - Stop the currently running SonarQube service
@@ -937,11 +939,17 @@ sudo systemctl start sonar
 sudo systemctl enable sonar
 sudo systemctl status sonar
 ```
+![](assets/sonarStatus.png)
 ### Access SonarQube
 - To access SonarQube using browser, type server's IP address followed by port 9000
 ```http
 http://server_IP:9000 OR http://localhost:9000
 ```
+but in our case 
+```http
+http://sonar.mwangiii.online/
+```
+![](assets/sonarLogin.png)
 - Login to SonarQube with default administrator username and password - _admin_
 
 Now, when SonarQube is up and running, it is time to setup our Quality gate in Jenkins.
