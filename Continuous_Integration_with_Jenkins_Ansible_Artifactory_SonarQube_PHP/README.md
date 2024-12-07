@@ -1108,7 +1108,7 @@ Let us update our __Jenkinsfile__ to implement this:
         waitForQualityGate abortPipeline: true
     }
 ```
-    - The complete stage will now look like this:
+- The complete stage will now look like this:
 ```groovy
     stage('SonarQube Quality Gate') {
       when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
