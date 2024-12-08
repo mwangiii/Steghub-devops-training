@@ -1,3 +1,5 @@
+
+![](https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg)
 In this project, we’ll dive into the CI/CD process, focusing on packaging and deploying web applications more efficiently.
 While we previously deployed code directly to `/var/www/html`, we’ll now learn to package code with dependencies.
 We’ll work mainly with PHP, but future tasks will cover Java, Node.js, .NET, and Python, helping us understand CI/CD across various languages.
