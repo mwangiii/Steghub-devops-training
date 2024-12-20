@@ -658,6 +658,7 @@ stage ('Upload Artifact to Artifactory') {
 ```
 ![](assets/artJenkins.png)
 ![](assets/artsArt.png)
+
 5. Deploy the application to the dev environment by launching Ansible pipeline
 ```groovy
 stage ('Deploy to Dev Environment') {
@@ -1003,10 +1004,14 @@ _**Manage Jenkins > Configure System**_
  User > My Account > Security > Generate Tokens
 ```
 - Configure Quality Gate Jenkins Webhook in SonarQube 
-- The URL should point to your Jenkins server _**http://{JENKINS_HOST}/sonarqube-webhook/**_
+- The URL should point to your Jenkins server 
+_**http://{JENKINS_HOST}/sonarqube-webhook/**_
+![](assets/jenkinsWebhook.png)
 ```
   Administration > Configuration > Webhooks > Create
 ```
+![](assets/globalconfig.png)
+![](assets/sonarqubeservers.png)
 ### Update Jenkins Pipeline to include SonarQube scanning and Quality Gate
 Below is the snippet for a **Quality Gate** stage in Jenkinsfile.
 ```groovy
@@ -1041,6 +1046,7 @@ sonar.php.exclusions=**/vendor/**
 sonar.php.coverage.reportPaths=build/logs/clover.xml
 sonar.php.tests.reportPath=build/logs/junit.xml
 ```
+![](assets/sonarconfig.png)
 __**HINT: To know what exactly to put inside the sonar-scanner.properties file, SonarQube has a configurations page where you can get some directions.**__
 
 - A brief explanation of what is going on the the stage - set the environment variable for the scannerHome use the same name used when you configured SonarQube Scanner from Jenkins Global Tool Configuration. If you remember, the name was SonarQubeScanner. Then, within the steps use shell to run the scanner from bin directory.
@@ -1062,19 +1068,23 @@ total 24
 -rwxr-xr-x 1 jenkins jenkins 1823 Oct  2 12:42 sonar-scanner
 drwxr-xr-x 2 jenkins jenkins 4096 Dec 26 18:42 .
 ```
+![](assets/ls-atr.png)
 So far you have been given code snippets on each of the stages within the Jenkinsfile. But, you should also be able to generate Jenkins configuration code yourself.
 - To generate Jenkins code, navigate to the dashboard for the php-todo pipeline and click on the **Pipeline Syntax** menu item
 ```
 Dashboard > php-todo > Pipeline Syntax 
 ```
-- Click on Steps and select **withSonarQubeEnv** - This appears in the list because of the previous SonarQube configurations you have done in Jenkins. Otherwise, it would not be there.
+![](assets/pipelinesyntax.png)
+- Click on Steps and select **withSonarQubeEnv** - This appears in the list because of the previous SonarQube configurations you have done in Jenkins.  
+Otherwise, it would not be there.
 
-Within the generated block, you will use the sh command to run shell on the server. For more advanced usage in other projects, you can add to bookmarks this SonarQube documentation page in your browser.
+Within the generated block, you will use the sh command to run shell on the server.
+For more advanced usage in other projects, you can add to bookmarks this SonarQube documentation page in your browser.
+
 ### End-to-End Pipeline Overview
 - Indeed, this has been one of the longest projects from Project 1, and if everything has worked out for you so far, you should have a view like below:
-
-But we are not completely done yet!
-
+![](assets/sonarQubeStep.png)
+__But we are not completely done yet!__
 - The quality gate we just included has no effect. Why? Well, because if you go to the SonarQube UI, you will realise that we just pushed a poor-quality code onto the development environment.
 - Navigate to php-todo project in SonarQube
 
@@ -1083,6 +1093,7 @@ There are bugs, and there is 0.0% code coverage. (code coverage is a percentage 
 - If you click on php-todo project for further analysis, you will see that there is 6 hours' worth of technical debt, code smells and security issues in the code.
 
 In the development environment, this is acceptable as developers will need to keep iterating over their code towards perfection. But as a DevOps engineer working on the pipeline, we must ensure that the quality gate step causes the pipeline to fail if the conditions for quality are not met.
+
 ### Conditionally deploy to higher environments
 In the real world, developers will work on feature branch in a repository (e.g., GitHub or GitLab). There are other branches that will be used differently to control how software releases are done. You will see such branches as:
   
