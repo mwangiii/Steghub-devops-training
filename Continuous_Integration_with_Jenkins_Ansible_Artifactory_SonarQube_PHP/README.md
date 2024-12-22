@@ -1168,9 +1168,35 @@ ls -ld /opt/build
 curl -sO http://ci.mwangiii.online/jnlpJars/agent.jar
 java -jar agent.jar -url http://ci.mwangiii.online/ -secret 1baf27f4bc933902bc8a0ab2515540983aac7e9dd862e98a58b67a7d6afbbf0b -name "slave-two" -webSocket -workDir "/opt/build/"
 ```
-- Deploy the application to all the environments
 ![](assets/slaveworks.png)
+- Deploy the application to all the environments
+```groovy
+stage ('Deploy to Dev Environment') {
+            agent { label 'slave_one' } // Specify the Jenkins slave to use for deployment
+            steps {
+                build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+            }
+        }
+```
+- Test Environment
+```groovy
+  stage ('Deploy to Test Environment') {
+      agent { label 'slave_two' } // Specify another Jenkins slave for deployment
+      steps {
+          build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'pentest']], propagate: false, wait: true
+      }
+  }
+```
+-Production Environment
+```groovy
+stage ('Deploy to Production Environment') {
+    agent any
+    steps {
+        build job: 'ansible-config-mgt/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'ci']], propagate: false, wait: true
+    }
+}
 
+```
 # CONCLUSION
 This has been the biggest and most intense project I have done so far, but I have learned a lot. Setting up Nginx as a reverse proxy was a crucial first step in ensuring seamless routing of traffic between multiple servers, optimizing performance, and improving security.  
 I then integrated Artifactory for efficient artifact management, enabling secure storage and retrieval of build artifacts, which streamlined our CI/CD pipeline. Finally, implementing SonarQube provided continuous code quality analysis, ensuring that our code met high standards throughout the development process.  
