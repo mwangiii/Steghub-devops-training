@@ -82,8 +82,10 @@ What we want to achieve, is having Nginx to serve as a **reverse proxy** for our
 ### OTHER ENVIRONMENTS FROM LOWER TO HIGHER
 ![](assets/otherEnv.png)
 
+![](https://media1.giphy.com/media/xThtaxLbZOC50oAQ2k/200.webp?cid=790b7611oc1kldq1h3o62d212e9uc0rx1uw4vy3s1ciswegh&ep=v1_gifs_search&rid=200.webp&ct=g)
+
 ## DNS REQUIREMENTS
-Make DNS entries to create a subdomain for each environment. Assuming your main domain is total.com
+Make DNS entries to create a subdomain for each environment. Assuming your main domain is mwangiii.online
 
 You should have a subdomains list like this:
 
@@ -476,7 +478,7 @@ Next, we added another parameter. This time, we introduced tagging in Ansible. W
 ![](assets/buildOcean.png)
 
 
-
+![](https://media1.giphy.com/media/uk6kvZA1hteoQZqGsG/200.webp?cid=ecf05e475vc1e19deln114gc89ugulbci4yn5bpd5njzc53q&ep=v1_gifs_search&rid=200.webp&ct=g)
 ## CI/CD PIPELINE FOR TODO APPLICATION
 We already have tooling website as a part of deployment through Ansible. Here we will introduce another PHP application to add to the list of software products we are managing in our infrastructure. The good thing with this particular application is that it has unit tests, and it is an ideal application to show an end-to-end CI/CD pipeline for a particular application.
 
@@ -577,7 +579,6 @@ pipeline {
     } 
   }
 ```
-
 ### Phase 3 - Code Quality Analysis
 This is one of the areas where developers, architects and many stakeholders are mostly interested in as far as product development is concerned.
 As a DevOps engineer, you also have a role to play. Especially when it comes to setting up the tools.
@@ -673,7 +674,7 @@ But how are we certain that the code being deployed has the quality that meets c
 
 To achieve this, we need to configure SonarQube - An open-source platform developed by SonarSource for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
 
-
+!
 
 ## SONARQUBE INSTALLATION
 Before we start getting hands on with `SonarQube` configuration, it is incredibly important to understand a few concepts:
@@ -716,45 +717,33 @@ sudo apt-get upgrade
 ```bash
 sudo apt-get install wget unzip -y
 ```
-- Install OpenJDK and Java Runtime Environment (JRE) 11
+
+- Install OpenJDK and Java Runtime Environment (JRE) 17  
 ```bash
- sudo apt-get install openjdk-11-jdk -y
- sudo apt-get install openjdk-11-jre -y
+sudo apt-get install openjdk-17-jdk -y
+sudo apt-get install openjdk-17-jre -y
 ```
-- Set default JDK - To set default JDK or switch to OpenJDK enter below command:
+
+- Set default JDK - To set default JDK or switch to OpenJDK, enter the command:  
 ```bash
- sudo update-alternatives --config java
+sudo update-alternatives --config java
 ```
-- If you have multiple versions of Java installed, you should see a list like below:
-```
-Selection    Path                                            Priority   Status
 
-------------------------------------------------------------
-
-  0            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      auto mode
-
-  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      manual mode
-
-  2            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      manual mode
-
-* 3            /usr/lib/jvm/java-8-oracle/jre/bin/java          1081      manual mode
-```
-Type "1" to switch OpenJDK 11
-
-- Verify the set JAVA Version:
+- Verify the set JAVA Version:  
 ```bash
 java -version
 ```
-- Output
+- Output:  
 ```
 java -version
 
-openjdk version "11.0.7" 2020-04-14
+openjdk version "17.0.x" YYYY-MM-DD
 
-OpenJDK Runtime Environment (build 11.0.7+10-post-Ubuntu-3ubuntu1)
+OpenJDK Runtime Environment (build 17.0.x+YY-Ubuntu-Zubuntu1)
 
-OpenJDK 64-Bit Server VM (build 11.0.7+10-post-Ubuntu-3ubuntu1, mixed mode, sharing)
+OpenJDK 64-Bit Server VM (build 17.0.x+YY-Ubuntu-Zubuntu1, mixed mode, sharing)
 ```
+
 ### Install and Setup PostgreSQL 10 Database for SonarQube
 - The command below will add PostgreSQL repo to the repo list:
 ```bash
@@ -814,17 +803,19 @@ grant all privileges on DATABASE sonarqube to sonar;
 exit
 ```
 ### Install SonarQube on Ubuntu 20.04 LTS
-- Navigate to the tmp directory to temporarily download the installation files
+```markdown
+- Navigate to the tmp directory to temporarily download the installation files  
 ```bash
-cd /tmp && sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.9.3.zip
+cd /tmp && sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.1.zip
 ```
-- Unzip the archive setup to /opt directory
+- Unzip the archive setup to the /opt directory  
 ```bash
-sudo unzip sonarqube-7.9.3.zip -d /opt
+sudo unzip sonarqube-9.9.1.zip -d /opt
 ```
-- Move extracted setup to /opt/sonarqube directory
+- Move the extracted setup to the /opt/sonarqube directory  
 ```bash
-sudo mv /opt/sonarqube-7.9.3 /opt/sonarqube
+sudo mv /opt/sonarqube-9.9.1 /opt/sonarqube
+```
 ```
 ### Configure SonarQube
 We cannot run SonarQube as a root user, if you run using root user it will stop automatically. The ideal approach will be to create a separate group and a user to run SonarQube
@@ -901,6 +892,7 @@ RUN_AS_USER=sonar
 ```bash
 sudo su sonar
 ```
+![](assets/sonarStart.png)
 - Move to the script directory
 ```bash
 cd /opt/sonarqube/bin/linux-x86-64/
@@ -919,6 +911,7 @@ Started SonarQube
 ```bash
 ./sonar.sh status
 ```
+![](assets/sonarStatus.png)
 Sample Output below:
 ```
 $./sonar.sh status
@@ -999,6 +992,8 @@ _**Now, when SonarQube is up and running, it is time to setup our Quality gate i
 - In Jenkins, install SonarScanner plugin
 - Navigate to configure system in Jenkins. Add SonarQube server as shown below:
 _**Manage Jenkins > Configure System**_
+![](assets/globalconfig.png)
+![](assets/sonarqubeservers.png)
 - Generate authentication token in SonarQube
 ```
  User > My Account > Security > Generate Tokens
@@ -1006,12 +1001,10 @@ _**Manage Jenkins > Configure System**_
 - Configure Quality Gate Jenkins Webhook in SonarQube 
 - The URL should point to your Jenkins server 
 _**http://{JENKINS_HOST}/sonarqube-webhook/**_
-![](assets/jenkinsWebhook.png)
 ```
   Administration > Configuration > Webhooks > Create
 ```
-![](assets/globalconfig.png)
-![](assets/sonarqubeservers.png)
+![](assets/jenkinsWebhook.png)
 ### Update Jenkins Pipeline to include SonarQube scanning and Quality Gate
 Below is the snippet for a **Quality Gate** stage in Jenkinsfile.
 ```groovy
@@ -1083,11 +1076,12 @@ For more advanced usage in other projects, you can add to bookmarks this SonarQu
 
 ### End-to-End Pipeline Overview
 - Indeed, this has been one of the longest projects from Project 1, and if everything has worked out for you so far, you should have a view like below:
-![](assets/sonarQubeStep.png)
+![](assets/allwork.png)
+![](assets/allworkmain.png)
 __But we are not completely done yet!__
 - The quality gate we just included has no effect. Why? Well, because if you go to the SonarQube UI, you will realise that we just pushed a poor-quality code onto the development environment.
 - Navigate to php-todo project in SonarQube
-
+![](assets/sonarproject.png)
 There are bugs, and there is 0.0% code coverage. (code coverage is a percentage of unit tests added by developers to test functions and objects in the code)
 
 - If you click on php-todo project for further analysis, you will see that there is 6 hours' worth of technical debt, code smells and security issues in the code.
@@ -1140,26 +1134,46 @@ Let us update our __Jenkinsfile__ to implement this:
 To test, create different branches and push to GitHub. You will realise that only branches other than develop, hotfix, release, main, or master will be able to deploy the code.
 
 If everything goes well, you should be able to see something like this:
+![](assets/allwork.png)
+![](assets/allworkmain.png)
+![](assets/testbranch.png)
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG95YjJqY2NrYnFkczBmMW12aW0wNDd2b2N2d2t4NmVyMjg1d3BoYiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7WvAUvZZTRpSuudobh/giphy.webp)
+Notice that with the current state of the code, it cannot be deployed to Integration environments due to its quality.   
+In the real world, DevOps engineers will push this back to developers to work on the code further, based on SonarQube quality report.  
+Once everything is good with code quality, the pipeline will pass and proceed with sipping the codes further to a higher environment.
+Congratulations! You have just experienced one of the most interesting and complex projects in your Project Based Learning journey so far.
+The vast experience and knowledge you have acquired here will set the stage for the next 6 projects to come.
+You should be ready to start applying for DevOps jobs after completing Project 20.
 
-Notice that with the current state of the code, it cannot be deployed to Integration environments due to its quality. In the real world, DevOps engineers will push this back to developers to work on the code further, based on SonarQube quality report. Once everything is good with code quality, the pipeline will pass and proceed with sipping the codes further to a higher environment.
+## Complete the following tasks to finish Project 14
+- Introduce Jenkins agents/slaves - Add 2 more servers to be used as Jenkins slave.
+![](assets/slaveservers.png)
+ - Configure Jenkins to run its pipeline jobs randomly on any available slave nodes.
+![](assets/slavenodeOne.png)
+![](assets/createSlaveTwo.png)
+- install java 
+```bash
+  sudo apt update
+  sudo apt install default-jdk
+```
+- Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push.
+![](assets/slaveone.png)
+- Use either options. In this case, I use the first option
+- before running please check yor public ip addres of your jenkin is same as the if not go to 
+`Dashboard > manage Jenkin > systmem and update current IP`
+```bash
+sudo mkdir -p /opt/build
+sudo chown -R njekev65:njekev65 /opt/build
+sudo chmod -R 755 /opt/build
+ls -ld /opt/build
+```
+- run
+```bash
+curl -sO http://ci.mwangiii.online/jnlpJars/agent.jar
+java -jar agent.jar -url http://ci.mwangiii.online/ -secret 1baf27f4bc933902bc8a0ab2515540983aac7e9dd862e98a58b67a7d6afbbf0b -name "slave-two" -webSocket -workDir "/opt/build/"
+```
+- Deploy the application to all the environments
+![](assets/slaveworks.png)
 
-
-
-
-
-
-
-
-
-Complete the following tasks to finish Project 14
-
-Introduce Jenkins agents/slaves - Add 2 more servers to be used as Jenkins slave. Configure Jenkins to run its pipeline jobs randomly on any available slave nodes.
-Configure webhook between Jenkins and GitHub to automatically run the pipeline when there is a code push.
-Deploy the application to all the environments
-Optional - Experience pentesting in pentest environment by configuring Wireshark there and just explore for information sake only. Watch Wireshark Tutorial here
-
-Ansible Role for Wireshark:
-    https://github.com/ymajik/ansible-role-wireshark (Ubuntu)
-    https://github.com/wtanaka/ansible-role-wireshark (RedHat)
-
-Congratulations! You have just experienced one of the most interesting and complex projects in your Project Based Learning journey so far. The vast experience and knowledge you have acquired here will set the stage for the next 6 projects to come. You should be ready to start applying for DevOps jobs after completing Project 20.
+# CONCLUSION
+This has been the biggest and most intense project I have done so far, but I have learned a lot. Setting up Nginx as a reverse proxy was a crucial first step in ensuring seamless routing of traffic between multiple servers, optimizing performance, and improving security. I then integrated Artifactory for efficient artifact management, enabling secure storage and retrieval of build artifacts, which streamlined our CI/CD pipeline. Finally, implementing SonarQube provided continuous code quality analysis, ensuring that our code met high standards throughout the development process. This project has enhanced my understanding of infrastructure management and DevOps best practices.
