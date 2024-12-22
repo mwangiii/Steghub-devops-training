@@ -1,5 +1,3 @@
-
-<!-- ![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUx08RYYFIya79TX7js7AgoeewkB2atkyIrmbEPXwcVc3MqSr8bms5_AXyB8ODT4_vEXg&usqp=CAU) -->
 In this project, we’ll dive into the CI/CD process, focusing on packaging and deploying web applications more efficiently.
 While we previously deployed code directly to `/var/www/html`, we’ll now learn to package code with dependencies.
 We’ll work mainly with PHP, but future tasks will cover Java, Node.js, .NET, and Python, helping us understand CI/CD across various languages.
@@ -1135,15 +1133,13 @@ To test, create different branches and push to GitHub. You will realise that onl
 
 If everything goes well, you should be able to see something like this:
 ![](assets/allwork.png)
-![](assets/allworkmain.png)
-![](assets/testbranch.png)
-![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG95YjJqY2NrYnFkczBmMW12aW0wNDd2b2N2d2t4NmVyMjg1d3BoYiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7WvAUvZZTRpSuudobh/giphy.webp)
+<!-- ![](assets/allworkmain.png)
+![](assets/testbranch.png) -->
+![](https://media0.giphy.com/media/l0K4o1Ar7VyvO7zmo/200.webp?cid=790b7611yzhodj4cylrq5ga193q3rp8w9p1pa6j0b6sueu9d&ep=v1_gifs_search&rid=200.webp&ct=g)  
 Notice that with the current state of the code, it cannot be deployed to Integration environments due to its quality.   
+![](assets/bugs.png)
 In the real world, DevOps engineers will push this back to developers to work on the code further, based on SonarQube quality report.  
 Once everything is good with code quality, the pipeline will pass and proceed with sipping the codes further to a higher environment.
-Congratulations! You have just experienced one of the most interesting and complex projects in your Project Based Learning journey so far.
-The vast experience and knowledge you have acquired here will set the stage for the next 6 projects to come.
-You should be ready to start applying for DevOps jobs after completing Project 20.
 
 ## Complete the following tasks to finish Project 14
 - Introduce Jenkins agents/slaves - Add 2 more servers to be used as Jenkins slave.
@@ -1176,4 +1172,7 @@ java -jar agent.jar -url http://ci.mwangiii.online/ -secret 1baf27f4bc933902bc8a
 ![](assets/slaveworks.png)
 
 # CONCLUSION
-This has been the biggest and most intense project I have done so far, but I have learned a lot. Setting up Nginx as a reverse proxy was a crucial first step in ensuring seamless routing of traffic between multiple servers, optimizing performance, and improving security. I then integrated Artifactory for efficient artifact management, enabling secure storage and retrieval of build artifacts, which streamlined our CI/CD pipeline. Finally, implementing SonarQube provided continuous code quality analysis, ensuring that our code met high standards throughout the development process. This project has enhanced my understanding of infrastructure management and DevOps best practices.
+This has been the biggest and most intense project I have done so far, but I have learned a lot. Setting up Nginx as a reverse proxy was a crucial first step in ensuring seamless routing of traffic between multiple servers, optimizing performance, and improving security.  
+I then integrated Artifactory for efficient artifact management, enabling secure storage and retrieval of build artifacts, which streamlined our CI/CD pipeline. Finally, implementing SonarQube provided continuous code quality analysis, ensuring that our code met high standards throughout the development process.  
+This project has enhanced my understanding of infrastructure management and DevOps best practices.
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGNtdWdoZ2RhdWdzZWtpbG05NnFpYmZuejY4YmZza3lwdno4enJkZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZbDRV6hQKvttVZQoQe/200.webp)
