@@ -1187,7 +1187,8 @@ stage ('Deploy to Dev Environment') {
       }
   }
 ```
--Production Environment
+
+-  Production Environment
 ```groovy
 stage ('Deploy to Production Environment') {
     agent any
