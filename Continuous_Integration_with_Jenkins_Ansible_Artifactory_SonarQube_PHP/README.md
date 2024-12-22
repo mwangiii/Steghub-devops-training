@@ -1037,7 +1037,7 @@ sonar.php.exclusions=**/vendor/**
 sonar.php.coverage.reportPaths=build/logs/clover.xml
 sonar.php.tests.reportPath=build/logs/junit.xml
 ```
-![](assets/sonarconfig.png)
+![](assets/sonarconfig.png)  
 __**HINT: To know what exactly to put inside the sonar-scanner.properties file, SonarQube has a configurations page where you can get some directions.**__
 
 - A brief explanation of what is going on the the stage - set the environment variable for the scannerHome use the same name used when you configured SonarQube Scanner from Jenkins Global Tool Configuration. If you remember, the name was SonarQubeScanner. Then, within the steps use shell to run the scanner from bin directory.
