@@ -909,7 +909,7 @@ Started SonarQube
 ```bash
 ./sonar.sh status
 ```
-![](assets/sonarStatus.png)
+![](assets/sonarStatus.png)  
 Sample Output below:
 ```
 $./sonar.sh status
