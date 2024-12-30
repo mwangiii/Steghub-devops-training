@@ -17,8 +17,8 @@ Here are few requirements that must be met before you begin:
     - Within the Root account, create an AWS Organization Unit (OU). Name it Dev. (We will launch Dev resources in there)
     - Move the DevOps account into the Dev OU.
     - Login to the newly created AWS account using the new email address.
-    Create a free domain name for your fictitious company at Freenom domain registrar here.
-    Create a hosted zone in AWS, and map it to your free domain from Freenom. Watch how to do that here
+2. Create a free domain name for your fictitious company at Freenom domain registrar here.
+3. Create a hosted zone in AWS, and map it to your free domain from Freenom. Watch how to do that here
 
 **NOTE** : _As you proceed with the configuration, ensure that all resources are appropriately tagged,_
 - for example:
