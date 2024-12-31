@@ -13,9 +13,13 @@ Cost, Security, and Scalability are the major requirements for this project. Hen
 Here are few requirements that must be met before you begin:
 1. Properly configure your AWS account and Organization Unit Watch How To Do This Here
     - Create an AWS Master account. (Also known as Root Account)
-    - Within the Root account, create a sub-account and name it DevOps. (You will need another email address to complete this)
-    - Within the Root account, create an AWS Organization Unit (OU). Name it Dev. (We will launch Dev resources in there)
-    - Move the DevOps account into the Dev OU.
+    ![](assests/awsOrg.png)
+    - Within the Root account, create a sub-account and name it `DevOps`. (You will need another email address to complete this)
+    ![](assests/devopsCreated.png)
+    - Within the Root account, create an AWS Organization Unit (OU). Name it `Dev`. (We will launch Dev resources in there)
+    ![](assests/orgunit.png)
+    - Move the DevOps account into the **Dev OU**.
+    ![](assests/mvDevOps.png)
     - Login to the newly created AWS account using the new email address.
 2. Create a free domain name for your fictitious company at Freenom domain registrar here.
 3. Create a hosted zone in AWS, and map it to your free domain from Freenom. Watch how to do that here
