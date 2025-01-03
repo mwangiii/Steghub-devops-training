@@ -21,8 +21,9 @@ Here are few requirements that must be met before you begin:
     - Move the DevOps account into the **Dev OU**.
     ![](assests/mvDevOps.png)
     - Login to the newly created AWS account using the new email address.
-2. Create a free domain name for your fictitious company at `Freenom` domain registrar [here](https://www.freenom.com/en/index.html?lang=en.),
- but since we already have a domain `mwangiii.online` from the previous project, we shall skip this step.
+2. Create a free domain name for your fictitious company at `Freenom` domain registrar [here](https://www.freenom.com/en/index.html?lang=en.)
+
+ **Note**:_Since we already have a domain `mwangiii.online` from the previous project, we shall skip this step._
 3. Create a hosted zone in AWS, and map it to your free domain from Freenom.
 Watch how to do that [here](https://www.youtube.com/watch?v=IjcHp94Hq8A&feature=youtu.be)
 ![](assests/route53.png)  
