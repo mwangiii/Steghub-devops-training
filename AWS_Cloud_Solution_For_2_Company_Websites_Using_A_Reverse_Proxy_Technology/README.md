@@ -246,3 +246,4 @@ Create other records such as **CNAME**, **alias** and **A records**.
 
 Ec2 instance 
 vpc subents 
+EFS
