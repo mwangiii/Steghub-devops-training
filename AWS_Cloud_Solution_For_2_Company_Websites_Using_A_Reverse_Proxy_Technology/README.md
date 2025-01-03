@@ -21,18 +21,25 @@ Here are few requirements that must be met before you begin:
     - Move the DevOps account into the **Dev OU**.
     ![](assests/mvDevOps.png)
     - Login to the newly created AWS account using the new email address.
-2. Create a free domain name for your fictitious company at Freenom domain registrar here.
-3. Create a hosted zone in AWS, and map it to your free domain from Freenom. Watch how to do that here
-
+2. Create a free domain name for your fictitious company at `Freenom` domain registrar [here](https://www.freenom.com/en/index.html?lang=en.),
+ but since we already have a domain `mwangiii.online` from the previous project, we shall skip this step.
+3. Create a hosted zone in AWS, and map it to your free domain from Freenom.
+Watch how to do that [here](https://www.youtube.com/watch?v=IjcHp94Hq8A&feature=youtu.be)
+![](assests/route53.png)  
+![](assests/hostedzone.png)
+![](assests/hostcreated.png)
+- Let's map the hosted zone to our free domain
+- Copy the name server (NS) values from AWS, then go to your free domain, edit the default NS values and update them with the values from AWS.
+![](assests/hostedDets.png)
+![](assests/dnsupdate.png)
 **NOTE** : _As you proceed with the configuration, ensure that all resources are appropriately tagged,_
 - for example:
-    - **Project:** <Give your project a name>
-    - **Environment**: <dev>
-    - **Automated**: <No> (If you create a recource using an automation tool, it would be <Yes>)
+    - **Project:** `Project-15`
+    - **Environment**: `dev`
+    - **Automated**: `No` (If you create a recource using an automation tool, it would be <Yes>)
 
 
 
-Set Up a Virtual Private Network (VPC)
 ### SET UP A VIRTUAL PRIVATE NETWORK(VPC)
 Always make reference to the architectural diagram and ensure that your configuration is aligned with it.
 1. Create a VPC
@@ -236,3 +243,5 @@ Create other records such as **CNAME**, **alias** and **A records**.
   - Create an alias record for the root domain and direct its traffic to the ALB DNS name.
   - Create an alias record for tooling.<yourdomain>.com and direct its traffic to the ALB DNS name.
 
+Ec2 instance 
+vpc subents 
