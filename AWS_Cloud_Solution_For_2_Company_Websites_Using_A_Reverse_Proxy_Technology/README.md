@@ -185,7 +185,7 @@ Now, you will need to create 2 separate launch templates for both the WordPress 
 3. Assign appropriate security group
 4. Configure Userdata to update yum package repository and install wordpress (Only required on the WordPress launch template)
 
-### TLS CERTIFICATES FROM AMAZON CERTIFICATE MANAGER(ACM)
+#### TLS CERTIFICATES FROM AMAZON CERTIFICATE MANAGER(ACM)
 You will need TLS certificates to handle secured connectivity to your Application Load Balancers (ALB).
 1. Navigate to AWS ACM
 2. Request a public wildcard certificate for the domain name you registered in Freenom
@@ -200,13 +200,17 @@ You will need TLS certificates to handle secured connectivity to your Applicatio
 #### APPLICATION LOAD BALANCER TO ROUTE TRAFFIC TO NGINX
 Nginx EC2 Instances will have configurations that accepts incoming traffic only from Load Balancers. No request should go directly to Nginx servers. With this kind of setup, we will benefit from intelligent routing of requests from the ALB to Nginx servers across the 2 Availability Zones.  
 We will also be able to offload SSL/TLS certificates on the ALB instead of Nginx. Therefore, Nginx will be able to perform faster since it will not require extra compute resources to valifate certificates for every request.
+
+![](assests/pageOneLb.png)
   1. Create an Internet facing ALB
   2. Ensure that it listens on HTTPS protocol (TCP port 443)
+  ![](assests/pageThreeLb.png)
   3. Ensure the ALB is created within the appropriate VPC | AZ | Subnets
   4. Choose the Certificate from ACM
+![](assests/pageFourLb.png)
   5. Select Security Group
   6. Select Nginx Instances as the target group
-
+![](assests/pageTwoLb.png)
 #### APPLICATION LOAD BALANCER TO ROUTE TRAFFIC TO WEB SERVERS
 Since the webservers are configured for auto-scaling, there is going to be a problem if servers get dynamically scalled out or in. Nginx will not know about the new IP addresses, or the ones that get removed. Hence, Nginx will not know where to direct the traffic.
 
@@ -219,7 +223,9 @@ To solve this problem, we must use a load balancer. But this time, it will be an
   5. Select Security Group
   6. Select webserver Instances as the target group
   7. Ensure that health check passes for the target group
-
+![](assests/internalLbOne.png)
+![](assests/internalLbTwo.png)
+![](assests/internalLbThree.png)
 **NOTE:** _This process must be repeated for both WordPress and Tooling websites._
 
 ### SETUP EFS
@@ -228,7 +234,7 @@ Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully manag
   2. Create an EFS mount target per AZ in the VPC, associate it with both subnets dedicated for data layer
   3. Associate the Security groups created earlier for data layer.
   4. Create an EFS access point. (Give it a name and leave all other settings as default)
-
+![](assests/EFS.png)
 ### SETUP RDS
 Pre-requisite: Create a KMS key from Key Management Service (KMS) to be used to encrypt the database instance.
 
