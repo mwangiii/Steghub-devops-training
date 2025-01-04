@@ -70,6 +70,7 @@ Always make reference to the architectural diagram and ensure that your configur
     ![](assests/webserversSG.png)
     - **Data Layer:** Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File System (EFS) must be carefully desinged - only webservers should be able to connect to RDS, while Nginx and Webservers will have access to EFS Mountpoint.
     ![](assests/dataLayer.png)
+
 ### PROCEED WITH COMPUTE RESOURCES
 You will need to set up and configure compute resources inside your VPC. The recources related to compute are:
   - EC2 Instances
@@ -92,6 +93,7 @@ You will need to set up and configure compute resources inside your VPC. The rec
     - epel-release
     - htop
 3. Create an AMI out of the EC2 instance
+![](assests/nginxImage.png)
 
 #### PREPARE LAUNCH TEMPLATE FRO NGINX(ONE PER SUBNET)
 1. Make use of the AMI to set up a launch template
@@ -176,7 +178,7 @@ Now, you will need to create 2 separate launch templates for both the WordPress 
       - htop
       - php
 3. Create an AMI out of the EC2 instance
-
+![](assests/WebserverImage.png)
 #### PREPARE LAUNCH TEMPLATE FOR WEBSERVERS(ONE PER SUBNET)
 1. Make use of the AMI to set up a launch template
 2. Ensure the Instances are launched into a public subnet
@@ -189,8 +191,9 @@ You will need TLS certificates to handle secured connectivity to your Applicatio
 2. Request a public wildcard certificate for the domain name you registered in Freenom
 3. Use DNS to validate the domain name
 4. Tag the resource
-
-
+![](assests/ACM.png)
+![](assests/cnameRoute.png)
+![](assests/ACMActive.png)
 
 
 ### CONFIGURE APPLICATION LOAD BALANCER (ALB)
