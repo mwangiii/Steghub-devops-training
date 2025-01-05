@@ -56,26 +56,18 @@ Best practices
 - Ensure that every resource is tagged using multiple key-value pairs. You will see this in action as we go along.
 - Try to write reusable code, avoid hard coding values wherever possible. (For learning purpose, we will start by hard coding, but gradually refactor our work to follow best practices).
 
-
----
-
-
-VPC | Subnets | Security Groups
-Let us create a directory structure
-
+## VPC | SUBNETS | SECURITY GROUPS
+### LET US CREATE A DIRECTORY STRUCTURE
 Open your Visual Studio Code and:
+- Create a folder called PBL
+- Create a file in the folder, name it main.tf
 
-    Create a folder called PBL
-    Create a file in the folder, name it main.tf
-
-Provider and VPC resource section
-
+### PROVIDER AND VPC RESOURCE SECTION
 Set up Terraform CLI as per this instruction.
-
-    Add AWS as a provider, and a resource to create a VPC in the main.tf file.
-    Provider block informs Terraform that we intend to build infrastructure within AWS.
-    Resource block will create a VPC.
-
+- Add AWS as a provider, and a resource to create a VPC in the main.tf file.
+- Provider block informs Terraform that we intend to build infrastructure within AWS.
+- Resource block will create a VPC.
+```terraform  
 provider "aws" {
   region = "eu-central-1"
 }
@@ -88,37 +80,34 @@ resource "aws_vpc" "main" {
   enable_classiclink             = "false"
   enable_classiclink_dns_support = "false"
 }
+```
+**Note:**_You can change the configuration above to create your VPC in other region that is closer to you. The same applies to all configuration snippets that will follow._
+- The next thing we need to do, is to download necessary plugins for Terraform to work. These plugins are used by providers and provisioners. At this stage, we only have _provider_ in our _main.tf_ file. So, Terraform will just download plugin for AWS provider.
+- Lets accomplish this with terraform init command as seen in the below demonstration.
 
-Note: You can change the configuration above to create your VPC in other region that is closer to you. The same applies to all configuration snippets that will follow.
+**Observations:**
+- Notice that a new directory has been created: .terraform\.... This is where Terraform keeps plugins.
+-  Generally, it is safe to delete this folder. It just means that you must execute _terraform init_ again, to download them.
 
-    The next thing we need to do, is to download necessary plugins for Terraform to work. These plugins are used by providers and provisioners. At this stage, we only have provider in our main.tf file. So, Terraform will just download plugin for AWS provider.
-    Lets accomplish this with terraform init command as seen in the below demonstration.
+Moving on, let us create the only resource we just defined. _aws vpc_. But before we do that, we should check to see what terraform intends to create before we tell it to go ahead and create it.
+- Run _terraform_ plan
+- Then, if you are happy with changes planned, execute terraform apply
 
-Observations:
-
-    Notice that a new directory has been created: .terraform\.... This is where Terraform keeps plugins. Generally, it is safe to delete this folder. It just means that you must execute terraform init again, to download them.
-
-Moving on, let us create the only resource we just defined. aws_vpc. But before we do that, we should check to see what terraform intends to create before we tell it to go ahead and create it.
-
-    Run terraform plan
-    Then, if you are happy with changes planned, execute terraform apply
-
-Observations:
-
-    A new file is created terraform.tfstate This is how Terraform keeps itself up to date with the exact state of the infrastructure. It reads this file to know what already exists, what should be added, or destroyed based on the entire terraform code that is being developed.
-    If you also observed closely, you would realise that another file gets created during planning and apply. But this file gets deleted immediately. terraform.tfstate.lock.info This is what Terraform uses to track, who is running its code against the infrastructure at any point in time. This is very important for teams working on the same Terraform repository at the same time. The lock prevents a user from executing Terraform configuration against the same infrastructure when another user is doing the same - it allows to avoid duplicates and conflicts.
+**Observations:**
+1. A new file is created terraform.tfstate This is how Terraform keeps itself up to date with the exact state of the infrastructure. It reads this file to know what already exists, what should be added, or destroyed based on the entire terraform code that is being developed.
+2. If you also observed closely, you would realise that another file gets created during planning and apply. But this file gets deleted immediately. terraform.tfstate.lock.info This is what Terraform uses to track, who is running its code against the infrastructure at any point in time. This is very important for teams working on the same Terraform repository at the same time. The lock prevents a user from executing Terraform configuration against the same infrastructure when another user is doing the same - it allows to avoid duplicates and conflicts.
 
 Its content is usually like this. (We will discuss more about this later)
-
-    {
-        "ID":"e5e5ad0e-9cc5-7af1-3547-77bb3ee0958b",
-        "Operation":"OperationTypePlan","Info":"",
-        "Who":"dare@Dare","Version":"0.13.4",
-        "Created":"2020-10-28T19:19:28.261312Z",
-        "Path":"terraform.tfstate"
-    }
-
-It is a json format file that stores information about a user: user's ID, what operation he/she is doing, timestamp, and location of the state file.
+```json
+  {
+      "ID":"e5e5ad0e-9cc5-7af1-3547-77bb3ee0958b",
+      "Operation":"OperationTypePlan","Info":"",
+      "Who":"dare@Dare","Version":"0.13.4",
+      "Created":"2020-10-28T19:19:28.261312Z",
+      "Path":"terraform.tfstate"
+  }
+```
+It is a _json_ format file that stores information about a user: user's ID, what operation he/she is doing, timestamp, and location of the _state_ file.
 
 
 Subnets resource section
