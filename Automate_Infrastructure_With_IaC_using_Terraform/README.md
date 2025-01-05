@@ -8,7 +8,7 @@ Let us start building the same set up with the power of Infrastructure as Code (
 - Copy the secret access key and access key ID. Save them in a notepad temporarily.
 - Configure programmatic access from your workstation to connect to AWS using the access keys copied above and a Python SDK (boto3). You must have Python 3.6 or higher on your workstation.
 
-If you are on Windows, use _gitbash_, if you are on a Mac, you can simply open a _terminal_. 
+If you are on Windows, use _gitbash_, if you are on a Mac, you can simply open a _terminal_.  
 Read [here](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html) to configure the Python SDK properly.
 
 For easier authentication configuration - use AWS CLI with _aws configure_ command.
