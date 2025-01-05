@@ -1,73 +1,63 @@
-Automate Infrastructure With IaC using Terraform- 101
-DevOps/Cloud Engineering Automate Infrastructure With IaC using Terraform- 101
-Complete
-
+# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM PART ONE
 After you have built AWS infrastructure for 2 websites manually, it is time to automate the process using Terraform.
-
 Let us start building the same set up with the power of Infrastructure as Code (IaC)
-Instructions On How To Submit Your Work For Review And Feedback
 
-To submit your work for review and feedback - follow this instruction.
-Prerequisites before you begin writing Terraform code
+### PREREQUISITES BEFORE YOU BEGIN WRITING TERRAFORM CODE
+- You must have completed Terraform course from the Learning dashboard
+- Create an IAM user, name it terraform (ensure that the user has only programatic access to your AWS account) and grant this user AdministratorAccess permissions.
+- Copy the secret access key and access key ID. Save them in a notepad temporarily.
+- Configure programmatic access from your workstation to connect to AWS using the access keys copied above and a Python SDK (boto3). You must have Python 3.6 or higher on your workstation.
 
-    You must have completed Terraform course from the Learning dashboard
-    Create an IAM user, name it terraform (ensure that the user has only programatic access to your AWS account) and grant this user AdministratorAccess permissions.
-    Copy the secret access key and access key ID. Save them in a notepad temporarily.
-    Configure programmatic access from your workstation to connect to AWS using the access keys copied above and a Python SDK (boto3). You must have Python 3.6 or higher on your workstation.
+If you are on Windows, use _gitbash_, if you are on a Mac, you can simply open a _terminal_. 
+Read [here](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html) to configure the Python SDK properly.
 
-If you are on Windows, use gitbash, if you are on a Mac, you can simply open a terminal. Read here to configure the Python SDK properly.
+For easier authentication configuration - use AWS CLI with _aws configure_ command.
+- Create an S3 bucket to store Terraform state file. You can name it something like <yourname>-dev-terraform-bucket (Note: S3 bucket names must be unique unique within a region partition, you can read about S3 bucken naming in this article). We will use this bucket from Project-17 onwards.
 
-For easier authentication configuration - use AWS CLI with aws configure command.
-
-    Create an S3 bucket to store Terraform state file. You can name it something like <yourname>-dev-terraform-bucket (Note: S3 bucket names must be unique unique within a region partition, you can read about S3 bucken naming in this article). We will use this bucket from Project-17 onwards.
-
-When you have configured authentication and installed boto3, make sure you can programmatically access your AWS account by running following commands in >python:
-
+When you have configured authentication and installed boto3, make sure you can programmatically access your AWS account by running following commands in _>python_:
+```python
 import boto3
 s3 = boto3.resource('s3')
 for bucket in s3.buckets.all():
     print(bucket.name)
+```
+You shall see your previously created S3 bucket name - _yourname_-dev-terraform-bucket
 
-You shall see your previously created S3 bucket name - <yourname>-dev-terraform-bucket
-The secrets of writing quality Terraform code
-
+### THE SECRETS OF WRITING QUALITY TERRAFORM CODE
 The secret recipe of a successful Terraform projects consists of:
-
-    Your understanding of your goal (desired AWS infrastructure end state)
-    Your knowledge of the IaC technology used (in this case - Terraform)
-    Your ability to effectively use up to date Terraform documentation here
+- Your understanding of your goal (desired AWS infrastructure end state)
+- Your knowledge of the IaC technology used (in this case - Terraform)
+- Your ability to effectively use up to date Terraform documentation here
 
 As you go along completing this project, you will get familiar with Terraform-specific terminology, such as:
-
-    Attribute
-    Resource
-    Interpolations
-    Argument
-    Providers
-    Provisioners
-    Input Variables
-    Output Variables
-    Module
-    Data Source
-    Local Values
-    Backend
+  - Attribute
+  - Resource
+  - Interpolations
+  - Argument
+  - Providers
+  - Provisioners
+  - Input Variables
+  - Output Variables
+  - Module
+  - Data Source
+  - Local Values
+  - Backend
 
 Make sure you understand them and know when to use each of them.
 
-Another concept you must know is data type. This is a general programing concept, it refers to how data represented in a programming language and defines how a compiler or interpreter can use the data. Common data types are:
-
-    Integer
-    Float
-    String
-    Boolean, etc.
+Another concept you must know is _data type_.   
+This is a general programing concept, it refers to how data represented in a programming language and defines how a compiler or interpreter can use the data. Common data types are:
+  - Integer
+  - Float
+  - String
+  - Boolean, etc.
 
 Best practices
-
-    Ensure that every resource is tagged using multiple key-value pairs. You will see this in action as we go along.
-    Try to write reusable code, avoid hard coding values wherever possible. (For learning purpose, we will start by hard coding, but gradually refactor our work to follow best practices).
-
+- Ensure that every resource is tagged using multiple key-value pairs. You will see this in action as we go along.
+- Try to write reusable code, avoid hard coding values wherever possible. (For learning purpose, we will start by hard coding, but gradually refactor our work to follow best practices).
 
 
+---
 
 
 VPC | Subnets | Security Groups
