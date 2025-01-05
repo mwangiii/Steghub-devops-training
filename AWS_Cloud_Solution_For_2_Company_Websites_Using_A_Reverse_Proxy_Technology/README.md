@@ -265,7 +265,7 @@ To ensure that yout databases are highly available and also have failover suppor
 Now let us access our tooling website via a browser using our DNS name
 ![](assests/php.jpg)
 ![](assests/tooling-admin.jpg)
-**NOTE:** _You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is a faster to resolve DNS record, and can coexist with other records on that name. Read here to get to know more about the differences._
+**NOTE:** _You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is a faster to resolve DNS record, and can coexist with other records on that name._
 
 
 # CONCLUSION
