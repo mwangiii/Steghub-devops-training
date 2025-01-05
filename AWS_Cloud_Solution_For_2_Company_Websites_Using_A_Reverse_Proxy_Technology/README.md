@@ -265,7 +265,10 @@ Now let us access our tooling website via a browser using our DNS name
 ![](assests/php.jpg)
 ![](assests/tooling-admin.jpg)
 **NOTE:** _You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is a faster to resolve DNS record, and can coexist with other records on that name. Read here to get to know more about the differences._
- 
-Ec2 instance 
-vpc subents 
-EFS
+
+
+# CONCLUSION
+This project deepened my understanding of designing and implementing scalable, secure, and cost-efficient cloud solutions on AWS. I successfully built a resilient infrastructure using AWS VPC, subnets, and advanced services like RDS, EFS, and ACM for enhanced functionality. 
+By employing reverse proxy technology with NGINX, I ensured optimized traffic management and improved website performance. The implementation of Application and Internal Load Balancers demonstrated the power of automated scalability and secure connectivity. Creating custom configurations for WordPress and Tooling websites showcased the importance of tailored infrastructure for diverse application needs. 
+
+
