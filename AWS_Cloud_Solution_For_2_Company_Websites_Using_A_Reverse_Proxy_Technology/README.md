@@ -261,16 +261,11 @@ To ensure that yout databases are highly available and also have failover suppor
 **Note:** _This service is an expensinve one. Ensure to review the monthly cost before creating. (DO NOT LEAVE ANY SERVICE RUNNING FOR LONG)_
 
 #### CONFIGURING DNS WITH ROUTE53
-Earlier in this project you registered a free domain with Freenom and configured a hosted zone in Route53. But that is not all that needs to be done as far as DNS configuration is concerned.
-
-You need to ensure that the main domain for the WordPress website can be reached, and the subdomain for Tooling website can also be reached using a browser.
-
-Create other records such as **CNAME**, **alias** and **A records**.
-
+Now let us access our tooling website via a browser using our DNS name
+![](assests/php.jpg)
+![](assests/tooling-admin.jpg)
 **NOTE:** _You can use either CNAME or alias records to achieve the same thing. But alias record has better functionality because it is a faster to resolve DNS record, and can coexist with other records on that name. Read here to get to know more about the differences._
-  - Create an alias record for the root domain and direct its traffic to the ALB DNS name.
-  - Create an alias record for tooling.<yourdomain>.com and direct its traffic to the ALB DNS name.
-
+ 
 Ec2 instance 
 vpc subents 
 EFS
