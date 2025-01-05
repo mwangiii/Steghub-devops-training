@@ -1,4 +1,5 @@
 # AWS CLOUD SOLUTION FOR TWO COMPANY WEBSITE USING A REVERSE PROXY TECHNOLOGY
+![](assests/image-96-1024x955.png)
 ## LETS US GET STARTED
 In previous projects you used basic _Infrastructure as a Service_ (IaaS) offerings from AWS such as _EC2 (Elastic Compute Cloud)_ as rented Virtual Machines and _EBS (Elastic Block Store)_, you have also learned how to configure Key pairs and basic Security Groups.
 
