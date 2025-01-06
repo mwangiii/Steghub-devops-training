@@ -6,38 +6,38 @@
    - Create an IAM user named `terraform` with programmatic access.
      
      Output 1:
-     ![IAM](./images/create-iam-01.PNG)
+     ![IAM](assets/create-iam-01.PNG)
 
      Output 2:
-     ![IAM](./images/create-iam-02.PNG)
+     ![IAM](assets/create-iam-02.PNG)
 
-     Output 3:
-     ![IAM](./images/create-iam-03.PNG)
+     Output 3:  
+     ![IAM](assets/create-iam-03.PNG)
 
    - Assign AdministratorAccess permissions.
      
      Output 1:
-     ![IAM](./images/create-iam-04.PNG)
+     ![IAM](assets/create-iam-04.PNG)
 
      Output 2:
-     ![IAM](./images/create-iam-05.PNG)
+     ![IAM](assets/create-iam-05.PNG)
 
      Output 3:
-     ![IAM](./images/create-iam-06.PNG)
+     ![IAM](assets/create-iam-06.PNG)
 
    - Create, Copy and Save the `secret access-key` and `access-key ID`.
      
      Output 1:
-     ![KEY](./images/create-access-key-1.PNG)
+     ![KEY](assets/create-access-key-1.PNG)
 
      Output 2:
-     ![KEY](./images/create-access-key-2.PNG)
+     ![KEY](assets/create-access-key-2.PNG)
 
      Output 3:
-     ![KEY](./images/create-access-key-3.PNG)
+     ![KEY](assets/create-access-key-3.PNG)
 
      Output 4:
-     ![KEY](./images/create-access-key-4.PNG)
+     ![KEY](assets/create-access-key-4.PNG)
 
 2. **Configure AWS CLI**
    - Use the AWS CLI to configure access with the keys:
@@ -64,18 +64,14 @@
 
 3. **Create an S3 Bucket**
    - Create an S3 bucket (e.g., `<yourname>-dev-terraform-bucket`) to store the Terraform state file.
-     
-     Output 1:
-     ![S3](./images/create-s3-bucket-1.PNG)
-
-     Output 2:
-     ![S3](./images/create-s3-bucket-2.PNG)
-
-     Output 3:
-     ![S3](./images/create-s3-bucket-3.PNG)
-
-     Output 4:
-     ![S3](./images/create-s3-bucket-4.PNG)
+     - Output 1:
+     ![S3](assets/create-s3-bucket-1.PNG)  
+     - Output 2:  
+     ![S3](assets/create-s3-bucket-2.PNG)  
+     - Output 3:  
+     ![S3](assets/create-s3-bucket-3.PNG)  
+     - Output 4:  
+     ![S3](assets/create-s3-bucket-4.PNG)  
 
 
 4. **Test Programmatic Access**
@@ -86,7 +82,7 @@
      ```
 
      Output 1:
-     ![Boto3](./images/install-boto3.PNG)
+     <!-- ![Boto3](assets/install-boto3.PNG) -->
 
      > Note: Python 3.7 or higher should have been installed.
 
@@ -97,7 +93,7 @@
          print(bucket.name)
      ```
      Output 2:
-     ![Boto3](./images/confirm-s3-bucket-creation.PNG)
+     <!-- ![Boto3](assets/confirm-s3-bucket-creation.PNG) -->
      
 
 ---
@@ -110,7 +106,7 @@
 2. Inside the folder, create a file named `main.tf`.
   
   Output:
-  ![PBL](./images/create-pbl-folder.PNG)
+  <!-- ![PBL](assets/create-pbl-folder.PNG) -->
 
 ---
 
@@ -151,7 +147,7 @@
    ```
 
    Output:
-   ![Init](./images/terraform-init.PNG)
+   <!-- ![Init](assets/terraform-init.PNG) -->
 
 3. Run the following commands to plan and apply the changes:
 
@@ -161,13 +157,13 @@
    ```
 
    Output 1:
-   ![Plan](./images/terraform-plan.PNG)
+   <!-- ![Plan](assets/terraform-plan.PNG) -->
 
    Output 2:
-   ![Apply](./images/terraform-apply.PNG)
+   <!-- ![Apply](assets/terraform-apply.PNG) -->
 
    Output 3:
-   ![Apply](./images/terraform-apply-1.PNG)
+   <!-- ![Apply](assets/terraform-apply-1.PNG) -->
 
 ---
 
@@ -211,7 +207,7 @@ resource "aws_subnet" "public2" {
    ```
    
    Output:
-   ![Destroy](./images/terraform-destroy-2.PNG)
+   <!-- ![Destroy](assets/terraform-destroy-2.PNG) -->
 
 2. Refactor Provider and VPC Block:
 
@@ -296,7 +292,7 @@ resource "aws_subnet" "public2" {
     - To get out of the console, type `exit`.
       
       Output:
-      ![Console](./images/terraform-console-output.PNG)
+      <!-- ![Console](assets/terraform-console-output.PNG) -->
 6. Since we cannot hard code a value we want, then we will need a way to dynamically provide the value based on some input. Since the data resource returns all the AZs within a region, it makes sense to count the number of AZs returned and pass that number to the `count` argument.
 
    - To do this, we can introuduce `length()` function, which basically determines the length of a given list, map, or string.
@@ -304,7 +300,7 @@ resource "aws_subnet" "public2" {
    - Open up `terraform console` and try it.
      
      Output:
-     ![Console](./images/terraform-console-output-1.PNG)
+     <!-- ![Console](assets/terraform-console-output-1.PNG) -->
 
 ---
 
@@ -426,25 +422,25 @@ resource "aws_subnet" "public2" {
 - Run `terraform plan` to verify the configuration.
   
   Output:
-  ![Plan](./images/terraform-plan-error-fix-3.PNG)
+  ![Plan](assets/terraform-plan-error-fix-3.PNG)
 
   > Notice: The Plan: 5 to add, 0 to change, 0 to destroy. This implies that 5 resources will be created: A VPC and 4 subnets (with index 0,1,2 and 3).
 
 - Run `terraform apply -auto-approve` to create the resources.
   
   Output 1:
-  ![Apply](./images/terraform-apply-error-fix-1.PNG)
+  <!-- ![Apply](assets/terraform-apply-error-fix-1.PNG) -->
 
   Output 2:
-  ![Apply](./images/aws-console-vpc.PNG)
+  ![Apply](assets/aws-console-vpc.PNG)
 
   Output 3:
-  ![Apply](./images/aws-console-subnet.PNG)
+  ![Apply](assets/aws-console-subnet.PNG)
 
 - Run `terraform destroy -auto-approve` to delete all resources created.
   
   Output:
-  ![Destroy](./images/terraform-destroy-error-fix-1.PNG)
+  <!-- ![Destroy](assets/terraform-destroy-error-fix-1.PNG) -->
 
 ---
 
