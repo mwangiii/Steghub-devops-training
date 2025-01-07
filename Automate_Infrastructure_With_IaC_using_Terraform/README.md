@@ -147,7 +147,7 @@
    ```
 
    Output:
-   <!-- ![Init](assets/terraform-init.PNG) -->
+   ![Init](assets/mainTfInit.png)
 
 3. Run the following commands to plan and apply the changes:
 
