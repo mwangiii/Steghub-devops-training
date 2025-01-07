@@ -439,7 +439,7 @@ resource "aws_subnet" "public2" {
 
 - Run `terraform destroy -auto-approve` to delete all resources created.
   
-  Output:
+  Output:  
   ![Destroy](assets/terraform-destroy-error-fix-1.PNG)
 
 ---
