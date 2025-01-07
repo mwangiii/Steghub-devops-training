@@ -82,7 +82,7 @@
      ```
 
      Output 1:
-     <!-- ![Boto3](assets/install-boto3.PNG) -->
+     ![Boto3](assets/install-boto3.PNG)
 
      > Note: Python 3.7 or higher should have been installed.
 
@@ -92,7 +92,7 @@
      for bucket in s3.buckets.all():
          print(bucket.name)
      ```
-     Output 2:
+     <!-- Output 2: -->
      <!-- ![Boto3](assets/confirm-s3-bucket-creation.PNG) -->
      
 
@@ -105,7 +105,7 @@
 1. Open Visual Studio Code and create a folder named `PBL`.
 2. Inside the folder, create a file named `main.tf`.
   
-  Output:
+  <!-- Output: -->
   <!-- ![PBL](assets/create-pbl-folder.PNG) -->
 
 ---
@@ -157,13 +157,13 @@
    ```
 
    Output 1:
-   <!-- ![Plan](assets/terraform-plan.PNG) -->
+   ![Plan](assets/terraformPlan.png)
 
    Output 2:
-   <!-- ![Apply](assets/terraform-apply.PNG) -->
-
+   ![Apply](assets/terraformApply.png)
+<!-- 
    Output 3:
-   <!-- ![Apply](assets/terraform-apply-1.PNG) -->
+   ![Apply](assets/terraform-apply-1.PNG) -->
 
 ---
 
@@ -206,7 +206,7 @@ resource "aws_subnet" "public2" {
    terraform destroy -auto-approve
    ```
    
-   Output:
+   <!-- Output: -->
    <!-- ![Destroy](assets/terraform-destroy-2.PNG) -->
 
 2. Refactor Provider and VPC Block:
@@ -300,7 +300,7 @@ resource "aws_subnet" "public2" {
    - Open up `terraform console` and try it.
      
      Output:
-     <!-- ![Console](assets/terraform-console-output-1.PNG) -->
+     ![Console](assets/terraformLength.png)
 
 ---
 
@@ -422,14 +422,14 @@ resource "aws_subnet" "public2" {
 - Run `terraform plan` to verify the configuration.
   
   Output:
-  ![Plan](assets/terraform-plan-error-fix-3.PNG)
+  ![Plan](assets/terraformPlatTwo.png)
 
   > Notice: The Plan: 5 to add, 0 to change, 0 to destroy. This implies that 5 resources will be created: A VPC and 4 subnets (with index 0,1,2 and 3).
 
 - Run `terraform apply -auto-approve` to create the resources.
   
   Output 1:
-  <!-- ![Apply](assets/terraform-apply-error-fix-1.PNG) -->
+  ![Apply](assets/terraform-apply-error-fix.PNG)
 
   Output 2:
   ![Apply](assets/aws-console-vpc.PNG)
@@ -440,10 +440,10 @@ resource "aws_subnet" "public2" {
 - Run `terraform destroy -auto-approve` to delete all resources created.
   
   Output:
-  <!-- ![Destroy](assets/terraform-destroy-error-fix-1.PNG) -->
+  ![Destroy](assets/terraform-destroy-error-fix-1.PNG)
 
 ---
 
 ### Conclusion
-
-You have now learned how to create and destroy AWS Network Infrastructure using Terraform.
+We have successfully automated the creation of AWS network infrastructure using Terraform. Starting with setting up an IAM user, AWS CLI, and an S3 bucket, we created a VPC and public subnets with scalable and modular code.  
+Using functions like cidrsubnet and length, we ensured efficient and dynamic resource provisioning. By running terraform plan, apply, and destroy, we tested and validated the infrastructure. This demonstrates the power of Infrastructure-as-Code for building and managing cloud resources efficiently.
