@@ -107,10 +107,10 @@ tags = merge(
 ```
 
 **Output 1:**
-![VPC](./images/vpc.PNG)
+![VPC](./assets/vpc.PNG)
 
 **Output 2:**
-![Subnet](./images/subnets.PNG)
+![Subnet](./assets/subnets.PNG)
 
 ## Internet Gateways & `format()` function
 
@@ -130,7 +130,7 @@ tags = merge(
     ```
 
     **Output:**
-    ![IGW](./images/igw.PNG)
+    ![IGW](./assets/igw.PNG)
 
     Did you notice how we have used `format()` function to dynamically generate a unique name for this resource? The first part of the `%s` takes the interpolated value of `aws_vpc.main.id` while the second `%s` appends a literal string `Ops_IGW` and finally an exclamation mark is added in the end.
 
@@ -179,10 +179,10 @@ tags = merge(
     ```
     
     **Output 1:**
-    ![NAT](./images/natgateway.PNG)
+    ![NAT](./assets/natgateway.PNG)
 
     **Output 2:**
-    ![EIP](./images/elastic-ip.PNG)
+    ![EIP](./assets/elastic-ip.PNG)
 
 ## AWS routes
 
@@ -257,18 +257,18 @@ tags = merge(
   **Public Route & Table**
   
   - Output 1:
-  ![RTB](./images/public-rtb.PNG)
+  ![RTB](./assets/public-rtb.PNG)
 
   - Output 2:
-  ![RTB](./images/public-rtb-01.PNG)
+  ![RTB](./assets/public-rtb-01.PNG)
 
   **Private Route & Table**
 
   - Output 1:
-  ![RTB](./images/private-rtb.PNG)
+  ![RTB](./assets/private-rtb.PNG)
 
   - Output 2:
-  ![RTB](./images/private-rtb-01.PNG)
+  ![RTB](./assets/private-rtb-01.PNG)
 
 
 Now that we are done with the Networking part of AWS set-up, let us move on to Compute and Access Control configuration automation using Terraform.
@@ -616,7 +616,7 @@ Going by our architecture, we need to do the following:
     ```
 
     **Output:**
-    ![SG](./images/security-groups.PNG)
+    ![SG](./assets/security-groups.PNG)
 
 ### Create Certificate From Amazon Cerificate Manager
 
@@ -695,10 +695,10 @@ Going by our architecture, we need to do the following:
     ```
 
     **Output 1:**
-    ![ACM](./images/acm-01.PNG)
+    ![ACM](./assets/acm-01.PNG)
 
     **Output 2:**
-    ![ACM](./images/acm-02.PNG)
+    ![ACM](./assets/acm-02.PNG)
 
 ### Create an External (Internet facing) Application Load Balancer (ALB)
 
@@ -893,10 +893,10 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     ```
 
     **Output 1:**
-    ![TG](./images/target-groups.PNG)
+    ![TG](./assets/target-groups.PNG)
 
     **Output 2:**
-    ![ALB](./images/alb.PNG)
+    ![ALB](./assets/alb.PNG)
 
 ### Create an Auto Scaling Group (ASG)
 
@@ -1236,13 +1236,13 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     ```
 
   **Output 1:**
-  ![LT](./images/launch-templates.PNG)
+  ![LT](./assets/launch-templates.PNG)
 
   **Output 2:**
-  ![ASG](./images/ASG.PNG)
+  ![ASG](./assets/ASG.PNG)
 
   **Output 3:**
-  ![EC2](./images/instances.PNG)
+  ![EC2](./assets/instances.PNG)
 
 ## Storage and Database
 
@@ -1358,10 +1358,10 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     ```
 
     **Output 1:**
-    ![EFS](./images/efs-01.PNG)
+    ![EFS](./assets/efs-01.PNG)
 
     **Output 2:**
-    ![EFS](./images/efs-02.PNG)
+    ![EFS](./assets/efs-02.PNG)
 
 ### Create MySQL RDS
 
@@ -1401,10 +1401,10 @@ For the Internal Load balancer we will follow the same concepts as with the exte
    ```
 
   **Output 1:**
-  ![RDS](./images/rds-01.PNG)
+  ![RDS](./assets/rds-01.PNG)
 
   **Output 2:**
-  ![RDS](./images/rds-02.PNG)
+  ![RDS](./assets/rds-02.PNG)
 
   Before applying, please note that we gave reference to some variables in our resources that have not been declared in the `variables.tf` file. Go through the entire code and spot these variables and declare them in the `variables.tf` file.
 
@@ -1522,13 +1522,13 @@ For the Internal Load balancer we will follow the same concepts as with the exte
   At this point, you shall have pretty much all the infrastructure elements ready to be deployed automatically. Try to `plan` and `apply` your Terraform codes, explore the resources in AWS console and make sure you `destroy` them right away to avoid massive costs.
 
   **Output 1:**
-  ![Plan](./images/terraform-plan.PNG)
+  ![Plan](./assets/terraform-plan.PNG)
 
   **Output 2:**
-  ![Apply](./images/terraform-apply.PNG)
+  ![Apply](./assets/terraform-apply.PNG)
 
   **Output 3:**
-  ![Destroy](./images/terraform-destroy.PNG)
+  ![Destroy](./assets/terraform-destroy.PNG)
 
 ---
 
