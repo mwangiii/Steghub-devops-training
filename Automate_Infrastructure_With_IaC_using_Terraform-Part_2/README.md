@@ -1520,14 +1520,7 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     ```
 
   At this point, you shall have pretty much all the infrastructure elements ready to be deployed automatically. Try to `plan` and `apply` your Terraform codes, explore the resources in AWS console and make sure you `destroy` them right away to avoid massive costs.
-
-  **Output 1:**
-  ![Plan](./assets/terraform-plan.PNG)
-
-  **Output 2:**
-  ![Apply](./assets/terraform-apply.PNG)
-
-  **Output 3:**
+  **Output**
   ![Destroy](./assets/terraform-destroy.PNG)
 
 ---
