@@ -1,9 +1,7 @@
-# Automate Infrastructure With IaC using Terraform - Part 2
-
+# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM - PART TWO
 Based on our knowledge from the previous project, we can continue creating AWS resources.
 
-## Networking - Private Subnets & Best Practices
-
+## NETWORKING - PRIVATE SUBNETS & BEST PRACTICES
 - Create 4 private subnets keeping in mind the following principles:
   
   - Make sure you use variables or `length()` function to determine the number of AZs.
@@ -112,7 +110,7 @@ tags = merge(
 **Output 2:**
 ![Subnet](./assets/subnets.PNG)
 
-## Internet Gateways & `format()` function
+## INTERNET GATEWAYS & `format()` FUNCTION
 
 - Create an Internet Gateway in a separate Terraform file `igw.tf`.
 
@@ -144,7 +142,7 @@ tags = merge(
     Name = PrivateSubnet-2
     ```
 
-## NAT Gateways
+## NAT GATEWAYS
 
 - Create 1 NAT Gateways and 1 Elastic IP (EIP) address, now use similar approach to create the NAT Gateways in a new file called `nat.tf`.
 
@@ -184,7 +182,7 @@ tags = merge(
     **Output 2:**
     ![EIP](./assets/elastic-ip.PNG)
 
-## AWS routes
+## AWS ROUTES
 
 - Create a file called `route.tf` and use it to create route tables for both public and private subnets, create the resources below and ensure they are properly tagged.
   
@@ -273,9 +271,8 @@ tags = merge(
 
 Now that we are done with the Networking part of AWS set-up, let us move on to Compute and Access Control configuration automation using Terraform.
 
-## AWS Identity & Access Management
-
-### IAM and Roles
+## AWS IDENTITY & ACCESS MANAGEMENT
+### IAM AND ROLES
 
 We want to pass an IAM role on EC2 instances to give them access to some specific resources, so we need to do the following:
 
@@ -367,8 +364,7 @@ We want to pass an IAM role on EC2 instances to give them access to some specifi
 
     We are pretty much done with the Identity and Management part for now, let us move on and create other resources required.
 
-## Resources To Be Created
-
+## RESOURCES TO BE CREATED
 Going by our architecture, we need to do the following:
 
 1. Create Security Groups.
@@ -380,8 +376,7 @@ Going by our architecture, we need to do the following:
 7. Create Elastic Filesystem.
 8. Create Relational Database (RDS).
 
-### Create Security Groups
-  
+### CREATE SECURITY GROUPS 
   We are going to create all the security groups in a single file, then we are going to refrence this security group within each resources that needs it.
 
 - Create a file and name it `security.tf`, copy and paste the code below:
@@ -618,8 +613,7 @@ Going by our architecture, we need to do the following:
     **Output:**
     ![SG](./assets/security-groups.PNG)
 
-### Create Certificate From Amazon Cerificate Manager
-
+### CREATE CERTIFICATES FROM AMAZON CERTIFICATE MANAGER
 - Create `cert.tf` file and add the following code snippets to it.
 
   > NOTE: Read through to change the domain name to your own domain name including any other name that needs to be changed.
@@ -700,8 +694,7 @@ Going by our architecture, we need to do the following:
     **Output 2:**
     ![ACM](./assets/acm-02.PNG)
 
-### Create an External (Internet facing) Application Load Balancer (ALB)
-
+### CREATE AN EXTERNAL (INTERNAL FACING) APPLICATION LOAD BALANCER
 - Create a file called `alb.tf`.
 
   First of all we will create the ALB, after which we create the `target group` and then, we create the `listener rule`.
@@ -779,7 +772,7 @@ Going by our architecture, we need to do the following:
     }
     ```
 
-### Create an Internal (Internal) Application Load Balancer (ALB)
+### CREATE AN INTERNAL APPLICATION LOAD BALANCER (ALB)
 
 For the Internal Load balancer we will follow the same concepts as with the external load balancer.
 
@@ -898,8 +891,7 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     **Output 2:**
     ![ALB](./assets/alb.PNG)
 
-### Create an Auto Scaling Group (ASG)
-
+### CREATE AN AUTO SCALING GROUP (ASG)
   Now, we need to configure our ASG to be able to scale the EC2s in and out, depending on the application traffic.
 
   Before we start configuring an ASG, we need to create the launch template and the the AMI needed. For now we are going to use a random AMI from AWS, then in project 19, we will use `Packerto` create our ami.
@@ -1244,7 +1236,7 @@ For the Internal Load balancer we will follow the same concepts as with the exte
   **Output 3:**
   ![EC2](./assets/instances.PNG)
 
-## Storage and Database
+## STORAGE AND DATABASE
 
 - Create Elastic File System (EFS)
 
@@ -1519,14 +1511,12 @@ For the Internal Load balancer we will follow the same concepts as with the exte
     master-password = "makeitrain"
     ```
 
-  At this point, you shall have pretty much all the infrastructure elements ready to be deployed automatically. Try to `plan` and `apply` your Terraform codes, explore the resources in AWS console and make sure you `destroy` them right away to avoid massive costs.
+  At this point, you shall have pretty much all the infrastructure elements ready to be deployed automatically. Try to `plan` and `apply` your Terraform codes, explore the resources in AWS console and make sure you `destroy` them right away to avoid massive costs.    
   **Output**
   ![Destroy](./assets/terraform-destroy.PNG)
 
----
 
-### Congratulations
-
-Now you have fully automated creation of AWS Infrastructure for 2 websites with Terraform. In the next project, we will further enhance our codes by refactoring and introducing more exciting Terraform concepts! Go ahead and continue your PBL journey with us!
-
----
+# CONCLUSION
+Now that we have successfully automated the creation of AWS infrastructure for two websites using Terraform, we have laid the foundation for scalable, secure, and efficient cloud operations.  
+ This project demonstrated the power of Infrastructure as Code (IaC) in streamlining complex tasks while adhering to best practices. Moving forward, we will enhance our Terraform codebase by refactoring and introducing advanced concepts, enabling us to tackle more sophisticated projects.  
+**Let’s continue this exciting PBL journey and keep pushing the boundaries of what we can achieve!**
