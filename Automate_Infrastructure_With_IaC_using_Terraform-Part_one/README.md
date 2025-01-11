@@ -1,4 +1,4 @@
-# Automate Infrastructure With IaC using Terraform - Part 1
+# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM - PART ONE
 
 ## Prerequisites before you begin writing Terraform code
 
