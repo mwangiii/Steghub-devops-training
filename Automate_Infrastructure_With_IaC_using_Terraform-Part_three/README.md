@@ -1,6 +1,7 @@
-# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM 3 (REFACTORING)
+# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM -  PART THREE (REFACTORING)
 
-In two of our previous projects we have developed AWS Infrastructure code using Terraform and tried to run it from our local workstation. Now it is time to introduce some more advanced concepts and enhance our code.
+In two of our previous projects we have developed AWS Infrastructure code using Terraform and tried to run it from our local workstation.  
+Now it is time to introduce some more advanced concepts and enhance our code.
 
 Firstly, we will explore alternative Terraform [backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) for learning purposes.
 
