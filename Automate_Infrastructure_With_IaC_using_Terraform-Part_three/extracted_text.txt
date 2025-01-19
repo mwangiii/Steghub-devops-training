@@ -1,0 +1,40 @@
+module.EFS.aws_efs_mount_target.subnet-1
+module.EFS.aws efs mount target. subnet-2
+module.EFS.aws_kms_alias.alias
+module.EFS.aws_kms_key.opsmen-kms
+module.RDS.aws_db instance.opsmen-rds
+module.RDS.aws_db_subnet_group.opsmen-db-subnet-group
+module.VvpC.data.aws availability zones.available
+module.VPC.aws_eip.nat_eip
+module.VPC.aws_iam instance profile.ip
+module.VPC.aws_iam policy.policy
+module.VPC.aws_iam role.ec2 instance role
+module.VPC.aws_iam role policy attachment. test-attach
+module.VPC.aws_internet_gateway .igw
+module.VPC.aws_nat_gateway.nat
+module.VPC.aws_route.private-rtb-route
+module.VPC.aws_route.public-rtb-route
+module.VPC.aws_route table.private-rtb
+module.VPC.aws_route table. public-rtb
+module.VPC.aws_route table association.private-subnets-assoc[@]
+module.VPC.aws_route table association.private-subnets-assoc[1]
+module.VPC.aws_route table association.private-subnets-assoc[2]
+module.VPC.aws_route table association.private-subnets-assoc[3]
+module.VPC.aws_route table association.public-subnets-assoc[0]
+module.VPC.aws_route table association.public-subnets-assoc[1]
+module.VPC.aws_subnet.private[0]
+module.VPC.aws_subnet.private[1]
+module.VPC.aws_subnet.private[2]
+module.VPC.aws_subnet.private[3]
+module.VPC.aws_subnet.public[0]
+module.VPC.aws_subnet.public[1]
+module.VPC.aws_vpc.main
+module. compute.aws instance. Jenkins
+module. compute.aws_instance.artifactory
+module. compute. aws instance. sonbarqube
+module. security.aws security group.bastion_ sg
+module. security.aws security group.datalayer-sg
+module. security.aws security group.ext-alb-se
+module. security.aws security group.int-alb-se
+module. security.aws security group.nginx-sg
+module. security.aws security group.webserver-sg

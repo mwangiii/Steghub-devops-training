@@ -1,10 +1,10 @@
-# Automate Infrastructure With IaC using Terraform 3 (Refactoring)
+# AUTOMATE INFRASTRUCTURE WITH IAC USING TERRAFORM 3 (REFACTORING)
 
 In two of our previous projects we have developed AWS Infrastructure code using Terraform and tried to run it from our local workstation. Now it is time to introduce some more advanced concepts and enhance our code.
 
 Firstly, we will explore alternative Terraform [backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) for learning purposes.
 
-## Introducing Backend on S3
+## INTRODUCING BACKEND ON S3
 
 Each Terraform configuration can specify a backend, which defines where and how operations are performed, where state snapshots are stored, etc. Take a peek into what the states file looks like. It is basically where terraform stores all the state of the infrastructure in `json` format.
 
@@ -29,7 +29,7 @@ Here is our plan to re-initialize terraform to use S3 backend:
 To get to know how lock in DynamoDB works, read [the following article](https://angelo-malatacca83.medium.com/aws-terraform-s3-and-dynamodb-backend-3b28431a76c1)
 
 
-### - Create a file and name it `backend.tf`. Add the below code and replace the name of the S3 bucket we created in [previous project](https://github.com/alagbaski/steghub-projects/blob/main/Automate%20Infrastructure%20With%20IaC%20using%20Terraform%20-%20Part%201/Project.md).
+### - CREATE A FILE AND NAME IT `BACKEND.TF`. ADD THE BELOW CODE AND REPLACE THE NAME OF THE S3 BUCKET WE CREATED IN [PREVIOUS PROJECT](AUTOMATE_INFRASTRUCTURE_WITH_IAC_USING_TERRAFORM-PART_ONE).
 
 ```hcl
 # Note: Since buckets are unique globally in AWS, you must give it a unique name.
@@ -65,7 +65,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state_encryption"
 ```
 We must be aware that Terraform stores secret data inside the state files. Passwords, and secret keys processed by resources are always stored in there. Hence, we must consider to always enable encryption. You can see how we achieved that with [server_side_encryption_configuration](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html).
 
-### - Next, create a `DynamoDB` table to handle locks and perform consistency checks.
+### - NEXT, CREATE A `DYNAMODB` TABLE TO HANDLE LOCKS AND PERFORM CONSISTENCY CHECKS.
 
 In previous projects, locks were handled with a local file as shown in __`terraform.tfstate.lock.info`__. Since we now have a team mindset, causing us to configure S3 as our backend to store state file, we will do the same to handle locking. Therefore, with a cloud storage database like DynamoDB, anyone running Terraform against the same infrastructure can use a central location to control a situation where Terraform is running at the same time from multiple different people.
 
@@ -90,13 +90,13 @@ resource "aws_dynamodb_table" "terraform_locks" {
 Terraform expects that both S3 bucket and DynamoDB resources are already created before we configure the backend. So, let us run `terraform apply` to provision resources.
 
 **Output 1:**
-![S3](./images/s3-bucket.PNG)
+![S3](./assets/s3-bucket.PNG)
 
 **Output 2:**
-![DynamoDB](./images/dynamo-db-table.PNG)
+![DynamoDB](./assets/dynamo-db-table.PNG)
 
 
-### - Configure S3 Backend
+### - CONFIGURE S3 BACKEND
 
 ```hcl
 terraform {
@@ -111,33 +111,33 @@ terraform {
 ```
 Now its time to re-initialize the backend. Run `terraform init` and confirm you are happy to change the backend by typing `yes`.
 
-**Output:**
+<!-- **Output:** -->
 
-![Init](./images/terraform-init.PNG)
+<!-- ![Init](./assets/terraform-init.PNG) -->
 
-### - Verify the changes
+### - VERIFY THE CHANGES
 
 Before doing anything if you opened AWS now to see what happened you should be able to see the following:
 
 - `.tfstatefile` is now inside the S3 bucket
 
   **Output:**
-  ![tfstate](./images/s3-tfstate.PNG)
+  ![tfstate](./assets/s3-tfstate.PNG)
 
 - DynamoDB table which we create has an entry which includes state file status
 
   **Output:**
-  ![dynamodb](./images/dynamo-db-table.PNG)
+  ![dynamodb](./assets/dynamo-db-table.PNG)
 
 - Navigate to the DynamoDB table inside AWS and leave the page open in your browser. Run `terraform plan` and while that is running, refresh the browser and see how the lock is being handled:
 
-  ![lock](./images/acquire-state-lock-01.PNG)
+  ![lock](./assets/acquire-state-lock-01.PNG)
 
 - After `terraform plan` completes, refresh DynamoDB table.
 
-  ![lock](./images/acquire-state-lock-02.PNG)
+  ![lock](./assets/acquire-state-lock-02.PNG)
 
-### - Add Terraform Output
+### - ADD TERRAFORM OUTPUT
 
 Before we run `terraform apply` let us add an output so that the S3 bucket Amazon Resource Names ARN and DynamoDB table name can be displayed.
 
@@ -157,17 +157,17 @@ output "dynamodb_table_name" {
 
 Now we have everything ready to go!
 
-### - Let us run `terraform apply`
+### - LET US RUN `TERRAFORM APPLY`
 
 Terraform will automatically read the latest state from the S3 bucket to determine the current state of the infrastructure. Even if another engineer has applied changes, the state file will always be up to date.
 
 Now, let's head over to the S3 console again, refresh the page, and click the grey “Show” button next to “Versions.” We should now see several versions of our terraform.tfstate file in the S3 bucket:
 
-**Output 1:**
-![Apply](./images/terraform-apply-01.PNG)
 
-**Output 2:**
-![Version](./images/s3-tfstate-versions.PNG)
+<!-- ![Apply](./assets/terraform-apply-01.PNG) -->
+
+**Output 1:**
+![Version](./assets/s3-tfstate-versions.PNG)
 
 With help of remote backend and locking configuration that we have just configured, collaboration is no longer a problem.
 
@@ -180,28 +180,28 @@ a. Terraform Workspaces
 b. Directory based separation using `terraform.tfvars` file
 
 
-## When to use `Workspaces` or `Directory`
+## WHEN TO USE `WORKSPACES` OR `DIRECTORY`
 
 To separate environments with significant configuration differences, use a directory structure. Use workspaces for environments that do not greatly deviate from each other, to avoid duplication of your configurations. Try both methods in the sections below to help you understand which will serve your infrastructure best.
 
 For now, we can read more about both alternatives [here](https://learn.hashicorp.com/tutorials/terraform/organize-configuration) and try both methods ourself, but we will explore them better in next projects.
 
-## Security Groups refactoring with `dynamic block`
+## SECURITY GROUPS REFACTORING WITH `DYNAMIC BLOCK`
 
 For repetitive blocks of code you can use dynamic blocks in Terraform, to get to know more how to use them - watch this video.
 
-### Refactor Security Groups creation with `dynamic blocks`.
+### REFACTOR SECURITY GROUPS CREATION WITH `DYNAMIC BLOCKS`.
 
 The terraform code for refactoring the security groups with dynamic blocks is available in this [repository](https://github.com/francdomain/project_18_terraform_code)
 
-## EC2 refactoring with `Map` and `Lookup`
+## EC2 REFACTORING WITH `MAP` AND `LOOKUP`
 
 Remember, every piece of work you do, always try to make it dynamic to accommodate future changes. [Amazon Machine Image (AMI)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html) is a regional service which means it is only available in the region it was created. But what if we change the region later, and want to dynamically pick up `AMI IDs` based on the available AMIs in that region? This is where we will introduce [Map](https://developer.hashicorp.com/terraform/language/functions/map) and [Lookup](https://developer.hashicorp.com/terraform/language/functions/lookup) functions.
 
 Map uses a key and value pairs as a data structure that can be set as a default type for variables.
 
 ```hcl
-variable "images" {
+variable "assets" {
   type = "map"
   default = {
     us-east-1 = "image-1234"
@@ -216,12 +216,12 @@ To select an appropriate AMI per region, we will use a lookup function which has
 
 ```hcl
 resource "aws_instace" "web" {
-  ami  = "${lookup(var.images, var.region), "ami-12323"}
+  ami  = "${lookup(var.assets, var.region), "ami-12323"}
 }
 ```
-Now, the lookup function will load the variable `images` using the first parameter. But it also needs to know which of the key-value pairs to use. That is where the second parameter comes in. The key `us-east-1` could be specified, but then we will not be doing anything dynamic there, but if we specify the variable for region, it simply resolves to one of the keys. That is why we have used `var.region` in the second parameter.
+Now, the lookup function will load the variable `assets` using the first parameter. But it also needs to know which of the key-value pairs to use. That is where the second parameter comes in. The key `us-east-1` could be specified, but then we will not be doing anything dynamic there, but if we specify the variable for region, it simply resolves to one of the keys. That is why we have used `var.region` in the second parameter.
 
-## Conditional Expressions
+## CONDITIONAL EXPRESSIONS
 
 If you want to make some decision and choose some resource based on a condition - you shall use Terraform Conditional Expressions.
 
@@ -240,7 +240,7 @@ resource "aws_db_instance" "read_replica" {
 - : #means, otherwise, set to '0'
 
 
-## Terraform Modules and best practices to structure your `.tf` codes
+## TERRAFORM MODULES AND BEST PRACTICES TO STRUCTURE YOUR `.TF` CODES
 
 By this time, you might have realized how difficult is to navigate through all the Terraform blocks if they are all written in a single long `.tf` file. As a DevOps engineer, you must produce reusable and comprehensive IaC code structure, and one of the tool that Terraform provides out of the box is [Modules](https://developer.hashicorp.com/terraform/language/modules).
 
@@ -270,9 +270,9 @@ resource "aws_elb" "example" {
 ```
 In the example above, you will have to have module 'servers' to have output file to expose variables for this resource.
 
-## Refactor your project using Modules
+## REFACTOR YOUR PROJECT USING MODULES
 
-Let us review the [repository](https://github.com/francdomain/Automate_Infrastructure_With_IaC_using_Terraform_2)of project 17, you will notice that we had a single lsit of long file for creating all of our resources, but that is not the best way to go about it because it maks our code base vey hard to read and understand, and making future changes can bring a lot of pain.
+Let us review the [repository](https://github.com/francdomain/Automate_Infrastructure_With_IaC_using_Terraform_2) of project 17, you will notice that we had a single lsit of long file for creating all of our resources, but that is not the best way to go about it because it maks our code base vey hard to read and understand, and making future changes can bring a lot of pain.
 
 ## QUICK TASK:
 
@@ -291,7 +291,7 @@ Break down your Terraform codes to have all resources in their respective module
 
 **Output:**
 
-![modules](./images/modules-dir.PNG)
+![modules](./assets/modules-dir.PNG)
 
 Each module shall contain following files:
 
@@ -326,7 +326,7 @@ b. Refer to a module's output by specifying the full path to the output variable
 subnets-compute = module.network.public_subnets-1
 ```
 
-## Complete the Terraform configuration
+## COMPLETE THE TERRAFORM CONFIGURATION
 
 Complete the rest of the codes yourself, so, the resulted configuration structure in your working directory may look like this:
 
@@ -358,81 +358,82 @@ Complete the rest of the codes yourself, so, the resulted configuration structur
 
 **Output:**
 
-![module-dir](./images/modules-dir-01.PNG)
+![module-dir](./assets/modules-dir-01.PNG)
 
-## Instantiating the Modules
+## INSTANTIATING THE MODULES
 
-**Run `terraform init -upgrade`**
+```bash
+terraform init -upgrade
+terraform plan
+terraform apply
+```
+<!-- **Output:**
 
-**Output:**
+![init](./assets/init-modules.PNG) -->
 
-![init](./images/init-modules.PNG)
 
-**Run `terraform plan`**
+<!-- **Output:**
 
-**Output:**
+![plan](./assets/plan-modules.PNG) -->
 
-![plan](./images/plan-modules.PNG)
 
-**Run `terraform apply`**
+<!-- **Output:**
 
-**Output:**
-
-![apply](./images/apply-modules.PNG)
+![apply](./assets/apply-modules.PNG) -->
 
 > Note: Ignore the error output stating that `S3` and `DynamoDB` resources is already existing. Furthermore, we will learn how to make terraform stop tracking these resources from the `.terraform.tfstate.tf` to avoid conflicts when we run `terraform destroy`.
 
-## Verifying Resources
+## VERIFYING RESOURCES
 
 **Output VPC:**
-![vpc](./images/vpc.PNG)
+![vpc](./assets/vpc.PNG)
 
 **Output Subnets:**
-![subnet](./images/subnets.PNG)
+![subnet](./assets/subnets.PNG)
 
 **Output Security Groups:**
-![security](./images/security-groups.PNG)
+![security](./assets/security-groups.PNG)
 
 **Output IGW:**
-![igw](./images/igw.PNG)
+![igw](./assets/igw.PNG)
 
 **Output EIP:**
-![eip](./images/eip.PNG)
+![eip](./assets/eip.PNG)
 
 **Output NAT:**
-![nat](./images/nat-gw.PNG)
+![nat](./assets/nat-gw.PNG)
 
 **Output Routes:**
-![route](./images/routes-tables.PNG)
+![route](./assets/routes-tables.PNG)
 
 **Output EFS:**
-![efs](./images/efs.PNG)
+![efs](./assets/efs.PNG)
 
 **Output RDS:**
-![rds](./images/rds.PNG)
+![rds](./assets/rds.PNG)
 
 **Output Target Groups:**
-![tg](./images/target-groups.PNG)
+![tg](./assets/target-groups.PNG)
 
 **Output ALB:**
-![alb](./images/load-balancer.PNG)
+![alb](./assets/load-balancer.PNG)
 
 **Output ASG:**
-![asg](./images/auto-scaling-group.PNG)
+![asg](./assets/auto-scaling-group.PNG)
 
 **Output EC2:**
-![ec2](./images/instances.PNG)
+![ec2](./assets/instances.PNG)
 
 
 **Run `terraform state list`**
 
-**Output 1:**
+<!-- **Output 1:**
 
-![state-list](./images/terraform-state-list-01.PNG)
+![state-list](./assets/terraform-state-list-01.PNG) -->
 
-**Output 2:**
+**Output:**
 
-![state-list](./images/terraform-state-list-02.PNG)
+![state-list](./assets/terraform-state-list-02.PNG)
 
 > Note: In other to make terraform to stop tracking resources from the `tfstate` file, run `terraform state rm <terraform-resource-name>`. E.g __`terraform state rm aws_s3_bucket.terraform_state`__. This was done because, when we run `terraform destroy` it won't destroy our `S3` and `DynamoDB` containing our `.terraform.tfstate` and `.terraform.lock.hcl` in the resources respectively.
 
@@ -444,16 +445,13 @@ Going forward in project 19, we would se how to use packer to create AMIs, Terra
 
 We will also see how to use terraform cloud for our backends.
 
-### Pro-tips:
+### PRO-TIPS:
 
 1. We can validate our codes before running `terraform plan` with [terraform validate](https://developer.hashicorp.com/terraform/cli/commands/validate) command. It will check if our code is syntactically valid and internally consistent.
 
 2. In order to make our configuration files more readable and follow canonical format and style - We use [terraform fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) command. It will apply Terraform language style conventions and format our `.tf` files in accordance to them.
 
-### Conclusion
-
-We have been able to develop and refactor AWS Infrastructure as Code with Terraform.
-
-The repository for the terraform modules is available here: [project_18_terraform_modules](https://github.com/francdomain/project_18_terraform_modules)
-
----
+### CONCLUSION
+Configuring a remote backend with S3 and enabling state locking with DynamoDB enhances collaboration, reliability, and security in Terraform workflows. This setup ensures state files are always accessible, reduces conflicts, and protects sensitive data through encryption and versioning, with locking preventing simultaneous operations.  
+We also explored methods for isolating environments and using dynamic blocks, maps, and conditional expressions to streamline configurations.  
+These techniques improve scalability and adaptability, equipping us to handle more complex projects efficiently.
