@@ -74,9 +74,7 @@ Before we proceed, we need to ensure we have the following tools installed on ou
 
   ![](./assets/7.png)
 
-- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
-  ![](./assets/8.png)
 
 Refer to this [repository](https://github.com/citadelict/terraform-cloud) for guidiance on how to refactor your enviroment to meet the new changes above and ensure you go through the `README.md` file.
 
@@ -111,9 +109,9 @@ aws ec2 describe-assets --filters "Name=name,Values=RHEL-9.4.0_HVM-20240605-x86_
 ```
 Ensure to update `Values` with the correct ami name
 
-__Output__
+<!-- __Output__
 
-![image](./assets/10.png)
+![image](./assets/10.png) -->
 
 ### Packer code for bastion
 
@@ -327,16 +325,20 @@ Tooling website
 Wordpress website
 
 ![](./assets/32.png)
-![](./assets/33.png)
+<!-- ![](./assets/33.png) -->
 
 
 # Practice Task №1
 
 1. Configure 3 branches in the `terraform-cloud` repository for `dev`, `test`, `prod` environments
 
-![image](./assets/34.png)
-![](./assets/3-branches-github.png)
-
+<!-- ![image](./assets/34.png) -->
+<!-- ![](./assets/3-branches-github.png) -->
+```
+git checkout -b dev
+git checkout -b test
+git checkout -b prod
+```
 2. Make necessary configuration to trigger runs automatically only for dev environment
 
 - Create a workspace each for the 3 environments (i.e, `dev`, `test`, `prod`).
