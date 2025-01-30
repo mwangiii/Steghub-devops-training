@@ -7,8 +7,6 @@ In this project, we will learn how to solve this problem and begin to practice t
 Side self study: Before starting to work with this project, it is very important to understand what Docker is and what it is used for. To get a sufficient level of theoretical knowledge it is recommended to take Docker course on steghub learning portal dashboard before you continue with this project.
 
 Once you have finished the Docker course, you can proceed with this practical project!
-Instructions On How To Submit Your Work For Review And Feedback
-
 ## INSTALL DOCKER AND PREPARE FOR MIGRATION TO THE CLOUD
 First, we need to install Docker Engine, which is a client-server application that contains:
 - A server with a long-running daemon process dockerd.
