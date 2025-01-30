@@ -513,7 +513,6 @@ Run `terraform apply` to deploy the infrastructure.
 
 Run `terraform destroy` to destory the infrastructure
 
-<!-- ![](./assets/66.png) -->
 
 <!-- ![](./assets/67.png) -->
 
@@ -525,3 +524,5 @@ Terraform Cloud simplifies infrastructure management by providing a centralized 
 By incorporating Packer for AMI creation and Ansible for configuration, we established a streamlined deployment process. Notifications via Slack and email improved visibility, while workspace configurations and variable management allowed for structured automation.
 
 The use of both public and private module registries introduced flexibility in managing reusable components. Terraform Cloud’s capabilities support scalable and efficient infrastructure provisioning, making it a powerful tool for modern cloud automation.
+
+![](./assets/terraform.png)
