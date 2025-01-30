@@ -318,7 +318,4 @@ You have started your journey into migrating an application running on virtual m
 Now you know how to prepare a Dockerfile, build an image with Docker build and deploy it with Docker Compose!  
 In the next project, we will expand your skills further into more advanced use cases and technologies.
 
-
-<div style="margin-top:1000px; font-size:30px; width:100vw; text-align:center;">
-<h1>WE MOVE ON TO THE NEXT PROJECT!</h1>
-</div>
+## <p align="center">WE MOVE ON TO THE NEXT PROJECT!</p>
