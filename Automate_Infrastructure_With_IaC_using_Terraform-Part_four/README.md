@@ -184,7 +184,7 @@ packer build ubuntu.pkr.hcl
 
 In the terraform director, update the `terraform.auto.tfvars` with the new AMIs IDs built with packer which terraform will use to provision Bastion, Nginx, Tooling and Wordpress server
 
-![image](./assets/13.png)
+<!-- ![image](./assets/13.png) -->
 
 ## 6. Run `terraform plan` and `terraform apply` from web console
 
@@ -355,9 +355,21 @@ Go to the dev workspace in Terraform Cloud > Navigate to Settings > Vsersion Con
 
 3. Create an Email and Slack notifications for certain events (e.g. `started plan` or `errored run`) and test it.
 
+<!-- __Email Notification:__ In the dev workspace, Go to Settings > Notifications > Add a new notification
+
+![](./assets/38.png)
+
+The bastion instance type was changed to t3.small in order to test it
+
+This will automatically apply after a successful plan
+
+Confirm notification has bben sent to the provided email address
+
+![](./assets/39.png)
+
 ### Slack Notification:
 
-We will need to create a `Webhook URL` for the slack channel we want to send message to before creating the notification.
+We will need to create a `Webhook URL` for the slack channel we want to send message to before creating the notification. -->
 
 __Slack Notification Setup__
 
