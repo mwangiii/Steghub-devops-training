@@ -142,7 +142,7 @@ packer validate nginx.pkr.hcl
 packer validate ubuntu.pkr.hcl
 packer validate web.pkr.hcl
 ```
-![image](./assets/0.png)
+<!-- ![image](./assets/0.png) -->
 
 ### Run the packer commands to build AMI for Bastion server, Nginx server and webserver
 
@@ -168,7 +168,7 @@ packer build nginx.pkr.hcl
 packer build web.pkr.hcl
 ```
 ![image](./assets/114.png)
-![image](./assets/115.png)
+<!-- ![image](./assets/115.png) -->
 
 ### For Ubuntu (Jenkins, Artifactory and sonarqube Server)
 
@@ -201,16 +201,16 @@ Check the logs and verify that everything has run correctly. Note that Terraform
 
 Check the AWS console
 
-![](./assets/instance.png)
-![](./assets/subnets.png)
+<!-- ![](./assets/instance.png) -->
+<!-- ![](./assets/subnets.png) -->
 ![](./assets/sg.png)
 ![](./assets/lt.png)
-![](./assets/lb.png)
-![](./assets/rt.png)
-![](./assets/eip.png)
+<!-- ![](./assets/lb.png) -->
+<!-- ![](./assets/rt.png) -->
+<!-- ![](./assets/eip.png) -->
 ![](./assets/asg.png)
 ![](./assets/tg.png)
-![](./assets/vpc.png)
+<!-- ![](./assets/vpc.png) -->
 
 ## 7. Test automated `terraform plan`
 
@@ -224,7 +224,7 @@ __Follow the steps below to set up automatic triggers for Terraform plans and ap
 
 - Add a VCS provider
 
-![](./assets/15.png)
+<!-- ![](./assets/15.png) -->
 
 ![](./assets/16.png)
 
@@ -349,26 +349,11 @@ git checkout -b prod
 
 Go to the dev workspace in Terraform Cloud > Navigate to Settings > Vsersion Control > Check boxes for Auto Apply
 
-![](./assets/36.png)
+<!-- ![](./assets/36.png) -->
 
-![](./assets/37.png)
+<!-- ![](./assets/37.png) -->
 
 3. Create an Email and Slack notifications for certain events (e.g. `started plan` or `errored run`) and test it.
-
-__Email Notification:__ In the dev workspace, Go to Settings > Notifications > Add a new notification
-
-![](./assets/38.png)
-
-The bastion instance type was changed to t3.small in order to test it
-
-
-
-This will automatically apply after a successful plan
-
-
-Confirm notification has bben sent to the provided email address
-
-![](./assets/39.png)
 
 ### Slack Notification:
 
@@ -424,9 +409,6 @@ As your Terraform code base grows, your DevOps team might want to create you own
 ## Working with Private repository
 
 1. Create a simple Terraform repository (you can clone one [from here](https://github.com/hashicorp/learn-private-module-aws-s3-webapp)) that will be your module.
-
-![](./assets/51.png)
-
 - Under the repository's tab, clicking on `tag` to create tag. click `Create a new release` and adding `v1.0.0` to the tag version field setting the release title to `First module release`
 
 ![](./assets/52.png)
@@ -436,7 +418,6 @@ As your Terraform code base grows, your DevOps team might want to create you own
 Go to Registery > Module > Add Module > select GitHub (Custom)
 
 ![](./assets/53.png)
-
 
 
 Click on __`configure credentials`__ from here
@@ -450,7 +431,7 @@ Click on `create an API toekn` from here
 Configure the token generated, in the Terraform CLI configuration file `.terraformrc`.
 
 ```bash
-vim ~/.terraformrc
+nano ~/.terraformrc
 ```
 Copy the credentials block below and paste it into the `.terraformrc` file.
 Ensure to replace the value of the token argument with the API token created.
@@ -482,21 +463,20 @@ terraform init
 
 4. Create a workspace for the configuration, Select CLI-driven workflow Name the workspace s3-webapp-workspace
 
-
 ![](./assets/57.png)
 
 Add the code block below to the terraform configuration file to setup the cloud integration.
 
 ```hcl
-terraform {
-  cloud {
+terraform { 
+  cloud { 
+    
+    organization = "mwangisOrg" 
 
-    organization = "citatech"
-
-    workspaces {
-      name = "s3-webapp"
-    }
-  }
+    workspaces { 
+      name = "s3-webapp-workspace" 
+    } 
+  } 
 }
 ```
 
@@ -510,22 +490,26 @@ Run `terraform apply` to deploy the infrastructure.
 
 ![](./assets/59.png)
 
-![](./assets/62.png)
+<!-- ![](./assets/62.png) -->
 
-![](./assets/61.png)
-![](./assets/64.png)
-![](./assets/65.png)
+<!-- ![](./assets/61.png) -->
+<!-- ![](./assets/64.png) -->
+<!-- ![](./assets/65.png) -->
 ![](./assets/63.png)
 
 6. Destroy your deployment
 
 Run `terraform destroy` to destory the infrastructure
 
-![](./assets/66.png)
+<!-- ![](./assets/66.png) -->
 
-![](./assets/67.png)
+<!-- ![](./assets/67.png) -->
 
 
 ## Conclusion
 
-We have learned how to effectively use managed version of Terraform - `Terraform Cloud`. We have also practiced in finding modules in a Public Module Registry as well as build and deploy our own modules to a Private Module Registry.
+Terraform Cloud simplifies infrastructure management by providing a centralized and collaborative environment for Infrastructure as Code. It eliminates manual state handling, enhances security, and ensures consistency across deployments. The integration with GitHub enables automated Terraform runs, reducing manual effort while maintaining control over infrastructure changes.
+
+By incorporating Packer for AMI creation and Ansible for configuration, we established a streamlined deployment process. Notifications via Slack and email improved visibility, while workspace configurations and variable management allowed for structured automation.
+
+The use of both public and private module registries introduced flexibility in managing reusable components. Terraform Cloud’s capabilities support scalable and efficient infrastructure provisioning, making it a powerful tool for modern cloud automation.
