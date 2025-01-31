@@ -317,4 +317,4 @@ You have started your journey into migrating an application running on virtual m
 Now you know how to prepare a Dockerfile, build an image with Docker build and deploy it with Docker Compose!  
 In the next project, we will expand your skills further into more advanced use cases and technologies.
 
-## <p align="center">WE MOVE ON TO THE NEXT PROJECT!</p>
+### <p align="center">WE MOVE ON TO THE NEXT PROJECT!</p>
