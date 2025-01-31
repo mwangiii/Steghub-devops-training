@@ -1,53 +1,75 @@
 # MIGRATION TO THE CLOUD WITH CONTAINERIZATION (DOCKER & DOCKER COMPOSE)1 -101
 ![](assets/intoImage.png)
-Until now, you have been using VMs (AWS EC2) in Amazon Virtual Private Cloud (AWS VPC) to deploy your web solutions, and it works well in many cases. You have learned how easy to spin up and configure a new EC2 manually or with such tools as Terraform and Ansible to automate provisioning and configuration. You have also deployed two different websites on the same VM; this approach is scalable, but to some extent; imagine what if you need to deploy many small applications (it can be web front-end, web-backend, processing jobs, monitoring, logging solutions, etc.) and some of the applications will require various OS and runtimes of different versions and conflicting dependencies - in such case you would need to spin up serves for each group of applications with the exact OS/runtime/dependencies requirements. When it scales out to tens/hundreds and even thousands of applications (e.g., when we talk of microservice architecture), this approach becomes very tedious and challenging to maintain.
+Until now, you have been using VMs (AWS EC2) in Amazon Virtual Private Cloud (AWS VPC) to deploy your web solutions,
+and it works well in many cases. You have learned how easy to spin up and configure a new EC2 manually or with such tools as Terraform and Ansible to automate provisioning and configuration.
+You have also deployed two different websites on the same VM; this approach is scalable, but to some extent;
+imagine what if you need to deploy many small applications (it can be web front-end, web-backend, processing jobs, monitoring, logging solutions, etc.)
+and some of the applications will require various OS and runtimes of different versions and conflicting dependencies - in such case you would need to spin up serves for each group of applications with the exact OS/runtime/dependencies requirements.
+When it scales out to tens/hundreds and even thousands of applications (e.g., when we talk of microservice architecture), this approach becomes very tedious and challenging to maintain.  
 
-In this project, we will learn how to solve this problem and begin to practice the technology that revolutionized application distribution and deployment back in 2013! We are talking of Containers and imply Docker. Even though there are other application containerization technologies, Docker is the standard and the default choice for shipping your app in a container!
-
-Side self study: Before starting to work with this project, it is very important to understand what Docker is and what it is used for. To get a sufficient level of theoretical knowledge it is recommended to take Docker course on steghub learning portal dashboard before you continue with this project.
+In this project, we will learn how to solve this problem and begin to practice the technology that revolutionized application distribution and deployment back in 2013!
+We are talking of Containers and imply Docker. Even though there are other application containerization technologies,
+Docker is the standard and the default choice for shipping your app in a container!
 
 Once you have finished the Docker course, you can proceed with this practical project!
 ## INSTALL DOCKER AND PREPARE FOR MIGRATION TO THE CLOUD
 First, we need to install Docker Engine, which is a client-server application that contains:
-- A server with a long-running daemon process dockerd.
+- A server with a long-running daemon process `dockerd`.
 - APIs that specify interfaces that programs can use to talk to and instruct the Docker daemon.
 - A command-line interface (CLI) client docker.
 
-You can learn how to install Docker Engine on your PC here
+You can learn how to install Docker Engine on your PC [here](https://docs.docker.com/engine/)
 
 Before we proceed further, let us understand why we even need to move from VM to Docker.
 
-As you have already learned - unlike a VM, Docker allocated not the whole guest OS for your application, but only isolated minimal part of it - this isolated container has all that your application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments, as long as this environment can run Docker engine. This approach also solves the environment incompatibility issue. It is a well-known problem when a developer sends his application to you, you try to deploy it, deployment fails, and the developer replies, "- It works on my machine!". With Docker - if the application is shipped as a container, it has its own environment isolated from the rest of the world, and it will always work the same way on any server that has Docker engine.
+As you have already learned - unlike a VM, Docker allocated not the whole guest OS for your application,
+but only isolated minimal part of it - this isolated container has all that your application needs and at the same time is lighter, faster, and can be shipped as a Docker image to multiple physical or virtual environments,
+as long as this environment can run Docker engine.
+This approach also solves the environment incompatibility issue.
+It is a well-known problem when a developer sends his application to you, you try to deploy it, deployment fails,
+and the developer replies, _"- It works on my machine!"_.
+With Docker - if the application is shipped as a container,
+it has its own environment isolated from the rest of the world, and it will always work the same way on any server that has Docker engine.
 
 ```
       ¯\_(ﭣ)_/¯
  IT WORKS ON MY MACHINE
 ```
-Now, when we understand the benefits we can get by using Docker containerization, let us learn what needs to be done to migrate to Docker. Read this excellent article for some insight.
+Now, when we understand the benefits we can get by using Docker containerization, let us learn what needs to be done to migrate to Docker. 
 
-As a part of this project, you will use a CI tool that is already well-known by you Jenkins - for Continous Integration (CI). So, when it is time to write Jenkinsfile, update your Terraform code to spin up an EC2 instance for Jenkins and run Ansible to install & configure it.
+As a part of this project, you will use a CI tool that is already well-known by you `Jenkins` - **for Continous Integration (CI).** 
+So, when it is time to write `Jenkinsfile`, update your Terraform code to spin up an EC2 instance for Jenkins and run Ansible to install & configure it.
 
-To begin our migration project from VM based workload, we need to implement a Proof of Concept (POC). In many cases, it is good to start with a small-scale project with minimal functionality to prove that technology can fulfill specific requirements. So, this project will be a precursor before you can move on to deploy enterprise-grade microservice solutions with Docker. And so, Project 21 through to 30 will gradually introduce concepts and technologies as we move from POC onto enterprise level deployments.
+To begin our migration project from VM based workload, we need to implement a Proof of Concept (POC).
+In many cases, it is good to start with a small-scale project with minimal functionality to prove that technology can fulfill specific requirements.
+So, this project will be a precursor before you can move on to deploy enterprise-grade microservice solutions with Docker.
+And so, Project 21 through to 30 will gradually introduce concepts and technologies as we move from POC onto enterprise level deployments.
 
 You can start with your own workstation or spin up an EC2 instance to install Docker engine that will host your Docker containers.
 
 Remember our Tooling website? It is a PHP-based web solution backed by a MySQL database - all technologies you are already familiar with and which you shall be comfortable using by now.
 
 So, let us migrate the Tooling Web Application from a VM-based solution into a containerized one.
+
+
 ## MYSQL IN CONTAINER 
 Let us start assembling our application from the Database layer - we will use a pre-built MySQL database container, configure it, and make sure it is ready to receive requests from our PHP application.
 
 ### STEP 1: PULL MYSQL DOCKER IMAGE FROM DOCKER HUB REGISTRY 
 Start by pulling the appropriate Docker image for MySQL. You can download a specific version or opt for the latest release, as seen in the following command:
 ```bash
-docker pull mysql/mysql-server:latest
+sudo docker pull mysql/mysql-server:latest
 ```
+![](assets/dockerSql.png)
+
 If you are interested in a particular version of MySQL, replace latest with the version number. Visit Docker Hub to check other tags here
 
 List the images to check that you have downloaded them successfully:
 ```bash
-docker images ls
+docker image ls
 ```
+![](assets/imageList.png)
+
 ### STEP 2:DEPLOY THE MYSQL CONTAINER TO YOUR DOCKER ENGINE
 1. Once you have the image, move on to deploying a new MySQL container with:
 ```bash
@@ -63,6 +85,7 @@ docker run --name <container_name> -e MYSQL_ROOT_PASSWORD=<my-secret-pw> -d mysq
 ```bash
 docker ps -a
 ```
+![](assets/mysqlrunning.png)
 ```
 CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS                             PORTS                       NAMES
 7141da183562   mysql/mysql-server:latest            "/entrypoint.sh mysq…"   12 seconds ago   Up 11 seconds (health: starting)   3306/tcp, 33060-33061/tcp   mysql-server
@@ -97,6 +120,7 @@ First, let us create an environment variable to store the root password:
 ```sql
 export MYSQL_PW=<root-secret-password>
 ```
+
 Then, pull the image and run the container, all in one command like below:
 ```bash
 docker run --network tooling_app_network -h mysqlserverhost --name=mysql-server -e MYSQL_ROOT_PASSWORD=$MYSQL_PW  -d mysql/mysql-server:latest 
@@ -105,7 +129,7 @@ Flags used
 - -d runs the container in detached mode
 - --network connects a container to a network
 - -h specifies a hostname
-
+![](assets/3.png)
 If the image is not found locally, it will be downloaded from the registry.
 
 Verify the container is running:
@@ -116,9 +140,11 @@ docker ps -a
 CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS                             PORTS                       NAMES
 7141da183562   mysql/mysql-server:latest            "/entrypoint.sh mysq…"   12 seconds ago   Up 11 seconds (health: starting)   3306/tcp, 33060-33061/tcp   mysql-server
 ```
-As you already know, it is best practice not to connect to the MySQL server remotely using the root user. Therefore, we will create an SQL script that will create a user we can use to connect remotely.
+![](assets/1.png)
+As you already know, it is best practice not to connect to the MySQL server remotely using the root user.
+Therefore, we will create an SQL script that will create a user we can use to connect remotely.
 
-Create a file and name it create_user.sql and add the below code in the file:
+Create a file and name it `create_user.sql` and add the below code in the file:
 ```sql
 CREATE USER '<user>'@'%' IDENTIFIED BY '<client-secret-password>';
 GRANT ALL PRIVILEGES ON * . * TO '<user>'@'%';
@@ -127,6 +153,7 @@ Run the script:
 ```bash
 docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < ./create_user.sql
 ```
+![](assets/2.png)
 If you see a warning like below, it is acceptable to ignore:
 ```
 mysql: [Warning] Using a password on the command line interface can be insecure.
@@ -139,6 +166,7 @@ Run the MySQL Client Container:
 ```bash
 docker run --network tooling_app_network --name mysql-client -it --rm mysql mysql -h mysqlserverhost -u <user-created-from-the-SQL-script> -p
 ```
+![](assets/3.png)
 Flags used:
 - --name gives the container a name
 - -it runs in interactive mode and Allocate a pseudo-TTY
@@ -154,16 +182,18 @@ Now you need to prepare a database schema so that the Tooling application can co
 ```bash
   git clone https://github.com/StegTechHub/tooling-02.git
 ```
+![](assets/4.png)
 2. On your terminal, export the location of the SQL file
 ```bash
   export tooling_db_schema=<path-to-tooling-schema-tile>/tooling_db_schema.sql
 ```
-You can find the tooling_db_schema.sql in the html folder of cloned repo.
-3. Use the SQL script to create the database and prepare the schema. With the docker exec command, you can execute a command in a running container.
+You can find the `tooling_db_schema.sql` in the html folder of cloned repo.
+3. Use the SQL script to create the database and prepare the schema.
+With the `docker exec` command, you can execute a command in a running container.
 ```bash
   docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < $tooling_db_schema
 ```
-4. Update the db_conn.php file with connection details to the database
+4. Update the `db_conn.php` file with connection details to the database
 ```php
 $servername = "mysqlserverhost";
 $username = "<user>";
@@ -171,14 +201,15 @@ $password = "<client-secret-password>";
 $dbname = "toolingdb";
 ```
 5. Run the Tooling App
+Containerization of an application starts with creation of a file with a special name - 'Dockerfile' _(without any extensions)_.
+This can be considered as a 'recipe' or 'instruction' that tells Docker how to pack your application into a container.
+In this project, you will build your container from a pre-created Dockerfile, but as a DevOps, you must also be able to write Dockerfiles.
 
-Containerization of an application starts with creation of a file with a special name - 'Dockerfile' (without any extensions). This can be considered as a 'recipe' or 'instruction' that tells Docker how to pack your application into a container. In this project, you will build your container from a pre-created Dockerfile, but as a DevOps, you must also be able to write Dockerfiles.
+You can watch this [video](https://www.youtube.com/watch?v=hnxI-K10auY) to get an idea how to create your Dockerfile and build a container from it.
 
-You can watch this video to get an idea how to create your Dockerfile and build a container from it.
+And on this page, you can find official Docker best practices for writing `Dockerfiles`.
 
-And on this page, you can find official Docker best practices for writing Dockerfiles.
-
-So, let us containerize our Tooling application; here is the plan:
+So, let us **containerize** our Tooling application; here is the plan:
 
 - Make sure you have checked out your Tooling repo to your machine with Docker engine
 - First, we need to build the Docker image the tooling app will use. The Tooling repo you cloned above has a Dockerfile for this purpose. Explore it and make sure you understand the code inside it.
@@ -191,14 +222,18 @@ Ensure you are inside the folder that has the Dockerfile and build your containe
 ```bash
 docker build -t tooling:0.0.1 .
 ```
-In the above command, we specify a parameter -t, so that the image can be tagged tooling"0.0.1 - Also, you have to notice the . at the end. This is important as that tells Docker to locate the Dockerfile in the current directory you are running the command. Otherwise, you would need to specify the absolute path to the Dockerfile.
+![](assets/5.png)
+In the above command, we specify a parameter -t, so that the image can be tagged tooling"0.0.1
+Also, you have to notice the `.` at the end.
+This is important as that tells Docker to locate the Dockerfile in the current directory you are running the command.
+Otherwise, you would need to specify the absolute path to the Dockerfile.
 
 6. Run the container:
 ```bash
 docker run --network tooling_app_network -p 8085:80 -it tooling:0.0.1
 ```
-Let us observe those flags in the command.
-
+![](assets/6.png)
+_Let us observe those flags in the command._
 - We need to specify the --network flag so that both the Tooling app and the database can easily connect on the same virtual network we created earlier.
 - The -p flag is used to map the container port with the host port. Within the container, apache is the webserver running and, by default, it listens on port 80. You can confirm this with the CMD ["start-apache"] section of the Dockerfile. But we cannot directly use port 80 on our host machine because it is already in use. The workaround is to use another port that is not used by the host machine. In our case, port 8085 is free, so we can map that to port 80 running in the container.
 
@@ -211,8 +246,10 @@ If everything works, you can open the browser and type
 ```http
 http://localhost:8085
 ```
+![](assets/8.png)
 You will see the login page.
 The default email is test@gmail.com, the password is 12345 or you can check users' credentials stored in the toolingdb.user table.
+![](assets/7.png)
 ## PRACTICE TASK №1 - IMPLEMENT A POC TO MIGRATE THE PHP-TODO APP INTO A CONTAINERIZED APPLICATION.
 
 Download php-todo repository from here
