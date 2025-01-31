@@ -86,6 +86,7 @@ docker run --name <container_name> -e MYSQL_ROOT_PASSWORD=<my-secret-pw> -d mysq
 docker ps -a
 ```
 ![](assets/mysqlrunning.png)
+
 ```
 CONTAINER ID   IMAGE                                COMMAND                  CREATED          STATUS                             PORTS                       NAMES
 7141da183562   mysql/mysql-server:latest            "/entrypoint.sh mysq…"   12 seconds ago   Up 11 seconds (health: starting)   3306/tcp, 33060-33061/tcp   mysql-server
@@ -130,6 +131,7 @@ Flags used
 - --network connects a container to a network
 - -h specifies a hostname
 ![](assets/3.png)
+
 If the image is not found locally, it will be downloaded from the registry.
 
 Verify the container is running:
@@ -141,6 +143,7 @@ CONTAINER ID   IMAGE                                COMMAND                  CRE
 7141da183562   mysql/mysql-server:latest            "/entrypoint.sh mysq…"   12 seconds ago   Up 11 seconds (health: starting)   3306/tcp, 33060-33061/tcp   mysql-server
 ```
 ![](assets/1.png)
+
 As you already know, it is best practice not to connect to the MySQL server remotely using the root user.
 Therefore, we will create an SQL script that will create a user we can use to connect remotely.
 
@@ -154,6 +157,7 @@ Run the script:
 docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < ./create_user.sql
 ```
 ![](assets/2.png)
+
 If you see a warning like below, it is acceptable to ignore:
 ```
 mysql: [Warning] Using a password on the command line interface can be insecure.
@@ -167,6 +171,7 @@ Run the MySQL Client Container:
 docker run --network tooling_app_network --name mysql-client -it --rm mysql mysql -h mysqlserverhost -u <user-created-from-the-SQL-script> -p
 ```
 ![](assets/3.png)
+
 Flags used:
 - --name gives the container a name
 - -it runs in interactive mode and Allocate a pseudo-TTY
@@ -183,6 +188,7 @@ Now you need to prepare a database schema so that the Tooling application can co
   git clone https://github.com/StegTechHub/tooling-02.git
 ```
 ![](assets/4.png)
+
 2. On your terminal, export the location of the SQL file
 ```bash
   export tooling_db_schema=<path-to-tooling-schema-tile>/tooling_db_schema.sql
@@ -223,6 +229,7 @@ Ensure you are inside the folder that has the Dockerfile and build your containe
 docker build -t tooling:0.0.1 .
 ```
 ![](assets/5.png)
+
 In the above command, we specify a parameter -t, so that the image can be tagged tooling"0.0.1
 Also, you have to notice the `.` at the end.
 This is important as that tells Docker to locate the Dockerfile in the current directory you are running the command.
@@ -233,6 +240,7 @@ Otherwise, you would need to specify the absolute path to the Dockerfile.
 docker run --network tooling_app_network -p 8085:80 -it tooling:0.0.1
 ```
 ![](assets/6.png)
+
 _Let us observe those flags in the command._
 - We need to specify the --network flag so that both the Tooling app and the database can easily connect on the same virtual network we created earlier.
 - The -p flag is used to map the container port with the host port. Within the container, apache is the webserver running and, by default, it listens on port 80. You can confirm this with the CMD ["start-apache"] section of the Dockerfile. But we cannot directly use port 80 on our host machine because it is already in use. The workaround is to use another port that is not used by the host machine. In our case, port 8085 is free, so we can map that to port 80 running in the container.
@@ -247,9 +255,11 @@ If everything works, you can open the browser and type
 http://localhost:8085
 ```
 ![](assets/8.png)
-You will see the login page.
+
+You will see the login page.  
 The default email is test@gmail.com, the password is 12345 or you can check users' credentials stored in the toolingdb.user table.
 ![](assets/7.png)
+
 ## PRACTICE TASK №1 - IMPLEMENT A POC TO MIGRATE THE PHP-TODO APP INTO A CONTAINERIZED APPLICATION.
 
 Download php-todo repository from here
