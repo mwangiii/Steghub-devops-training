@@ -260,15 +260,48 @@ You will see the login page.
 The default email is test@gmail.com, the password is 12345 or you can check users' credentials stored in the toolingdb.user table.
 ![](assets/7.png)
 
+![](assets/9.png)
 ## PRACTICE TASK №1 - IMPLEMENT A POC TO MIGRATE THE PHP-TODO APP INTO A CONTAINERIZED APPLICATION.
 
-Download php-todo repository from here
+Download php-todo repository from [here](https://github.com/StegTechHub/php-todo)
+![](assets/11.png)
 
 The project below will challenge you a little bit, but the experience there is very valuable for future projects.
 ### PART 1
 - Write a Dockerfile for the TODO app
+![](assets/12.png)
+![](assets/13.png)
 - Run both database and app on your laptop Docker Engine
+```bash
+docker run --network tooling_app_network -h mysqlserverhost --name=mysql-server -e MYSQL_ROOT_PASSWORD=$MYSQL_PW  -d mysql/mysql-server:latest
+```
+![](assets/14.png)
+
+- Create database and user using the script
+```bash
+docker exec -i mysql-server mysql -uroot -p$MYSQL_PW < ./create_user.sql
+```
+![](assets/15.png)
+
+- Run todo app
+- Build the todo app
+```bash
+docker build -t php-todo:0.0.1 .
+```
+![](assets/16.png)
+
+```bash
+docker run --network tooling_app_network --rm --name php-todo --env-file .env -p 8090:8000 -it php-todo:0.0.1
+```
+![](assets/17.png)
+
+- Migration has taken place in the previous run 
+![](assets/20.png)
+
 - Access the application from the browser
+![](assets/19.png)
+
+![](assets/18.png)
 
 ### PART 2
 - Create an account in Docker Hub
