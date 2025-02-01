@@ -304,9 +304,26 @@ docker run --network tooling_app_network --rm --name php-todo --env-file .env -p
 ![](assets/18.png)
 
 ### PART 2
-- Create an account in Docker Hub
+- Create an account in [Docker Hub](https://hub.docker.com/)
+![](assets/21.png)
+
 - Create a new Docker Hub repository
+![](assets/22.png)
+![](assets/23.png)
+- Sign in to docker and tag the docker image
+```bash
+docker login
+```
+![](assets/24.png)
+
+- Push the docker image to the repository created
+```bash
+docker tag php-todo:0.0.1 mwangiii/php-todo-app:0.0.1
+docker push mwangiii/php-todo-app:0.0.1
+```
+![](assets/25.png)
 - Push the docker images from your PC to the repository
+![](assets/26.png)
 
 ### PART 3
 - Write a Jenkinsfile that will simulate a Docker Build and a Docker Push to the registry
