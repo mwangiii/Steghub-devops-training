@@ -435,7 +435,8 @@ sudo apt-get update
 sudo systemctl start docker
 sudo systemctl enable docker
 ```
-- Install the Docker packages. To install the latest version, run:
+- Install the Docker packages.
+- To install the latest version, run:
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
@@ -445,21 +446,33 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo usermod -aG docker jenkins
 sudo systemctl restart jenkins
 ```
+![](assets/28.png)
+
 - Install docker plugins
 - Go to `Manage Jenkins` > `Manage Plugins` > `Available`.
 - Search for `Docker Pipeline` and install it.
+![](assets/29.png)
+
 - Docker Tool Configuration:
 - Check the path to Docker executable (Installed docker) by running
-- which docker
+```bash
+which docker
+```
+![](assets/30.png)
+
 - Go to `Manage Jenkins` > `Tools`, Scroll to Docker installations
-
 - Add Docker credentials to Jenkins.
-
-- Go to Jenkins Dashboard > Manage Jenkins > Credentials. Add your Docker username and password and the credential ID (from jenkinsfile) there.
+![](assets/31.png)
+- Go to Jenkins `Dashboard` > `Manage Jenkins` > `Credentials`. Add your Docker username and password and the credential ID (from jenkinsfile) there.
+![](assets/32.png)
+![](assets/33.png)
 
 2. Connect your repo to Jenkins
 - Add a webhook to the github repo
+![](assets/34.png)
+
 - Install Blue Ocean plugin and Open it from dashboard
+![](assets)
 - Select create New pipeline
 - Select Github and your Github account
 - Select the repo for the pipeline
@@ -468,8 +481,11 @@ sudo systemctl restart jenkins
 3. Create a multi-branch pipeline
 4. Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
 
-5. Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from. For example, feature-0.0.1.
+5. Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from.
+For example, feature-0.0.1.
 6. Verify that the images pushed from the CI can be found at the registry.
+![](assets/35.png)
+![](assets/36.png)
 
 
 
