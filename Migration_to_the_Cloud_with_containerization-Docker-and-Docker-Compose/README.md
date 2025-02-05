@@ -55,6 +55,8 @@ So, let us migrate the Tooling Web Application from a VM-based solution into a c
 ## MYSQL IN CONTAINER 
 Let us start assembling our application from the Database layer - we will use a pre-built MySQL database container, configure it, and make sure it is ready to receive requests from our PHP application.
 
+![](https://media3.giphy.com/media/rbynhxooY2D6Ujy80T/200.webp?cid=790b7611emfpb6kvl3b0rmjhb1bdfjady2b4ylxw0uto8jy1&ep=v1_gifs_search&rid=200.webp&ct=g)
+
 ### STEP 1: PULL MYSQL DOCKER IMAGE FROM DOCKER HUB REGISTRY 
 Start by pulling the appropriate Docker image for MySQL. You can download a specific version or opt for the latest release, as seen in the following command:
 ```bash
@@ -256,7 +258,10 @@ http://localhost:8085
 ```
 ![](assets/8.png)
 
-You will see the login page.  
+- You will see the login page.  
+
+![](https://media4.giphy.com/media/26gs8Ehf9MtAw12tW/giphy.webp?cid=790b7611tau5btqfgnwrvruda7r1r8kpfrvdzsebsjy2sl6g&ep=v1_gifs_search&rid=giphy.webp&ct=g)
+
 The default email is test@gmail.com, the password is 12345 or you can check users' credentials stored in the toolingdb.user table.
 ![](assets/7.png)
 
@@ -468,15 +473,16 @@ which docker
 ![](assets/33.png)
 
 2. Connect your repo to Jenkins
-- Add a webhook to the github repo
-![](assets/34.png)
+  - Add a webhook to the github repo
+  ![](assets/34.png)
 
-- Install Blue Ocean plugin and Open it from dashboard
-![](assets)
-- Select create New pipeline
-- Select Github and your Github account
-- Select the repo for the pipeline
-- Select create pipeline
+  - Install Blue Ocean plugin and Open it from dashboard
+  ![](assets)
+
+  - Select create New pipeline
+  - Select Github and your Github account
+  - Select the repo for the pipeline
+  - Select create pipeline
 
 3. Create a multi-branch pipeline
 4. Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
@@ -486,10 +492,6 @@ For example, feature-0.0.1.
 6. Verify that the images pushed from the CI can be found at the registry.
 ![](assets/35.png)
 ![](assets/36.png)
-
-
-
-
 
 
 ## DEPLOYMENT WITH DOCKER COMPOSE
@@ -511,12 +513,16 @@ services:
     volumes:
       - tooling_frontend:/var/www/html
 ```
+![](assets/38.png)
+
 The YAML file has declarative fields, and it is vital to understand what they are used for.
 - version: Is used to specify the version of Docker Compose API that the Docker Compose engine will connect to. This field is optional from docker compose version v1.27.0. You can verify your installed version with:
 ```bash
 docker-compose --version
 docker-compose version 1.28.5, build c4eb3a1f
 ```
+![](assets/37.png)
+
 - service: A service definition contains a configuration that is applied to each container started for that service. In the snippet above, the only service listed there is tooling_frontend. So, every other field under the tooling_frontend service will execute some commands that relate only to that service. Therefore, all the below-listed fields relate to the tooling_frontend service.
 - build
 - port
@@ -553,20 +559,26 @@ volumes:
   tooling_frontend:
   db:
 ```
+![](assets/39.png)
 Run the command to start the containers
 ```bash
 docker-compose -f tooling.yaml  up -d 
 ```
-Verify that the compose is in the running status:
-```bash
-docker compose ls
+![](assets/40.png)
+![](assets/41.png)
+
+- access it on the browser
+```http
+http://localhost:5000
 ```
-## PRACTICE TASK №2 - COMPLETE CONTINOUS INTEGRATION WITH A TEST STAGE
+![](assets/42.png)
+![](assets/43.png)
+<!-- ## PRACTICE TASK №2 - COMPLETE CONTINOUS INTEGRATION WITH A TEST STAGE
 - Document your understanding of all the fields specified in the Docker Compose file tooling.yaml
 - Update your Jenkinsfile with a test stage before pushing the image to the registry.
 - What you will be testing here is to ensure that the tooling site http endpoint is able to return status code 200. Any other code will be determined a stage failure.
 - Implement a similar pipeline for the PHP-todo app.
-- Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server.
+- Ensure that both pipelines have a clean-up stage where all the images are deleted on the Jenkins server. -->
 
 # CONGRATULATIONS!
 You have started your journey into migrating an application running on virtual machines into the Cloud with containerization.  
@@ -574,3 +586,4 @@ Now you know how to prepare a Dockerfile, build an image with Docker build and d
 In the next project, we will expand your skills further into more advanced use cases and technologies.
 
 ### <p align="center">WE MOVE ON TO THE NEXT PROJECT!</p>
+![](https://media2.giphy.com/media/F57ZWnEGmY442sBuK1/200.webp?cid=790b7611v5hmgvh5xbkqhrs8qs7ohlso7fihtfw1wtp8zhl8&ep=v1_gifs_search&rid=200.webp&ct=g)
