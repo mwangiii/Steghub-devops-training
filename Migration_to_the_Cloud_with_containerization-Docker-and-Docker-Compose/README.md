@@ -327,11 +327,154 @@ docker push mwangiii/php-todo-app:0.0.1
 
 ### PART 3
 - Write a Jenkinsfile that will simulate a Docker Build and a Docker Push to the registry
-- Connect your repo to Jenkins
-- Create a multi-branch pipeline
-- Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
-- Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from. For example, feature-0.0.1.
-- Verify that the images pushed from the CI can be found at the registry.
+```yml
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = "docker.io"
+        DOCKER_IMAGE = "mwasone/php-todo-app"
+    }
+
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git branch to build')
+    }
+
+    stages {
+        stage('Initial cleanup') {
+            steps {
+                dir("${WORKSPACE}") {
+                    deleteDir()
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "${params.BRANCH_NAME}"]],
+                        userRemoteConfigs: [[url: 'https://github.com/mwangiii/docker-php-todo.git']]
+                    ])
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def branchName = params.BRANCH_NAME
+                    env.TAG_NAME = branchName == 'main' ? 'latest' : "${branchName}-0.0.${env.BUILD_NUMBER}"
+                    
+                    sh """
+                    docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} .
+                    """
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker-logins', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh """
+                        echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin ${DOCKER_REGISTRY}
+                        docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME}
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Cleanup Docker Images') {
+            steps {
+                script {
+                    sh """
+                    docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.TAG_NAME} || true
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                sh 'docker logout'
+            }
+        }
+    }
+}
+
+```
+![](assets/27.png)
+- Launch ec2 instance for jenkins
+- Install docker on jenkins server
+
+```bash
+# Add Docker's official GPG key:
+sudo apt-get update
+
+sudo apt-get install ca-certificates curl
+
+sudo install -m 0755 -d /etc/apt/keyrings
+
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+- Install the Docker packages. To install the latest version, run:
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+- Ensure Jenkins Has Permission to Run Docker
+- Add Jenkins User to Docker Group
+```bash
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+```
+- Install docker plugins
+- Go to `Manage Jenkins` > `Manage Plugins` > `Available`.
+- Search for `Docker Pipeline` and install it.
+- Docker Tool Configuration:
+- Check the path to Docker executable (Installed docker) by running
+- which docker
+- Go to `Manage Jenkins` > `Tools`, Scroll to Docker installations
+
+- Add Docker credentials to Jenkins.
+
+- Go to Jenkins Dashboard > Manage Jenkins > Credentials. Add your Docker username and password and the credential ID (from jenkinsfile) there.
+
+2. Connect your repo to Jenkins
+- Add a webhook to the github repo
+- Install Blue Ocean plugin and Open it from dashboard
+- Select create New pipeline
+- Select Github and your Github account
+- Select the repo for the pipeline
+- Select create pipeline
+
+3. Create a multi-branch pipeline
+4. Simulate a CI pipeline from a feature and master branch using previously created Jenkinsfile
+
+5. Ensure that the tagged images from your Jenkinsfile have a prefix that suggests which branch the image was pushed from. For example, feature-0.0.1.
+6. Verify that the images pushed from the CI can be found at the registry.
+
+
+
+
+
 
 ## DEPLOYMENT WITH DOCKER COMPOSE
 
