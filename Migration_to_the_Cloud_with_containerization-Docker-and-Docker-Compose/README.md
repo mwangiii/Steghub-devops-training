@@ -586,4 +586,6 @@ Now you know how to prepare a Dockerfile, build an image with Docker build and d
 In the next project, we will expand your skills further into more advanced use cases and technologies.
 
 ### <p align="center">WE MOVE ON TO THE NEXT PROJECT!</p>
-![](https://media2.giphy.com/media/F57ZWnEGmY442sBuK1/200.webp?cid=790b7611v5hmgvh5xbkqhrs8qs7ohlso7fihtfw1wtp8zhl8&ep=v1_gifs_search&rid=200.webp&ct=g)
+<p align="center">
+  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjVobWd2aDV4YmtxaHJzOHFzN29obHNvN2ZpaHRmdzF3dHA4emhsOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l1J3CbFgn5o7DGRuE/200.webp" />
+</p>
