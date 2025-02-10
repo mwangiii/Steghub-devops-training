@@ -12,15 +12,15 @@ Why has it become so popular? It is a powerful Swiss-army knife when it comes to
 For now we will not list down all the features and benefits of Kubernetes, you can watch this [overview video](https://www.youtube.com/watch?v=VnvRFRk_51k) to get to know more, but you certainly must have this tool in your DevOps arsenal and know when and how to use if for production-grade deployments.
 
 This project is the first of a series Kubernetes-related practice projects, so get ready to become a professional containers' fleet "pilot"*.
-
-*Kubernetes (κυβερνήτης, Greek for "helmsman" or "pilot" or "governor", and the etymological root of cybernetics)
+_*Kubernetes (κυβερνήτης, Greek for "helmsman" or "pilot" or "governor", and the etymological root of cybernetics)_
 
 #### WHY MIGRATE FROM DOCKER COMPOSE TO K8S
+
 In the previous project you successfully deployed your Docker containers using Docker Compose, it is a great tool that helps avoiding execution of multiple CLI commands by preparing a declarative configuration file.
 It is handy when you deploy one or a few containers, but in most cases, it does not fit for production deployments.
 
 Because of the many limitations that Docker Compose has, it is very important for us to consider migrating our solution to more an advanced technology.
-The most common alternatives to Compose, amongst a few others, are Docker Swarm and Kubernetes.
+The most common alternatives to Compose, amongst a few others, are **Docker Swarm** and **Kubernetes**.
 
 #### WHAT IS WRONG WITH DOCKER COMPOSE?
 
@@ -28,15 +28,18 @@ It is important to understand that, DevOps is about "Culture" and NOT "Tools" Th
 different organizations have different needs and a good tool for one team may be bad for another just because their needs are not the same.
 In some teams, Docker Compose fit their needs perfectly, despite the perceived limitations.
 The major limitation of Docker Compose is that it can only be used to run workloads on a single computer host.
-Now, that is an obvious limitation because if our Tooling Application and its MySQL Database are all running on a single VM, like we did in Project 20, then this host is considered as a SPOF (i.e. - Single Point Of Failure).
+Now, that is an obvious limitation because if our Tooling Application and its MySQL Database are all running on a single VM, like we did in Project 20, then this host is considered as a **SPOF** (i.e. - Single Point Of Failure).
 
 So, could we say there is something wrong with Docker Compose?
 Not exactly, as a matter of fact, it is being used a lot in the industry. It fits well into some use cases that require speedy development and Proof of Concepts. As you will soon see, Kubernetes is a lot more complex technology, and it may be an overkill for some use cases.
-## Container Orchestration with KUBERNETES
+
+## CONTAINER ORCHESTRATION WITH KUBERNETES
+
 #### WHAT IS CONTAINER ORCHESTRATION?
 
 Two important things to remember about Docker containers are:
-  1. Unlike virtual machines, they are not designed to run for a very long time. By design, Docker containers are ephemeral.
+  1. Unlike virtual machines, they are not designed to run for a very long time.  
+  By design, Docker containers are **ephemeral**.
   By “ephemeral” it means that a container can be stopped and destroyed,
   and a new one can be built from the same Docker image and put in place with an absolute minimum set-up and configuration requirement.
   2. To ensure that container workloads are highly scalable, they must be configured to run across multiple compute nodes.
@@ -46,7 +49,8 @@ If we had two compute nodes to run our containers, let us consider a following s
   1. Given the two points mentioned above, if containers are configured to run across 2 computer nodes,
    and a particular container, running on Node 1 dies, how will it know that it can spin up again on Node 2?
   2. Let us imagine that Tooling website container is running on Node 1, and MySQL container is running on Node 2,
-  how will both containers be able to communicate with each other? Remember in Project 20,
+  how will both containers be able to communicate with each other?   
+  Remember in Project 20,
   we had to create a custom network on the same host and ensure that they can communicate through that network.
   But in the case of 2 separate hosts, this is natively not possible.
 
@@ -62,10 +66,10 @@ It is about automating the entire lifecycle of containers running across multipl
 - Health monitoring of containers
 - Securing the interactions between containers.
 
-Kubernetes is a tool designed to do Container Orchestration and it does its job very well when correctly configured.
-
+**Kubernetes is a tool designed to do Container Orchestration and it does its job very well when correctly configured.**  
 As mentioned earlier, there are other alternatives to Docker Compose. But, throughout the entire PBL program, we will not focus on **Docker Swarm**.
-We will rather spend more time with Kubernetes. Part of the reason for this is because Kubernetes has more functionalities and is widely in use in the industry.
+We will rather spend more time with Kubernetes.  
+Part of the reason for this is because Kubernetes has more functionalities and is widely in use in the industry.
 
 To know when to choose between Docker Swarm and Kubernetes, [Here is an interesting article](https://dzone.com/articles/quotdocker-swarm-or-kubernetesquot-is-it-the-right) to read with some very enlightening stats.
 
@@ -74,6 +78,8 @@ Kubernetes is a not a single package application that you can install with one c
 it is comprised of several components, some of them can be deployed as services, some can be also deployed as separate containers.
 
 Let us take a look at Kubernetes architecture diagram below:
+
+![](assets/1.png)
 
 Read about every component in the [official documentation](https://kubernetes.io/docs/concepts/overview/components/).
 
@@ -84,14 +90,15 @@ As an IT professional in general, you shall be comfortable using official docume
 ## "KUBERNETES FROM-GROUND-UP"
 #### K8S INSTALLATION OPTIONS
 
-So far, Kubernetes sounds like a lot of fun, right? With its intuitive architecture, and rich configuration options, you may already want to jump right in, spin up a few VMs and begin to install and configure a Kubernetes cluster. But hold on for a second.
+So far, Kubernetes sounds like a lot of fun, right?  
+With its intuitive architecture, and rich configuration options, you may already want to jump right in, spin up a few VMs and begin to install and configure a Kubernetes cluster. BUT HOLD ON FOR A SECOND!.  
 Installing and configuring Kubernetes is far from being a walk in the park, i.e., it is very difficult to implement and get it ready for production. Especially, if you want to setup a highly available, and secure Kubernetes cluster.
 
-The good news is, there are open-source tools available today that already has all the hard work done and you can plug into them easily.
+The good news is, there are open-source tools available today that already has all the hard work done and you can plug into them easily.  
 An example of that is `minikube`, which can be used during testing and development.
 
 For a better understanding of each aspect of spinning up a Kubernetes cluster, we will do it without any automated helpers.
-You will install each and every component manually from scratch and learn how to make them work together - we call this approach "K8s From-Ground-Up".
+You will install each and every component manually from scratch and learn how to make them work together - we call this approach **"K8s From-Ground-Up"**.
 
 To successfully implement _"K8s From-Ground-Up"_, the following and even more will be done by you as a K8s administrator:
 
@@ -106,7 +113,10 @@ To successfully implement _"K8s From-Ground-Up"_, the following and even more wi
 
 **Note:** _Unless you have any business or compliance restrictions, **ALWAYS** consider to use managed versions of K8s - Platform as a Service offerings, such as Azure Kubernetes Service (AKS), Amazon Elastic Kubernetes Service (Amazon EKS), or Google Kubernetes Engine (GKE) as they usually have better default security settings, and the costs for maintaining the control plane are very low._
 You will be able to appreciate automation tools and managed versions of Kubernetes much more after you have experienced all the lessons from the struggles and failures from the "K8s From-Ground-Up".
-Let us begin building out Kubernetes cluster from the ground
+
+**Let us begin building out Kubernetes cluster from the ground!**
+
+![](https://media4.giphy.com/media/V6jvsGS832gx387gri/200.webp?cid=790b76111j5au63sc310fy4h9ue8669hs6qlni8ow906bcar&ep=v1_gifs_search&rid=200.webp&ct=g)
 
 **DISCLAIMER:** _The following setup of Kubernetes should be used for learning purpose only, and not to be considered for production._
 _This is because setting up a K8s cluster for production use has a lot more moving parts, especially when it comes to planning the nodes, and securing the cluster._
@@ -139,7 +149,7 @@ First, you will need some client tools installed and configurations made on your
 
 ### INSTALL AND CONFIGURE AWS CLI
 Configure AWS CLI to access all AWS services used, for this you need to have a user with programmatic access keys configured in AWS Identity and Access Management (IAM):
-Generate access keys and store them in a safe place.
+Generate access keys and store them in a safe place.  
 On your local workstation download and install the [latest version of AWS CLI](https://aws.amazon.com/cli/)
 To [configure your AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) - run your shell (or cmd if using Windows) and run:
 
