@@ -149,14 +149,23 @@ First, you will need some client tools installed and configurations made on your
 
 ### INSTALL AND CONFIGURE AWS CLI
 Configure AWS CLI to access all AWS services used, for this you need to have a user with programmatic access keys configured in AWS Identity and Access Management (IAM):
-Generate access keys and store them in a safe place.  
-On your local workstation download and install the [latest version of AWS CLI](https://aws.amazon.com/cli/)
-To [configure your AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) - run your shell (or cmd if using Windows) and run:
 
 ![](assets/1.png)
+
+Set permissions
+
 ![](assets/3.png)
+
+Generate access keys and store them in a safe place
+
 ![](assets/4.png)
+
+On your local workstation download and install the [latest version of AWS CLI](https://aws.amazon.com/cli/)
+
 ![](assets/0.png)
+
+To [configure your AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) - run your shell (or cmd if using Windows) and run:
+
 
 ```bash
 $ aws configure --profile %your_username%
