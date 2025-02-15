@@ -153,6 +153,11 @@ Generate access keys and store them in a safe place.
 On your local workstation download and install the [latest version of AWS CLI](https://aws.amazon.com/cli/)
 To [configure your AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) - run your shell (or cmd if using Windows) and run:
 
+![](assets/1.png)
+![](assets/3.png)
+![](assets/4.png)
+![](assets/0.png)
+
 ```bash
 $ aws configure --profile %your_username%
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
@@ -160,11 +165,11 @@ AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [None]: us-west-2
 Default output format [None]: json
 ```
-
 Test your AWS CLI by running:
 ```bash
 aws ec2 describe-vpcs
 ```
+![](assets/5.png)
 
 and check if you can see VPC details.
 
@@ -209,6 +214,8 @@ Output:
 ```bash
 Client Version: version.Info{Major:"1", Minor:"20+", GitVersion:"v1.20.4-dirty", GitCommit:"e87da0bd6e03ec3fea7933c4b5263d151aafd07c", GitTreeState:"dirty", BuildDate:"2021-03-15T10:03:32Z", GoVersion:"go1.16.2", Compiler:"gc", Platform:"darwin/amd64"}
 ```
+
+![](assets/6.png)
 
 ### INSTALL CFSSL AND CFSSLJSON
 
@@ -256,6 +263,8 @@ chmod +x cfssl cfssljson
 ```bash
 sudo mv cfssl cfssljson /usr/local/bin/
 ```
+
+![](assets/7.png)
 
 ### AWS CLOUD RESOURCES FOR KUBERNETES CLUSTER
 
