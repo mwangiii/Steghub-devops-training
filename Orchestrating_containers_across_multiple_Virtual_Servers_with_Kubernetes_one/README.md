@@ -284,49 +284,48 @@ After that, you can destroy the entire project and start all over again using Te
 This manual approach will solidify your skills and give you the opportunity to face more challenges.
 
 ## STEP 1 - CONFIGURE NETWORK INFRASTRUCTURE
+##### VIRTUAL PRIVATE CLOUD - VPC
 
-Virtual Private Cloud - VPC
-
-    Create a directory named k8s-cluster-from-ground-up
-    Create a VPC and store the ID as a variable:
-
+1. Create a directory named k8s-cluster-from-ground-up
+2. Create a VPC and store the ID as a variable:
+```bash
 VPC_ID=$(aws ec2 create-vpc \
   --cidr-block 172.31.0.0/16 \
   --output text --query 'Vpc.VpcId'
   )
 
-    Tag the VPC so that it is named:
-
+```
+3. Tag the VPC so that it is named:
+```bash
 NAME=k8s-cluster-from-ground-up
 
 aws ec2 create-tags \
   --resources ${VPC_ID} \
   --tags Key=Name,Value=${NAME}
+```
 
-Domain Name System - DNS
+##### DOMAIN NAME SYSTEM - DNS
 
-    Enable DNS support for your VPC:
-
+4. Enable DNS support for your VPC:
+```bash
 aws ec2 modify-vpc-attribute \
   --vpc-id ${VPC_ID} \
   --enable-dns-support '{"Value": true}'
-
-    Enable DNS support for hostnames:
-
+```
+5. Enable DNS support for hostnames:
+```bash
 aws ec2 modify-vpc-attribute \
   --vpc-id ${VPC_ID} \
   --enable-dns-hostnames '{"Value": true}'
-
-AWS Region
-
-    Set the required region
-
+```
+##### AWS Region
+6. Set the required region
+```bash
 AWS_REGION=eu-central-1
-
-Subnet
-
-    Create the Subnet:
-
+```
+##### Subnet
+7. Create the Subnet:
+```bash
 SUBNET_ID=$(aws ec2 create-subnet \
   --vpc-id ${VPC_ID} \
   --cidr-block 172.31.0.0/24 \
@@ -334,11 +333,11 @@ SUBNET_ID=$(aws ec2 create-subnet \
 aws ec2 create-tags \
   --resources ${SUBNET_ID} \
   --tags Key=Name,Value=${NAME}
+```
 
-Internet Gateway - IGW
-
-    Create the Internet Gateway and attach it to the VPC:
-
+##### INTERNET GATEWAY - IGW
+8. Create the Internet Gateway and attach it to the VPC:
+```bash
 INTERNET_GATEWAY_ID=$(aws ec2 create-internet-gateway \
   --output text --query 'InternetGateway.InternetGatewayId')
 aws ec2 create-tags \
@@ -347,11 +346,12 @@ aws ec2 create-tags \
 aws ec2 attach-internet-gateway \
   --internet-gateway-id ${INTERNET_GATEWAY_ID} \
   --vpc-id ${VPC_ID}
+```
 
-Route tables
+##### ROUTE TABLES
+9. Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through the Internet Gateway:
 
-    Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through the Internet Gateway:
-
+```bash
 ROUTE_TABLE_ID=$(aws ec2 create-route-table \
   --vpc-id ${VPC_ID} \
   --output text --query 'RouteTable.RouteTableId')
@@ -365,9 +365,9 @@ aws ec2 create-route \
   --route-table-id ${ROUTE_TABLE_ID} \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id ${INTERNET_GATEWAY_ID}
-
+```
 Output:
-
+```
 {
     "AssociationId": "rtbassoc-07a8877e92504def7",
     "AssociationState": {
@@ -377,11 +377,10 @@ Output:
 {
     "Return": true
 }
-
-Security Groups
-
-    Configure security groups
-
+```
+##### SECURITY GROUPS
+10. Configure security groups
+```bash
 # Create the security group and store its ID in a variable
 SECURITY_GROUP_ID=$(aws ec2 create-security-group \
   --group-name ${NAME} \
@@ -424,22 +423,25 @@ aws ec2 authorize-security-group-ingress \
   --protocol icmp \
   --port -1 \
   --cidr 0.0.0.0/0
+```
 
-Network Load Balancer
 
-    Create a network Load balancer,
+##### NETWORK LOAD BALANCER
 
+11. Create a network Load balancer,
+
+```bash
 LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
   --name ${NAME} \
   --subnets ${SUBNET_ID} \
   --scheme internet-facing \
   --type network \
   --output text --query 'LoadBalancers[].LoadBalancerArn')
+```
 
-Tagret Group
-
-    Create a target group: (For now it will be unhealthy because there are no real targets yet.)
-
+##### TAGRET GROUP
+12. Create a target group: (For now it will be unhealthy because there are no real targets yet.)
+```bash
 TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
   --name ${NAME} \
   --protocol TCP \
@@ -447,30 +449,33 @@ TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
   --vpc-id ${VPC_ID} \
   --target-type ip \
   --output text --query 'TargetGroups[].TargetGroupArn')
-
-    Register targets: (Just like above, no real targets. You will just put the IP addresses so that, when the nodes become available, they will be used as targets.)
-
+```
+13. Register targets: (Just like above, no real targets. You will just put the IP addresses so that, when the nodes become available, they will be used as targets.)
+```bash
 aws elbv2 register-targets \
   --target-group-arn ${TARGET_GROUP_ARN} \
   --targets Id=172.31.0.1{0,1,2}
-
-    Create a listener to listen for requests and forward to the target nodes on TCP port 6443
-
+```
+14. Create a listener to listen for requests and forward to the target nodes on TCP port 6443
+```bash
 aws elbv2 create-listener \
   --load-balancer-arn ${LOAD_BALANCER_ARN} \
   --protocol TCP \
   --port 6443 \
   --default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
   --output text --query 'Listeners[].ListenerArn'
-
-K8s Public Address
-
-    Get the Kubernetes Public address
-
+```
+##### K8S PUBLIC ADDRESS
+15. Get the Kubernetes Public address
+```bash
 KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
   --load-balancer-arns ${LOAD_BALANCER_ARN} \
   --output text --query 'LoadBalancers[].DNSName')
+```
 
+---
+---
+---
 Step 2 - Create Compute Resources
 
 AMI
