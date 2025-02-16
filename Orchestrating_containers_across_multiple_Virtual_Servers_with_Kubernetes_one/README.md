@@ -331,8 +331,10 @@ aws ec2 modify-vpc-attribute \
 ##### AWS Region
 6. Set the required region
 ```bash
-AWS_REGION=eu-central-1
+AWS_REGION=us-west-2
 ```
+![](assets/11.png)
+
 ##### Subnet
 7. Create the Subnet:
 ```bash
@@ -344,6 +346,8 @@ aws ec2 create-tags \
   --resources ${SUBNET_ID} \
   --tags Key=Name,Value=${NAME}
 ```
+
+![](assets/12.png)
 
 ##### INTERNET GATEWAY - IGW
 8. Create the Internet Gateway and attach it to the VPC:
@@ -357,6 +361,8 @@ aws ec2 attach-internet-gateway \
   --internet-gateway-id ${INTERNET_GATEWAY_ID} \
   --vpc-id ${VPC_ID}
 ```
+
+![](assets/13.png)
 
 ##### ROUTE TABLES
 9. Create route tables, associate the route table to subnet, and create a route to allow external traffic to the Internet through the Internet Gateway:
@@ -376,6 +382,8 @@ aws ec2 create-route \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id ${INTERNET_GATEWAY_ID}
 ```
+
+![](assets/14.png)
 Output:
 ```
 {
@@ -388,6 +396,9 @@ Output:
     "Return": true
 }
 ```
+
+![](assets/15.png)
+
 ##### SECURITY GROUPS
 10. Configure security groups
 ```bash
@@ -435,6 +446,7 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
 ```
 
+![](assets/16.png)
 
 ##### NETWORK LOAD BALANCER
 
@@ -449,6 +461,9 @@ LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
   --output text --query 'LoadBalancers[].LoadBalancerArn')
 ```
 
+![](assets/17.png)
+
+
 ##### TAGRET GROUP
 12. Create a target group: (For now it will be unhealthy because there are no real targets yet.)
 ```bash
@@ -460,12 +475,19 @@ TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
   --target-type ip \
   --output text --query 'TargetGroups[].TargetGroupArn')
 ```
+
+![](assets/18.png)
+
 13. Register targets: (Just like above, no real targets. You will just put the IP addresses so that, when the nodes become available, they will be used as targets.)
+
 ```bash
 aws elbv2 register-targets \
   --target-group-arn ${TARGET_GROUP_ARN} \
   --targets Id=172.31.0.1{0,1,2}
 ```
+
+![](assets/19.png)
+
 14. Create a listener to listen for requests and forward to the target nodes on TCP port 6443
 ```bash
 aws elbv2 create-listener \
@@ -475,6 +497,9 @@ aws elbv2 create-listener \
   --default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
   --output text --query 'Listeners[].ListenerArn'
 ```
+
+![](assets/20.png)
+
 ##### K8S PUBLIC ADDRESS
 15. Get the Kubernetes Public address
 ```bash
@@ -483,10 +508,9 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
   --output text --query 'LoadBalancers[].DNSName')
 ```
 
----
----
----
-Step 2 - Create Compute Resources
+![](assets/21.png)
+
+## STEP 2 - CREATE COMPUTE RESOURCES
 
 AMI
 
