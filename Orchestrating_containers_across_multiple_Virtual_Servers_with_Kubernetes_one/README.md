@@ -514,7 +514,6 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 
 ##### AMI
 1. Get an image to create EC2 instances:
-
 ```bash
 IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
   --filters \
@@ -523,6 +522,13 @@ IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
   'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*' \
   | jq -r '.Images|sort_by(.Name)[-1]|.ImageId')
 ```
+
+Install jq (which is used for processing JSON output) if not already installed.
+```bash
+sudo snap install jq
+```
+
+![](assets/22.png)
 
 ##### SSH KEY-PAIR
 2. Create SSH Key-Pair
@@ -537,8 +543,11 @@ aws ec2 create-key-pair \
 chmod 600 ssh/${NAME}.id_rsa
 ```
 
+![](assets/23.png)
+
 ##### EC2 INSTANCES FOR CONTROLE PLANE (MASTER NODES)
-3. Create 3 Master nodes: Note - Using t2.micro instead of t2.small as t2.micro is covered by AWS free tier
+3. Create 3 Master nodes: 
+_Note - Using t3.micro instead of t3.small as t3.micro is covered by AWS free tier_
 ```bash
 for i in 0 1 2; do
   instance_id=$(aws ec2 run-instances \
@@ -547,19 +556,24 @@ for i in 0 1 2; do
     --count 1 \
     --key-name ${NAME} \
     --security-group-ids ${SECURITY_GROUP_ID} \
-    --instance-type t2.micro \
+    --instance-type t3.micro \
     --private-ip-address 172.31.0.1${i} \
     --user-data "name=master-${i}" \
     --subnet-id ${SUBNET_ID} \
     --output text --query 'Instances[].InstanceId')
+
   aws ec2 modify-instance-attribute \
     --instance-id ${instance_id} \
     --no-source-dest-check
+
   aws ec2 create-tags \
     --resources ${instance_id} \
     --tags "Key=Name,Value=${NAME}-master-${i}"
 done
+
 ```
+
+![](assets/24.png)
 
 ### EC2 INSTANCES FOR WORKER NODES
 1. Create 3 worker nodes:
@@ -571,19 +585,26 @@ for i in 0 1 2; do
     --count 1 \
     --key-name ${NAME} \
     --security-group-ids ${SECURITY_GROUP_ID} \
-    --instance-type t2.micro \
+    --instance-type t3.micro \
     --private-ip-address 172.31.0.2${i} \
     --user-data "name=worker-${i}|pod-cidr=172.20.${i}.0/24" \
     --subnet-id ${SUBNET_ID} \
     --output text --query 'Instances[].InstanceId')
+
   aws ec2 modify-instance-attribute \
     --instance-id ${instance_id} \
     --no-source-dest-check
+
   aws ec2 create-tags \
     --resources ${instance_id} \
     --tags "Key=Name,Value=${NAME}-worker-${i}"
 done
+
 ```
+
+![](assets/25.png)
+
+![](assets/26.png)
 
 ## STEP 3 PREPARE THE SELF-SIGNED CERTIFICATE AUTHORITY AND GENERATE TLS CERTIFICATES
 
@@ -654,6 +675,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 }
 ```
 
+![](assets/27.png)
 The file defines the following:
 
 ```
@@ -686,13 +708,17 @@ Output:
 List the directory to see the created files
 ```bash
 ls -ltr
+```
+![](assets/28.png)
 
+```
 -rw-r--r--  1 james  james   232 16 May 20:18 ca-config.json
 -rw-r--r--  1 james  james   207 16 May 20:18 ca-csr.json
 -rw-r--r--  1 james  james  1306 16 May 20:18 ca.pem
 -rw-------  1 james  james  1679 16 May 20:18 ca-key.pem
 -rw-r--r--  1 james  james  1001 16 May 20:18 ca.csr
 ```
+
 
 The 3 important files here are:
 - **ca.pem** - The Root Certificate
@@ -764,6 +790,9 @@ cfssl gencert \
   master-kubernetes-csr.json | cfssljson -bare master-kubernetes
 }
 ```
+
+![](assets/29.png)
+
 ### CREATING THE OTHER CERTIFICATES: FOR THE FOLLOWING KUBERNETES COMPONENTS:
 - Scheduler Client Certificate
 - Kube Proxy Client Certificate
@@ -803,6 +832,10 @@ cfssl gencert \
 
 }
 ```
+
+<!-- ![](assets/30.png) -->
+<!-- ![](assets/31.png) -->
+
 _If you see any warning message, it is safe to ignore it_
 
 3. kube-proxy Client Certificate and Private Key
@@ -838,6 +871,8 @@ cfssl gencert \
 }
 ```
 
+![](assets/32.png)
+
 4. kube-controller-manager Client Certificate and Private Key
 ```bash
 {
@@ -869,6 +904,8 @@ cfssl gencert \
 
 }
 ```
+
+![](assets/33.png)
 
 5. kubelet Client Certificate and Private Key
 
@@ -918,6 +955,7 @@ EOF
     ${NAME}-worker-${i}-csr.json | cfssljson -bare ${NAME}-worker-${i}
 done
 ```
+![](assets/31.png)
 
 6. Finally, kubernetes admin user's Client Certificate and Private Key
 
@@ -951,7 +989,11 @@ cfssl gencert \
 }
 ```
 
-7. Actually, we are not done yet! :tired_face:
+![](assets/35.png)
+
+7. Actually, we are not done yet!
+
+![](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcm9uM2Rlb28xYnhhNG4zMHpna29sc3gybzhyYzJwcWVrbzkxd2lucCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eeL8EcBBTwSMLACw6F/giphy.gif)
 
 There is one more pair of certificate and private key we need to generate. That is for the Token Controller: a part of the Kubernetes Controller Manager kube-controller-manager responsible for generating and signing service account tokens which are used by pods or other resources to establish connectivity to the api-server. Read more about Service Accounts from the official documentation.
 
@@ -986,6 +1028,33 @@ cfssl gencert \
   service-account-csr.json | cfssljson -bare service-account
 }
 ```
+
+![](assets/36.png)
+
+![](assets/34.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ---
 # ---
