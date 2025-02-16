@@ -286,7 +286,10 @@ This manual approach will solidify your skills and give you the opportunity to f
 ## STEP 1 - CONFIGURE NETWORK INFRASTRUCTURE
 ##### VIRTUAL PRIVATE CLOUD - VPC
 
-1. Create a directory named k8s-cluster-from-ground-up
+1. Create a directory named **k8s-cluster-from-ground-up**
+```bash
+mkdir -p k8s-cluster-from-ground-up
+```
 2. Create a VPC and store the ID as a variable:
 ```bash
 VPC_ID=$(aws ec2 create-vpc \
@@ -295,6 +298,8 @@ VPC_ID=$(aws ec2 create-vpc \
   )
 
 ```
+![](assets/8.png)
+
 3. Tag the VPC so that it is named:
 ```bash
 NAME=k8s-cluster-from-ground-up
@@ -303,6 +308,8 @@ aws ec2 create-tags \
   --resources ${VPC_ID} \
   --tags Key=Name,Value=${NAME}
 ```
+
+![](assets/10.png)
 
 ##### DOMAIN NAME SYSTEM - DNS
 
@@ -318,6 +325,9 @@ aws ec2 modify-vpc-attribute \
   --vpc-id ${VPC_ID} \
   --enable-dns-hostnames '{"Value": true}'
 ```
+
+![](assets/9.png)
+
 ##### AWS Region
 6. Set the required region
 ```bash
