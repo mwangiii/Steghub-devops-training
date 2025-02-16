@@ -512,21 +512,22 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 
 ## STEP 2 - CREATE COMPUTE RESOURCES
 
-AMI
+##### AMI
+1. Get an image to create EC2 instances:
 
-    Get an image to create EC2 instances:
-
+```bash
 IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
   --filters \
   'Name=root-device-type,Values=ebs' \
   'Name=architecture,Values=x86_64' \
   'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*' \
   | jq -r '.Images|sort_by(.Name)[-1]|.ImageId')
+```
 
-SSH key-pair
+##### SSH KEY-PAIR
+2. Create SSH Key-Pair
 
-    Create SSH Key-Pair
-
+```bash
 mkdir -p ssh
 
 aws ec2 create-key-pair \
@@ -534,11 +535,11 @@ aws ec2 create-key-pair \
   --output text --query 'KeyMaterial' \
   > ssh/${NAME}.id_rsa
 chmod 600 ssh/${NAME}.id_rsa
+```
 
-EC2 Instances for Controle Plane (Master Nodes)
-
-    Create 3 Master nodes: Note - Using t2.micro instead of t2.small as t2.micro is covered by AWS free tier
-
+##### EC2 INSTANCES FOR CONTROLE PLANE (MASTER NODES)
+3. Create 3 Master nodes: Note - Using t2.micro instead of t2.small as t2.micro is covered by AWS free tier
+```bash
 for i in 0 1 2; do
   instance_id=$(aws ec2 run-instances \
     --associate-public-ip-address \
@@ -558,11 +559,11 @@ for i in 0 1 2; do
     --resources ${instance_id} \
     --tags "Key=Name,Value=${NAME}-master-${i}"
 done
+```
 
-EC2 Instances for Worker Nodes
-
-    Create 3 worker nodes:
-
+### EC2 INSTANCES FOR WORKER NODES
+1. Create 3 worker nodes:
+```bash
 for i in 0 1 2; do
   instance_id=$(aws ec2 run-instances \
     --associate-public-ip-address \
@@ -582,35 +583,35 @@ for i in 0 1 2; do
     --resources ${instance_id} \
     --tags "Key=Name,Value=${NAME}-worker-${i}"
 done
+```
 
-Step 3 Prepare The Self-Signed Certificate Authority And Generate TLS Certificates
+## STEP 3 PREPARE THE SELF-SIGNED CERTIFICATE AUTHORITY AND GENERATE TLS CERTIFICATES
 
 The following components running on the Master node will require TLS certificates.
-
-    kube-controller-manager
-    kube-scheduler
-    etcd
-    kube-apiserver
-    kubelet
-    kube-proxy
+  - kube-controller-manager
+  - kube-scheduler
+  - etcd
+  - kube-apiserver
+  - kubelet
+  - kube-proxy
 
 The following components running on the Worker nodes will require TLS certificates.
 
-    kubelet
-    kube-proxy
+  - kubelet
+  - kube-proxy
 
 Therefore, you will provision a PKI Infrastructure using cfssl which will have a Certificate Authority. The CA will then generate certificates for all the individual components.
 
-Self-Signed Root Certificate Authority (CA)
+### SELF-SIGNED ROOT CERTIFICATE AUTHORITY (CA)
 
 Here, you will provision a CA that will be used to sign additional TLS certificates.
 
 Create a directory and cd into it:
-
+```bash
 mkdir ca-authority && cd ca-authority
-
+```
 Generate the CA configuration file, Root Certificate, and Private key:
-
+```bash
 {
 
 cat > ca-config.json <<EOF
@@ -651,9 +652,11 @@ EOF
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 }
+```
 
 The file defines the following:
 
+```
 CN – Common name for the authority
 
 algo – the algorithm used for the certificates
@@ -669,18 +672,19 @@ ST – State or province
 O – Organization
 
 OU – Organizational Unit
-
+```
 Output:
-
+```
 2021/05/16 20:18:44 [INFO] generating a new CA key and certificate from CSR
 2021/05/16 20:18:44 [INFO] generate received request
 2021/05/16 20:18:44 [INFO] received CSR
 2021/05/16 20:18:44 [INFO] generating key: rsa-2048
 2021/05/16 20:18:44 [INFO] encoded CSR
 2021/05/16 20:18:44 [INFO] signed certificate with serial number 478642753175858256977534824638605235819766817855
+```
 
 List the directory to see the created files
-
+```bash
 ls -ltr
 
 -rw-r--r--  1 james  james   232 16 May 20:18 ca-config.json
@@ -688,34 +692,32 @@ ls -ltr
 -rw-r--r--  1 james  james  1306 16 May 20:18 ca.pem
 -rw-------  1 james  james  1679 16 May 20:18 ca-key.pem
 -rw-r--r--  1 james  james  1001 16 May 20:18 ca.csr
+```
 
 The 3 important files here are:
+- **ca.pem** - The Root Certificate
+- **ca-key.pem** - The Private Key
+- **ca.csr** - The Certificate Signing Request
 
-    ca.pem - The Root Certificate
-    ca-key.pem - The Private Key
-    ca.csr - The Certificate Signing Request
-
-Generating TLS Certificates For Client and Server
+### GENERATING TLS CERTIFICATES FOR CLIENT AND SERVER
 
 You will need to provision Client/Server certificates for all the components. It is a MUST to have encrypted communication within the cluster. Therefore, the server here are the master nodes running the api-server component. While the client is every other component that needs to communicate with the api-server.
 
 Now we have a certificate for the Root CA, we can then begin to request more certificates which the different Kubernetes components, i.e. clients and server, will use to have encrypted communication.
 
 Remember, the clients here refer to every other component that will communicate with the api-server. These are:
+- kube-controller-manager
+- kube-scheduler
+- etcd
+- kubelet
+- kube-proxy
+- Kubernetes Admin User
 
-    kube-controller-manager
-    kube-scheduler
-    etcd
-    kubelet
-    kube-proxy
-    Kubernetes Admin User
-
-Let us begin with the Kubernetes API-Server Certificate and Private Key
+### LET US BEGIN WITH THE KUBERNETES API-SERVER CERTIFICATE AND PRIVATE KEY
 
 The certificate for the Api-server must have IP addresses, DNS names, and a Load Balancer address included. Otherwise, you will have a lot of difficulties connecting to the api-server.
-
-    Generate the Certificate Signing Request (CSR), Private Key and the Certificate for the Kubernetes Master Nodes.
-
+1. Generate the Certificate Signing Request (CSR), Private Key and the Certificate for the Kubernetes Master Nodes.
+```bash
 {
 cat > master-kubernetes-csr.json <<EOF
 {
@@ -761,17 +763,16 @@ cfssl gencert \
   -profile=kubernetes \
   master-kubernetes-csr.json | cfssljson -bare master-kubernetes
 }
+```
+### CREATING THE OTHER CERTIFICATES: FOR THE FOLLOWING KUBERNETES COMPONENTS:
+- Scheduler Client Certificate
+- Kube Proxy Client Certificate
+- Controller Manager Client Certificate
+- Kubelet Client Certificates
+- K8s admin user Client Certificate
 
-Creating the other certificates: for the following Kubernetes components:
-
-    Scheduler Client Certificate
-    Kube Proxy Client Certificate
-    Controller Manager Client Certificate
-    Kubelet Client Certificates
-    K8s admin user Client Certificate
-
-    kube-scheduler Client Certificate and Private Key
-
+2. kube-scheduler Client Certificate and Private Key
+```bash
 {
 
 cat > kube-scheduler-csr.json <<EOF
@@ -801,11 +802,11 @@ cfssl gencert \
   kube-scheduler-csr.json | cfssljson -bare kube-scheduler
 
 }
+```
+_If you see any warning message, it is safe to ignore it_
 
-If you see any warning message, it is safe to ignore it.
-
-    kube-proxy Client Certificate and Private Key
-
+3. kube-proxy Client Certificate and Private Key
+```bash
 {
 
 cat > kube-proxy-csr.json <<EOF
@@ -835,9 +836,10 @@ cfssl gencert \
   kube-proxy-csr.json | cfssljson -bare kube-proxy
 
 }
+```
 
-    kube-controller-manager Client Certificate and Private Key
-
+4. kube-controller-manager Client Certificate and Private Key
+```bash
 {
 cat > kube-controller-manager-csr.json <<EOF
 {
@@ -866,8 +868,9 @@ cfssl gencert \
   kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
 
 }
+```
 
-    kubelet Client Certificate and Private Key
+5. kubelet Client Certificate and Private Key
 
 Similar to how you configured the api-server's certificate, Kubernetes requires that the hostname of each worker node is included in the client certificate.
 
@@ -875,6 +878,7 @@ Also, Kubernetes uses a special-purpose authorization mode called Node Authorize
 
 Therefore, the certificate to be created must comply to these requirements. In the below example, there are 3 worker nodes, hence we will use bash to loop through a list of the worker nodes' hostnames, and based on each index, the respective Certificate Signing Request (CSR), private key and client certificates will be generated.
 
+```bash
 for i in 0 1 2; do
   instance="${NAME}-worker-${i}"
   instance_hostname="ip-172-31-0-2${i}"
@@ -913,9 +917,11 @@ EOF
     -profile=kubernetes \
     ${NAME}-worker-${i}-csr.json | cfssljson -bare ${NAME}-worker-${i}
 done
+```
 
-    Finally, kubernetes admin user's Client Certificate and Private Key
+6. Finally, kubernetes admin user's Client Certificate and Private Key
 
+```bash
 {
 cat > admin-csr.json <<EOF
 {
@@ -943,13 +949,14 @@ cfssl gencert \
   -profile=kubernetes \
   admin-csr.json | cfssljson -bare admin
 }
+```
 
-    Actually, we are not done yet! :tired_face:
+7. Actually, we are not done yet! :tired_face:
 
 There is one more pair of certificate and private key we need to generate. That is for the Token Controller: a part of the Kubernetes Controller Manager kube-controller-manager responsible for generating and signing service account tokens which are used by pods or other resources to establish connectivity to the api-server. Read more about Service Accounts from the official documentation.
 
 Alright, let us quickly create the last set of files, and we are done with PKIs
-
+```bash
 {
 
 cat > service-account-csr.json <<EOF
@@ -978,7 +985,11 @@ cfssl gencert \
   -profile=kubernetes \
   service-account-csr.json | cfssljson -bare service-account
 }
+```
 
+# ---
+# ---
+# ---
 Step 4 - Distributing the Client and Server Certificates
 
 Now it is time to start sending all the client and server certificates to their respective instances.
