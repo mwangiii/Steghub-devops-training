@@ -1792,6 +1792,8 @@ Check the status of the services. Start with the kube-scheduler and kube-control
 
 ![](assets/59.png)
 
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXVnZnlyYmMycGxhbjZuczFtNWpwcHJwZ3d5aTR4eWFoNmhnZXBuMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26Ff8xSyYAZtNsDaE/giphy.gif)
+
 ## TEST THAT EVERYTHING IS WORKING FINE
 1. To get the cluster details run:
 ```bash
