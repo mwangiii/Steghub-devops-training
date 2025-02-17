@@ -1036,41 +1036,18 @@ cfssl gencert \
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ---
-# ---
-# ---
-Step 4 - Distributing the Client and Server Certificates
+## STEP 4 - DISTRIBUTING THE CLIENT AND SERVER CERTIFICATES
 
 Now it is time to start sending all the client and server certificates to their respective instances.
 
-Let us begin with the worker nodes:
+Let us begin with the **worker nodes**:
 
 Copy these files securely to the worker nodes using scp utility
+- Root CA certificate - ca.pem
+- X509 Certificate for each worker node
+- Private Key of the certificate for each worker node
 
-    Root CA certificate - ca.pem
-    X509 Certificate for each worker node
-    Private Key of the certificate for each worker node
-
+```bash
 for i in 0 1 2; do
   instance="${NAME}-worker-${i}"
   external_ip=$(aws ec2 describe-instances \
@@ -1079,23 +1056,32 @@ for i in 0 1 2; do
   scp -i ../ssh/${NAME}.id_rsa \
     ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/; \
 done
-
+```
 OUTPUT:
-
+```
     ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/; \
 done
-ca.pem                                                                                                                                                                             100% 1350    48.2KB/s   00:00    
-k8s-cluster-from-ground-up-worker-0-key.pem                                                                                                                                        100% 1675    52.5KB/s   00:00    
-k8s-cluster-from-ground-up-worker-0.pem                                                                                                                                            100% 1594    48.9KB/s   00:00    
-ca.pem                                                                                                                                                                             100% 1350    35.9KB/s   00:00    
-k8s-cluster-from-ground-up-worker-1-key.pem                                                                                                                                        100% 1675    41.6KB/s   00:00    
-k8s-cluster-from-ground-up-worker-1.pem                                                                                                                                            100% 1594    44.0KB/s   00:00    
-ca.pem                                                                                                                                                                             100% 1350    44.7KB/s   00:00    
-k8s-cluster-from-ground-up-worker-2-key.pem                                                                                                                                        100% 1679    49.2KB/s   00:00    
+ca.pem  
+100% 1350    48.2KB/s   00:00    
+k8s-cluster-from-ground-up-worker-0-key.pem 
+100% 1675    52.5KB/s   00:00    
+k8s-cluster-from-ground-up-worker-0.pem                                      
+100% 1594    48.9KB/s   00:00    
+ca.pem                                                                               100% 1350    35.9KB/s   00:00    
+k8s-cluster-from-ground-up-worker-1-key.pem  
+100% 1675    41.6KB/s   00:00    
+k8s-cluster-from-ground-up-worker-1.pem   
+100% 1594    44.0KB/s   00:00    
+ca.pem     
+100% 1350    44.7KB/s   00:00    
+k8s-cluster-from-ground-up-worker-2-key.pem  
+100% 1679    49.2KB/s   00:00    
 k8s-cluster-from-ground-up-worker-2.pem   
+```
+**Master or Controller node:** - 
+_Note that only the api-server related files will be sent over to the master nodes._
 
-Master or Controller node: - Note that only the api-server related files will be sent over to the master nodes.
-
+```bash
 for i in 0 1 2; do
 instance="${NAME}-master-${i}" \
   external_ip=$(aws ec2 describe-instances \
@@ -1105,30 +1091,47 @@ instance="${NAME}-master-${i}" \
     ca.pem ca-key.pem service-account-key.pem service-account.pem \
     master-kubernetes.pem master-kubernetes-key.pem ubuntu@${external_ip}:~/;
 done
-
+```
 Output:
-
-ca.pem                                                                                                                                                                             100% 1350     8.4KB/s   00:00    
-ca-key.pem                                                                                                                                                                         100% 1675    44.7KB/s   00:00    
-service-account-key.pem                                                                                                                                                            100% 1675    45.3KB/s   00:00    
-service-account.pem                                                                                                                                                                100% 1440    42.0KB/s   00:00    
-master-kubernetes.pem                                                                                                                                                              100% 1956    58.5KB/s   00:00    
-master-kubernetes-key.pem                                                                                                                                                          100% 1671    47.5KB/s   00:00    
-ca.pem                                                                                                                                                                             100% 1350    42.9KB/s   00:00    
-ca-key.pem                                                                                                                                                                         100% 1675    46.3KB/s   00:00    
-service-account-key.pem                                                                                                                                                            100% 1675    44.1KB/s   00:00    
-service-account.pem                                                                                                                                                                100% 1440    46.9KB/s   00:00    
-master-kubernetes.pem                                                                                                                                                              100% 1956    54.6KB/s   00:00    
-master-kubernetes-key.pem                                                                                                                                                          100% 1671    48.7KB/s   00:00    
-ca.pem                                                                                                                                                                             100% 1350    41.8KB/s   00:00    
-ca-key.pem                                                                                                                                                                         100% 1675    45.4KB/s   00:00    
-service-account-key.pem                                                                                                                                                            100% 1675    52.5KB/s   00:00    
-service-account.pem                                                                                                                                                                100% 1440    45.6KB/s   00:00    
-master-kubernetes.pem                                                                                                                                                              100% 1956    48.9KB/s   00:00    
+```
+ca.pem                                                                               100% 1350     8.4KB/s   00:00    
+ca-key.pem  
+100% 1675    44.7KB/s   00:00    
+service-account-key.pem
+100% 1675    45.3KB/s   00:00    
+service-account.pem
+100% 1440    42.0KB/s   00:00    
+master-kubernetes.pem
+100% 1956    58.5KB/s   00:00    
+master-kubernetes-key.pem
+100% 1671    47.5KB/s   00:00    
+ca.pem
+100% 1350    42.9KB/s   00:00    
+ca-key.pem
+100% 1675    46.3KB/s   00:00    
+service-account-key.pem
+100% 1675    44.1KB/s   00:00    
+service-account.pem
+100% 1440    46.9KB/s   00:00    
+master-kubernetes.pem
+100% 1956    54.6KB/s   00:00    
+master-kubernetes-key.pem
+100% 1671    48.7KB/s   00:00    
+ca.pem
+100% 1350    41.8KB/s   00:00    
+ca-key.pem
+100% 1675    45.4KB/s   00:00    
+service-account-key.pem
+100% 1675    52.5KB/s   00:00    
+service-account.pem
+100% 1440    45.6KB/s   00:00    
+master-kubernetes.pem
+100% 1956    48.9KB/s   00:00    
 master-kubernetes-key.pem  
+```
+The _kube-proxy_,_kube-controller-manager_, _kube-scheduler_, and _kubelet_ client certificates will be used to generate client authentication configuration files later.
 
-The kube-proxy, kube-controller-manager, kube-scheduler, and kubelet client certificates will be used to generate client authentication configuration files later.
-Step 4 Use kubectl to Generate Kubernetes Configuration Files for Authentication
+## STEP 4 USE KUBECTL TO GENERATE KUBERNETES CONFIGURATION FILES FOR AUTHENTICATION
 
 All the work you are doing right now is ensuring that you do not face any difficulties by the time the Kubernetes cluster is up and running. In this step, you will create some files known as kubeconfig, which enables Kubernetes clients to locate and authenticate to the Kubernetes API Servers.
 
@@ -1138,14 +1141,15 @@ Now it's time to generate kubeconfig files for the kubelet, controller manager, 
 
 First, let us create a few environment variables for reuse by multiple commands.
 
+```bash
 KUBERNETES_API_SERVER_ADDRESS=$(aws elbv2 describe-load-balancers --load-balancer-arns ${LOAD_BALANCER_ARN} --output text --query 'LoadBalancers[].DNSName')
-
-    Generate the kubelet kubeconfig file
+```
+1. Generate the kubelet kubeconfig file
 
 For each of the nodes running the kubelet component, it is very important that the client certificate configured for that node is used to generate the kubeconfig. This is because each certificate has the node's DNS name or IP Address configured at the time the certificate was generated. It will also ensure that the appropriate authorization is applied to that node through the Node Authorizer
 
 Below command must be run in the directory where all the certificates were generated.
-
+```bash
 for i in 0 1 2; do
 
 instance="${NAME}-worker-${i}"
@@ -1173,9 +1177,9 @@ instance_hostname="ip-172-31-0-2${i}"
 
   kubectl config use-context default --kubeconfig=${instance}.kubeconfig
 done
-
+```
 Output:
-
+```
 Cluster "k8s-cluster-from-ground-up" set.
 
 User "system:node:ip-172-31-0-20.eu-central-1.compute.internal" set.
@@ -1199,31 +1203,31 @@ User "system:node:ip-172-31-0-22.eu-central-1.compute.internal" set.
 Context "default" created.
 
 Switched to context "default".
-
+```
 List the output
-
+```bash
 ls -ltr *.kubeconfig
-
+```
 OUTPUT:
-
+```
 -rw-------  1 james  staff  6602 22 Jun 20:40 k8s-cluster-from-ground-up-worker-0.kubeconfig
 -rw-------  1 james  staff  6602 22 Jun 20:40 k8s-cluster-from-ground-up-worker-1.kubeconfig
 -rw-------  1 james  staff  6606 22 Jun 20:40 k8s-cluster-from-ground-up-worker-2.kubeconfig
-
+```
 Open up the kubeconfig files generated and review the 3 different sections that have been configured:
-
-    Cluster
-    Credentials
-    And Kube Context
+- Cluster
+- Credentials
+- And Kube Context
 
 Kubeconfig file is used to organize information about clusters, users, namespaces and authentication mechanisms. By default, kubectl looks for a file named config in the $HOME/.kube directory. You can specify other kubeconfig files by setting the KUBECONFIG environment variable or by setting the --kubeconfig flag. To get to know more how to create your own kubeconfig files - read this documentation.
 
-Context part of kubeconfig file defines three main parameters: cluster, namespace and user. You can save several different contexts with any convenient names and switch between them when needed.
+**Context** part of kubeconfig file defines three main parameters: cluster, namespace and user. You can save several different contexts with any convenient names and switch between them when needed.
 
+```bash
 kubectl config use-context %context-name%
-
-    Generate the kube-proxy kubeconfig
-
+```
+2. Generate the kube-proxy kubeconfig
+```bash
 {
   kubectl config set-cluster ${NAME} \
     --certificate-authority=ca.pem \
@@ -1244,11 +1248,13 @@ kubectl config use-context %context-name%
 
   kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 }
+```
 
-    Generate the Kube-Controller-Manager kubeconfig
+3. Generate the Kube-Controller-Manager kubeconfig
 
 Notice that the --server is set to use 127.0.0.1. This is because, this component runs on the API-Server so there is no point routing through the Load Balancer.
 
+```bash
 {
   kubectl config set-cluster ${NAME} \
     --certificate-authority=ca.pem \
@@ -1269,9 +1275,10 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
 
   kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
 }
+```
 
-    Generating the Kube-Scheduler Kubeconfig
-
+4. Generating the Kube-Scheduler Kubeconfig
+```bash
 {
   kubectl config set-cluster ${NAME} \
     --certificate-authority=ca.pem \
@@ -1292,9 +1299,10 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
 
   kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 }
+```
 
-    Finally, generate the kubeconfig file for the admin user
-
+5. Finally, generate the kubeconfig file for the admin user
+```bash
 {
   kubectl config set-cluster ${NAME} \
     --certificate-authority=ca.pem \
@@ -1315,28 +1323,33 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
 
   kubectl config use-context default --kubeconfig=admin.kubeconfig
 }
+```
 
-TASK: Distribute the files to their respective servers, using scp and a for loop like we have done previously. This is a test to validate that you understand which component must go to which node.
-Step 5 Prepare the etcd database for encryption at rest.
+**TASK:**_Distribute the files to their respective servers, using scp and a for loop like we have done previously. This is a test to validate that you understand which component must go to which node._
+
+## STEP 5 PREPARE THE ETCD DATABASE FOR ENCRYPTION AT REST.
 
 Kubernetes uses etcd (A distributed key value store) to store variety of data which includes the cluster state, application configurations, and secrets. By default, the data that is being persisted to the disk is not encrypted. Any attacker that is able to gain access to this database can exploit the cluster since the data is stored in plain text. Hence, it is a security risk for Kubernetes that needs to be addressed.
 
 To mitigate this risk, we must prepare to encrypt etcd at rest. "At rest" means data that is stored and persists on a disk. Anytime you hear "in-flight" or "in transit" refers to data that is being transferred over the network. "In-flight" encryption is done through TLS.
 
-Generate the encryption key and encode it using base64
-
+##### GENERATE THE ENCRYPTION KEY AND ENCODE IT USING BASE64
+```
 ETCD_ENCRYPTION_KEY=$(head -c 64 /dev/urandom | base64) 
+```
 
 See the output that will be generated when called. Yours will be a different random string.
 
+```bash
 echo $ETCD_ENCRYPTION_KEY
+```
 
 OUTPUT:
-
+```
 OuxSvV5XUQVid4fNNbeyFEDTUPr1yozZPQ+E6Eqj80m1FSVDB6jOHt9miD/7kMdJIvVshlMgxY80wFajlqItug===$
-
+```
 ** Create an encryption-config.yaml file as documented officially by kubernetes
-
+```bash
 cat > encryption-config.yaml <<EOF
 kind: EncryptionConfig
 apiVersion: v1
@@ -1350,76 +1363,79 @@ resources:
               secret: ${ETCD_ENCRYPTION_KEY}
       - identity: {}
 EOF
+```
+Send the encryption file to the **Controller nodes** using scp and a for loop.
 
-Send the encryption file to the Controller nodes using scp and a for loop.
-Bootstrap etcd cluster
+##### BOOTSTRAP ETCD CLUSTER
 
-TIPS: Use a terminal multi-plexer like multi-tabbed putty or tmux to work with multiple terminal sessions simultaneously. It will make your life easier, especially when you need to work on multiple nodes and run the same command across all nodes. Imagine repeating the same commands on 10 different nodes, and you don not intend to start automating with a configuration management tool like Ansible yet.
+**TIPS:** _Use a terminal multi-plexer like multi-tabbed putty or tmux to work with multiple terminal sessions simultaneously. It will make your life easier, especially when you need to work on multiple nodes and run the same command across all nodes. Imagine repeating the same commands on 10 different nodes, and you don not intend to start automating with a configuration management tool like Ansible yet._
 
 The primary purpose of the etcd component is to store the state of the cluster. This is because Kubernetes itself is stateless. Therefore, all its stateful data will persist in etcd. Since Kubernetes is a distributed system - it needs a distributed storage to keep persistent data in it. etcd is a highly-available key value store that fits the purpose. All K8s cluster configurations are stored in a form of key value pairs in etcd, it also stores the actual and desired states of the cluster. etcd cluster is intelligent enough to watch for changes made on one instance and almost instantly replicate those changes to the rest of the instances, so all of them will be always reconciled.
 
-NOTE: Don not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your servers. Use tools like tmux to make it easy to run commands on multiple terminal screens at once.
+**NOTE:** _Don not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your servers. Use tools like tmux to make it easy to run commands on multiple terminal screens at once._
 
-    SSH into the controller server
+1. SSH into the controller server
 
-    Master-1
-
+  - Master-1
+```bash
   master_1_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-master-0" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${master_1_ip}
-
-    Master-2
-
+```
+  - Master-2
+```bash
   master_2_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-master-1" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${master_2_ip}
-
-    Master-3
-
+```
+  - Master-3
+```bash
   master_3_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-master-2" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${master_3_ip}
-
+```
 You should have a a similar pane like below. You should be able to see all the files that have been sent to the nodes.
 
-    Download and install etcd
-
+2. Download and install etcd
+```bash
   wget -q --show-progress --https-only --timestamping \
   "https://github.com/etcd-io/etcd/releases/download/v3.4.15/etcd-v3.4.15-linux-amd64.tar.gz"
-
-    Extract and install the etcd server and the etcdctl command line utility:
-
+```
+3. Extract and install the etcd server and the etcdctl command line utility:
+```bash
 {
   tar -xvf etcd-v3.4.15-linux-amd64.tar.gz
   sudo mv etcd-v3.4.15-linux-amd64/etcd* /usr/local/bin/
 }
-
-    Configure the etcd server
-
+```
+4. Configure the etcd server
+```bash
 {
   sudo mkdir -p /etc/etcd /var/lib/etcd
   sudo chmod 700 /var/lib/etcd
   sudo cp ca.pem master-kubernetes-key.pem master-kubernetes.pem /etc/etcd/
 }
-
-    The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
-
+```
+5. The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
+```bash
 export INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+```
 
-    Each etcd member must have a unique name within an etcd cluster. Set the etcd name to node Private IP address so it will uniquely identify the machine:
-
+6. Each etcd member must have a unique name within an etcd cluster. Set the etcd name to node Private IP address so it will uniquely identify the machine:
+```bash
 ETCD_NAME=$(curl -s http://169.254.169.254/latest/user-data/ \
   | tr "|" "\n" | grep "^name" | cut -d"=" -f2)
   
 echo ${ETCD_NAME}
+```
+7. Create the etcd.service systemd unit file:
 
-    Create the etcd.service systemd unit file:
+The flags are well documented [here](https://www.bookstack.cn/read/etcd-3.2.17-en/717bafd59fa87192.md)
 
-The flags are well documented here
-
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/etcd.service
 [Unit]
 Description=etcd
@@ -1451,56 +1467,60 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-
-    Start and enable the etcd Server
-
+```
+8. Start and enable the etcd Server
+```bash
 {
   sudo systemctl daemon-reload
   sudo systemctl enable etcd
   sudo systemctl start etcd
 }
-
-    Verify the etcd installation
-
+```
+    
+9. Verify the etcd installation
+```bash
 sudo ETCDCTL_API=3 etcdctl member list \
   --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/etcd/ca.pem \
   --cert=/etc/etcd/master-kubernetes.pem \
   --key=/etc/etcd/master-kubernetes-key.pem
-
+```
 Output:
-
+```
 6709c481b5234095, started, master-0, https://172.31.0.10:2380, https://172.31.0.10:2379, false
 ade74a4f39c39f33, started, master-1, https://172.31.0.11:2380, https://172.31.0.11:2379, false
 ed33b44c0b153ee3, started, master-2, https://172.31.0.12:2380, https://172.31.0.12:2379, false
-
+```
+```bash
 systemctl status etcd
+```
 
-Bootstrap the Control Plane
+### BOOTSTRAP THE CONTROL PLANE
 
 In this section, you will configure the components for the control plane on the master/controller nodes.
-
-    Create the Kubernetes configuration directory:
-
+1. Create the Kubernetes configuration directory:
+```bash
 sudo mkdir -p /etc/kubernetes/config
-
-    Download the official Kubernetes release binaries:
-
+```
+2. Download the official Kubernetes release binaries:
+```bash
 wget -q --show-progress --https-only --timestamping \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-apiserver" \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-controller-manager" \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-scheduler" \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
+```
 
-    Install the Kubernetes binaries:
-
+3. Install the Kubernetes binaries:
+```bash
 {
   chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
   sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 }
+```
 
-    Configure the Kubernetes API Server:
-
+4. Configure the Kubernetes API Server:
+```
 {
   sudo mkdir -p /var/lib/kubernetes/
 
@@ -1508,14 +1528,18 @@ wget -q --show-progress --https-only --timestamping \
     service-account-key.pem service-account.pem \
     encryption-config.yaml /var/lib/kubernetes/
 }
+```
 
 The instance internal IP address will be used to advertise the API Server to members of the cluster. Retrieve the internal IP address for the current compute instance:
 
+```bash
 export INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 export export KUBERNETES_API_SERVER_ADDRESS="k8s-api-server.svc.steghub.com"
+```
 
 Create the kube-apiserver.service systemd unit file: Ensure to read each startup flag used in below systemd file from the documentation here
 
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-apiserver.service
 [Unit]
 Description=Kubernetes API Server
@@ -1558,22 +1582,23 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+```
 
-    Configure the Kubernetes Controller Manager:
-
+5. Configure the Kubernetes Controller Manager:
 Move the kube-controller-manager kubeconfig into place:
-
+```bash
 sudo mv kube-controller-manager.kubeconfig /var/lib/kubernetes/
-
+```
 Export some variables to retrieve the vpc_cidr - This will be required for the bind-address flag:
-
+```bash
 export AWS_METADATA="http://169.254.169.254/latest/meta-data"
 export EC2_MAC_ADDRESS=$(curl -s $AWS_METADATA/network/interfaces/macs/ | head -n1 | tr -d '/')
 export VPC_CIDR=$(curl -s $AWS_METADATA/network/interfaces/macs/$EC2_MAC_ADDRESS/vpc-ipv4-cidr-block/)
 export NAME=k8s-cluster-from-ground-up
+```
 
 Create the kube-controller-manager.service systemd unit file:
-
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-controller-manager.service
 [Unit]
 Description=Kubernetes Controller Manager
@@ -1601,16 +1626,17 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-
-    Configure the Kubernetes Scheduler:
+```
+6. Configure the Kubernetes Scheduler:
 
 Move the kube-scheduler kubeconfig into place:
-
+```bash
 sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 sudo mkdir -p /etc/kubernetes/config
+```
 
 Create the kube-scheduler.yaml configuration file:
-
+```bash
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
 apiVersion: kubescheduler.config.k8s.io/v1beta1
 kind: KubeSchedulerConfiguration
@@ -1619,9 +1645,10 @@ clientConnection:
 leaderElection:
   leaderElect: true
 EOF
+```
 
 Create the kube-scheduler.service systemd unit file:
-
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-scheduler.service
 [Unit]
 Description=Kubernetes Scheduler
@@ -1637,42 +1664,40 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-
-    Start the Controller Services
-
+```
+7. Start the Controller Services
+```bash
 {
   sudo systemctl daemon-reload
   sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
   sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 }
-
+```
 Check the status of the services. Start with the kube-scheduler and kube-controller-manager. It may take up to 20 seconds for kube-apiserver to be fully loaded.
 
 { sudo systemctl status kube-apiserver sudo systemctl status kube-controller-manager sudo systemctl status kube-scheduler }
 
-NOTE: There is a trap in the entire setup you have been going through, and so the api-server will not start up on your server if you have followed the exact steps so far. As a DevOps engineer, you must be able to solve problems.
+**NOTE:** _There is a trap in the entire setup you have been going through, and so the api-server will not start up on your server if you have followed the exact steps so far. As a DevOps engineer, you must be able to solve problems._
 
-HINTS:
+**HINTS:**
+  1. The problem relates to etcd configuration.
+  2. Check the systemd logs for the api-server. The problem will be clearly logged, and it will give you an idea what is wrong. Find out how to fix it.
 
-    The problem relates to etcd configuration.
-    Check the systemd logs for the api-server. The problem will be clearly logged, and it will give you an idea what is wrong. Find out how to fix it.
-
-Test that Everything is working fine
-
-    To get the cluster details run:
-
+## TEST THAT EVERYTHING IS WORKING FINE
+1. To get the cluster details run:
+```bash
 kubectl cluster-info  --kubeconfig admin.kubeconfig
-
+```
 OUTPUT:
-
+```
 Kubernetes control plane is running at https://k8s-api-server.svc.steghub.com:6443
-
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-
-    To get the current namespaces:
-
+```
+2. To get the current namespaces:
+```bash
 kubectl get namespaces --kubeconfig admin.kubeconfig
-
+```
+```
 OUTPUT:
 
 NAME              STATUS   AGE
@@ -1680,11 +1705,12 @@ default           Active   22m
 kube-node-lease   Active   22m
 kube-public       Active   22m
 kube-system       Active   22m
-
-    To reach the Kubernetes API Server publicly
-
+```
+3. To reach the Kubernetes API Server publicly
+```bash
 curl --cacert /var/lib/kubernetes/ca.pem https://$INTERNAL_IP:6443/version
-
+```
+```
 OUTPUT:
 
 {
@@ -1698,15 +1724,17 @@ OUTPUT:
   "compiler": "gc",
   "platform": "linux/amd64"
 }
+```
 
-    To get the status of each component:
-
+4. To get the status of each component:
+```bash
 kubectl get componentstatuses --kubeconfig admin.kubeconfig
+```
 
-    On one of the controller nodes, configure Role Based Access Control (RBAC) so that the api-server has necessary authorization for for the kubelet.
+5. On one of the controller nodes, configure Role Based Access Control (RBAC) so that the api-server has necessary authorization for for the kubelet.
 
-Create the ClusterRole:
-
+Create the **ClusterRole**:
+```bash
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -1728,9 +1756,9 @@ rules:
     verbs:
       - "*"
 EOF
-
-Create the ClusterRoleBinding to bind the kubernetes user with the role created above:
-
+```
+Create the **ClusterRoleBinding** to bind the kubernetes user with the role created above:
+```bash
 cat <<EOF | kubectl --kubeconfig admin.kubeconfig  apply -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -1746,19 +1774,19 @@ subjects:
     kind: User
     name: kubernetes
 EOF
+```
 
-Configuring the Kubernetes Worker nodes
+## CONFIGURING THE KUBERNETES WORKER NODES
 
 Before we begin to bootstrap the worker nodes, it is important to understand that the K8s API Server authenticates to the kubelet as the kubernetes user using the same kubernetes.pem certificate.
 
 We need to configure Role Based Access (RBAC) for Kubelet Authorization:
+1. Configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
 
-    Configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
-
-Create the system:kube-apiserver-to-kubelet ClusterRole with permissions to access the Kubelet API and perform most common tasks associated with managing pods on the worker nodes:
+Create the *system:kube-apiserver-to-kubelet* ClusterRole with permissions to access the Kubelet API and perform most common tasks associated with managing pods on the worker nodes:
 
 Run the below script on the Controller node:
-
+```bash
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -1780,9 +1808,10 @@ rules:
     verbs:
       - "*"
 EOF
+```
+2. Bind the system:kube-apiserver-to-kubelet ClusterRole to the kubernetes user so that API server can authenticate successfully to the kubelets on the worker nodes:
 
-    Bind the system:kube-apiserver-to-kubelet ClusterRole to the kubernetes user so that API server can authenticate successfully to the kubelets on the worker nodes:
-
+```bash
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -1798,56 +1827,57 @@ subjects:
     kind: User
     name: kubernetes
 EOF
+```
 
-Bootstraping components on the worker nodes
+## BOOTSTRAPING COMPONENTS ON THE WORKER NODES
 
 The following components will be installed on each node:
+- kubelet
+- kube-proxy
+- Containerd or Docker
+- Networking plugins
 
-    kubelet
-    kube-proxy
-    Containerd or Docker
-    Networking plugins
+1. SSH into the worker nodes
+  - Worker-1
 
-    SSH into the worker nodes
-        Worker-1
-
+```bash
   worker_1_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-worker-0" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_1_ip}
-
-    Worker-2
-
+```
+  - Worker-2
+```bash
   worker_2_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-worker-1" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_2_ip}
-
-    Worker-3
-
+```
+  - Worker-3
+```bash
   worker_3_ip=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=${NAME}-worker-2" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${worker_3_ip}
+```
 
-    Install OS dependencies:
-
+2. Install OS dependencies:
+```bash
 {
   sudo apt-get update
   sudo apt-get -y install socat conntrack ipset
 }
+```
+##### MORE ABOUT THE DEPENDENCIES:
+- **socat.** Socat is the default implementation for Kubernetes port-forwarding when using dockershim for the kubelet runtime. You will get to experience port-forwarding with Kubernetes in the next project. But what is Dockershim?
+- **Dockershim** was a temporary solution proposed by the Kubernetes community to add support for Docker so that it could serve as its container runtime. You should always remember that Kubernetes can use different container runtime to run containers inside its pods. For many years, Docker has been adopted widely and has been used as the container runtime for kubernetes. Hence the implementation that allowed docker is called the Dockershim. If you check the source code of Dockershim, you will see that socat was used to implement the port-forwarding functionality.
+- **conntrack** Connection tracking (“conntrack”) is a core feature of the Linux kernel's networking stack. It allows the kernel to keep track of all logical network connections or flows, and thereby identify all of the packets which make up each flow so they can be handled consistently together. It is essential for performant complex networking of Kubernetes where nodes need to track connection information between thousands of pods and services.
+- **ipset** is an extension to iptables which is used to configure firewall rules on a Linux server. ipset is a module extension to iptables that allows firewall configuration on a "set" of IP addresses. Compared with how iptables does the configuration linearly, ipset is able to store sets of addresses and index the data structure, making lookups very efficient, even when dealing with large sets. Kubernetes uses ipsets to implement a distributed firewall solution that enforces network policies within the cluster. This can then help to further restrict communications across pods or namespaces. For example, if a namespace is configured with DefaultDeny isolation type (Meaning no connection is allowed to the namespace from another namespace), network policies can be configured in the namespace to whitelist the traffic to the pods in that namespace.
 
-More about the dependencies:
-
-    socat. Socat is the default implementation for Kubernetes port-forwarding when using dockershim for the kubelet runtime. You will get to experience port-forwarding with Kubernetes in the next project. But what is Dockershim?
-    Dockershim was a temporary solution proposed by the Kubernetes community to add support for Docker so that it could serve as its container runtime. You should always remember that Kubernetes can use different container runtime to run containers inside its pods. For many years, Docker has been adopted widely and has been used as the container runtime for kubernetes. Hence the implementation that allowed docker is called the Dockershim. If you check the source code of Dockershim, you will see that socat was used to implement the port-forwarding functionality.
-    conntrack Connection tracking (“conntrack”) is a core feature of the Linux kernel's networking stack. It allows the kernel to keep track of all logical network connections or flows, and thereby identify all of the packets which make up each flow so they can be handled consistently together. It is essential for performant complex networking of Kubernetes where nodes need to track connection information between thousands of pods and services.
-    ipset is an extension to iptables which is used to configure firewall rules on a Linux server. ipset is a module extension to iptables that allows firewall configuration on a "set" of IP addresses. Compared with how iptables does the configuration linearly, ipset is able to store sets of addresses and index the data structure, making lookups very efficient, even when dealing with large sets. Kubernetes uses ipsets to implement a distributed firewall solution that enforces network policies within the cluster. This can then help to further restrict communications across pods or namespaces. For example, if a namespace is configured with DefaultDeny isolation type (Meaning no connection is allowed to the namespace from another namespace), network policies can be configured in the namespace to whitelist the traffic to the pods in that namespace.
-
-Quick Overview Of Kubernetes Network Policy And How It Is Implemented
+##### QUICK OVERVIEW OF KUBERNETES NETWORK POLICY AND HOW IT IS IMPLEMENTED
 
 Kubernetes network policies are application centric compared to infrastructure/network centric standard firewalls. There are no explicit CIDR or IP used for matching source or destination IP’s. Network policies build up on labels and selectors which are key concepts of Kubernetes that are used for proper organization (for e.g dedicating a namespace to data layer and controlling which app is able to connect there). A typical network policy that controls who can connect to the database namespace will look like below:
-
+```bash
 apiVersion: extensions/v1beta1
 kind: NetworkPolicy
 metadata:
@@ -1868,31 +1898,32 @@ spec:
    ports:
      - protocol: tcp
      port: 3306
+```
 
-NOTE: Best practice is to use solutions like RDS for database implementation. So the above is just to help you understand the concept.
+**NOTE:** _Best practice is to use solutions like RDS for database implementation. So the above is just to help you understand the concept._
 
-    Disable Swap
+3. Disable Swap
 
-If swap) is not disabled, kubelet will not start. It is highly recommended to allow Kubernetes to handle resource allocation.
+If **(swap)** is not disabled, kubelet will not start. It is highly recommended to allow Kubernetes to handle resource allocation.
 
 Test if swap is already enabled on the host:
-
+```bash
 sudo swapon --show
-
-If there is no output, then you are good to go. Otherwise, run below command to turn it off
-
+```
+If there is no output, then you are good to go.
+Otherwise, run below command to turn it off
+```bash
 sudo swapoff -a
-
-    Download and install a container runtime. (Docker Or Containerd)
+```
+4. Download and install a container runtime. (Docker Or Containerd)
 
 Before you install any container runtime, you need to understand that Docker is now deprecated, and Kubernetes no longer supports the Dockershim codebase from v1.20 release
 
-Read more about this notice here
-
+[Read more about this notice here](https://kubernetes.io/blog/2020/12/02/dockershim-faq/)
 If you install Docker, it will work. But be aware of this huge change.
 
-    Docker
-
+- Docker
+```bash
 sudo apt update -y && \
 sudo apt -y install apt-transport-https ca-certificates curl software-properties-common && \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
@@ -1902,19 +1933,21 @@ apt-cache policy docker-ce && \
 sudo apt -y install docker-ce && \
 sudo usermod -aG docker ${USER} && \
 sudo systemctl status docker
+```
 
-NOTE: exit the shell and log back in. Otherwise, you will face a permission denied error. Alternatively, you can run newgrp docker without exiting the shell. But you will need to provide the password of the logged in user
+**NOTE:** _exit the shell and log back in. Otherwise, you will face a permission denied error. Alternatively, you can run newgrp docker without exiting the shell. But you will need to provide the password of the logged in user_
 
-    Containerd
+- Containerd
 
 Download binaries for runc, cri-ctl, and containerd
-
+```bash
   wget https://github.com/opencontainers/runc/releases/download/v1.0.0-rc93/runc.amd64 \
   https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz \
   https://github.com/containerd/containerd/releases/download/v1.4.4/containerd-1.4.4-linux-amd64.tar.gz 
+```
 
 Configure containerd:
-
+```bash
 {
   mkdir containerd
   tar -xvf crictl-v1.21.0-linux-amd64.tar.gz
@@ -1924,9 +1957,11 @@ Configure containerd:
   sudo mv crictl runc /usr/local/bin/
   sudo mv containerd/bin/* /bin/
 }
-
+```
+```bash
 sudo mkdir -p /etc/containerd/
-
+```
+```bash
 cat << EOF | sudo tee /etc/containerd/config.toml
 [plugins]
   [plugins.cri.containerd]
@@ -1936,9 +1971,9 @@ cat << EOF | sudo tee /etc/containerd/config.toml
       runtime_engine = "/usr/local/bin/runc"
       runtime_root = ""
 EOF
-
+```
 Create the containerd.service systemd unit file:
-
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/containerd.service
 [Unit]
 Description=containerd container runtime
@@ -1960,9 +1995,11 @@ LimitCORE=infinity
 [Install]
 WantedBy=multi-user.target
 EOF
+```
 
-    Create directories for to configure kubelet, kube-proxy, cni, and a directory to keep the kubernetes root ca file:
+5. Create directories for to configure kubelet, kube-proxy, cni, and a directory to keep the kubernetes root ca file:
 
+```bash
 sudo mkdir -p \
   /var/lib/kubelet \
   /var/lib/kube-proxy \
@@ -1970,8 +2007,8 @@ sudo mkdir -p \
   /opt/cni/bin \
   /var/lib/kubernetes \
   /var/run/kubernetes
-
-    Download and Install CNI
+```
+6. Download and Install CNI
 
 CNI (Container Network Interface), a Cloud Native Computing Foundation project, consists of a specification and libraries for writing plugins to configure network interfaces in Linux containers. It also comes with a number of plugins.
 
@@ -1979,15 +2016,16 @@ Kubernetes uses CNI as an interface between network providers and Kubernetes Pod
 
 Download the plugins available from containernetworking's GitHub repo and read more about CNIs and why it is being developed.
 
+```bash
 wget -q --show-progress --https-only --timestamping \
   https://github.com/containernetworking/plugins/releases/download/v0.9.1/cni-plugins-linux-amd64-v0.9.1.tgz
-
+```
 Install CNI into /opt/cni/bin/
-
+```bash
 sudo tar -xvf cni-plugins-linux-amd64-v0.9.1.tgz -C /opt/cni/bin/
-
+```
 The output shows the plugins that comes with the CNI.
-
+```bash
 ./
 ./macvlan
 ./flannel
@@ -2006,46 +2044,49 @@ The output shows the plugins that comes with the CNI.
 ./ptp
 ./ipvlan
 ./bandwidth
-
+```
 There are few other plugins that are not included in the CNI, which are also widely used in the industry. They all have their unique implementation approach and set of features.
 
 Click to read more about each of the network plugins below:
+- [Calico](https://www.projectcalico.org/)
+- [Weave Net](https://www.projectcalico.org/)
+- [flannel](https://github.com/flannel-io/flannel)
 
-    Calico
-    Weave Net
-    flannel
-
- source
+#### SOURCE
 
 Sometimes you can combine more than one plugin together to maximize the use of features from different providers. Or simply use a CNI network provider such as canal that gives you the best of Flannel and Calico.
 
-    Download binaries for kubectl, kube-proxy, and kubelet
+7. Download binaries for kubectl, kube-proxy, and kubelet
 
+```bash
 wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-proxy \
   https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubelet
+```
 
-    Install the downloaded binaries
-
+8. Install the downloaded binaries
+```bash
 {
   chmod +x  kubectl kube-proxy kubelet  
   sudo mv  kubectl kube-proxy kubelet /usr/local/bin/
 }
+```
+##### CONFIGURE THE WORKER NODES COMPONENTS
 
-Configure the worker nodes components
-
-    Configure kubelet:
+9. Configure kubelet:
 
 In the home directory, you should have the certificates and kubeconfig file for each node. A list in the home folder should look like below:
 
-Configuring the network
+##### CONFIGURING THE NETWORK
 
 Get the POD_CIDR that will be used as part of network configuration
 
+```bash
 POD_CIDR=$(curl -s http://169.254.169.254/latest/user-data/ \
   | tr "|" "\n" | grep "^pod-cidr" | cut -d"=" -f2)
 echo "${POD_CIDR}"
+```
 
 In case you are wondering where this $POD_CIDR is coming from. Well, this was configured at the time of creating the worker nodes. Remember the for loop below? The --user-data flag is where we specified what we want the POD_CIDR to be. It is very important to ensure that the CIDR does not overlap with EC2 IPs within the subnet. In the real world, this will be decided in collaboration with the Network team.
 
@@ -2059,7 +2100,7 @@ To mitigate security risks and have a better controlled network topology, Kubern
 
 To really understand Kubernetes further, let us explore some basic concepts around its networking:
 
-Pods:
+##### PODS:
 
 A Pod is the basic building block of Kubernetes; it is the smallest and simplest unit in the Kubernetes object model that you create or deploy. A Pod represents a running process on your cluster. It encapsulates a container running an application such as the Tooling website (or, in some cases, multiple containers), storage resources, a unique network IP, and options that govern how the container(s) should run. All the containers running inside a Pod can reach each other on localhost.
 
@@ -2073,14 +2114,14 @@ Notice, that both containers share a single virtual network interface veth0 that
 
 For more detailed explanation of different aspects of Kubernetes networking - watch this video.
 
-Pod Network
+##### POD NETWORK
 
 You must decide on the Pod CIDR per worker node. Each worker node will run multiple pods, and each pod will have its own IP address. IP address of a particular Pod on worker node 1 should be able to communicate with the IP address of another particular Pod on worker node 2. For this to become possible, there must be a bridge network with virtual network interfaces that connects them all together. Here is an interesting read that goes a little deeper into how it works Bookmark that page and read it over and over again after you have completed this project
 
-    Configure the bridge and loopback networks
+10. Configure the bridge and loopback networks
 
 Bridge:
-
+```bash
 cat > 172-20-bridge.conf <<EOF
 {
     "cniVersion": "0.3.1",
@@ -2098,43 +2139,50 @@ cat > 172-20-bridge.conf <<EOF
     }
 }
 EOF
+```
 
 Loopback:
-
+```bash
 cat > 99-loopback.conf <<EOF
 {
     "cniVersion": "0.3.1",
     "type": "loopback"
 }
 EOF
+```
 
-    Move the files to the network configuration directory:
+11. Move the files to the network configuration directory:
 
+```bash
 sudo mv 172-20-bridge.conf 99-loopback.conf /etc/cni/net.d/
+```
 
-    Store the worker's name in a variable:
-
+12. Store the worker's name in a variable:
+```bash
 NAME=k8s-cluster-from-ground-up
 WORKER_NAME=${NAME}-$(curl -s http://169.254.169.254/latest/user-data/ \
   | tr "|" "\n" | grep "^name" | cut -d"=" -f2)
 echo "${WORKER_NAME}"
+```
 
-    Move the certificates and kubeconfig file to their respective configuration directories:
-
+13. Move the certificates and kubeconfig file to their respective configuration directories:
+```bash
 sudo mv ${WORKER_NAME}-key.pem ${WORKER_NAME}.pem /var/lib/kubelet/
 sudo mv ${WORKER_NAME}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 sudo mv ca.pem /var/lib/kubernetes/
+```
 
-    Create the kubelet-config.yaml file
+14. Create the kubelet-config.yaml file
 
 Ensure the needed variables exist:
-
+```bash
 NAME=k8s-cluster-from-ground-up
 WORKER_NAME=${NAME}-$(curl -s http://169.254.169.254/latest/user-data/ \
   | tr "|" "\n" | grep "^name" | cut -d"=" -f2)
 echo "${WORKER_NAME}"
-
+```
+```bash
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -2155,25 +2203,26 @@ runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${WORKER_NAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${WORKER_NAME}-key.pem"
 EOF
-
+```
 Let us talk about the configuration file kubelet-config.yaml and the actual configuration for a bit. Before creating the systemd file for kubelet, it is recommended to create the kubelet-config.yaml and set the configuration there rather than using multiple startup flags in systemd. You will simply point to the yaml file.
 
 The config file specifies where to find certificates, the DNS server, and authentication information. As you already know, kubelet is responsible for the containers running on the node, regardless if the runtime is Docker or Containerd; as long as the containers are being created through Kubernetes, kubelet manages them. If you run any docker or cri commands directly on a worker to create a container, bear in mind that Kubernetes is not aware of it, therefore kubelet will not manage those. Kubelet's major responsibility is to always watch the containers in its care, by default every 20 seconds, and ensuring that they are always running. Think of it as a process watcher.
 
 The clusterDNS is the address of the DNS server. As of Kubernetes v1.12, CoreDNS is the recommended DNS Server, hence we will go with that, rather than using legacy kube-dns.
 
-Note: The CoreDNS Service is named kube-dns(When you see kube-dns, just know that it is using CoreDNS). This is more of a backward compatibility reasons for workloads that relied on the legacy kube-dns Service name.
+**Note:** _The CoreDNS Service is named kube-dns(When you see kube-dns, just know that it is using CoreDNS). This is more of a backward compatibility reasons for workloads that relied on the legacy kube-dns Service name._
 
 In Kubernetes, Pods are able to find each other using service names through the internal DNS server. Every time a service is created, it gets registered in the DNS server.
 
 In Linux, the /etc/resolv.conf file is where the DNS server is configured. If you want to use Google's public DNS server (8.8.8.8) your /etc/resolv.conf file will have following entry:
 
-nameserver 8.8.8.8
+_nameserver 8.8.8.8_
 
 In Kubernetes, the kubelet process on a worker node configures each pod. Part of the configuration process is to create the file /etc/resolv.conf and specify the correct DNS server.
 
-    Configure the kubelet systemd service
+15. Configure the kubelet systemd service
 
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
@@ -2196,9 +2245,10 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+```
 
-    Create the kube-proxy.yaml file
-
+16. Create the kube-proxy.yaml file
+```bash
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
@@ -2207,9 +2257,11 @@ clientConnection:
 mode: "iptables"
 clusterCIDR: "172.31.0.0/16"
 EOF
+```
 
-    Configure the Kube Proxy systemd service
+17. Configure the Kube Proxy systemd service
 
+```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service
 [Unit]
 Description=Kubernetes Kube Proxy
@@ -2222,32 +2274,28 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+```
 
-    Reload configurations and start both services
-
+18. Reload configurations and start both services
+```bash
 {
   sudo systemctl daemon-reload
   sudo systemctl enable containerd kubelet kube-proxy
   sudo systemctl start containerd kubelet kube-proxy
 }
+```
 
 Now you should have the worker nodes joined to the cluster, and in a READY state.
 
-Troubleshooting Tips: If you have issues at this point. Consider the below:
+**Troubleshooting Tips**: If you have issues at this point. Consider the below:
 
-    Use journalctl -u <service name> to get the log output and read what might be wrong with starting up the service. You can redirect the output into a file and analyse it.
-    Review your PKI setup again. Ensure that the certificates you generated have the hostnames properly configured.
-    It is okay to start all over again. Each time you attempt the solution is an opportunity to learn something.
+1. Use _journalctl -u <service name>_ to get the log output and read what might be wrong with starting up the service. You can redirect the output into a file and analyse it.
+2. Review your PKI setup again. Ensure that the certificates you generated have the hostnames properly configured.
+3. It is okay to start all over again. Each time you attempt the solution is an opportunity to learn something.
 
-Congratulations!
+# CONGRATULATIONS!
 
 You have created your first Kubernetes cluster From-Ground-Up! It was not an easy task, but you have learned how different components of K8s work together - it will help you not just in creation of clusters in the real work experience, but will also help you with sound skills to maintain and troubleshoot them further.
 
 Proceed to the next exciting PBL projects to practice more Kubernetes and other cool technologies with us!
-Assignments
-0/0 Approved
-Upload Assignment (Maximum upload file size: 100M)
-Browse
-No file selected
-Previous Lesson
-Back to Course
+
