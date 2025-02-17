@@ -1078,6 +1078,9 @@ k8s-cluster-from-ground-up-worker-2-key.pem
 100% 1679    49.2KB/s   00:00    
 k8s-cluster-from-ground-up-worker-2.pem   
 ```
+
+![](assets/35.png)
+
 **Master or Controller node:** - 
 _Note that only the api-server related files will be sent over to the master nodes._
 
@@ -1129,6 +1132,9 @@ master-kubernetes.pem
 100% 1956    48.9KB/s   00:00    
 master-kubernetes-key.pem  
 ```
+
+![](assets/36.png)
+
 The _kube-proxy_,_kube-controller-manager_, _kube-scheduler_, and _kubelet_ client certificates will be used to generate client authentication configuration files later.
 
 ## STEP 4 USE KUBECTL TO GENERATE KUBERNETES CONFIGURATION FILES FOR AUTHENTICATION
@@ -1144,7 +1150,7 @@ First, let us create a few environment variables for reuse by multiple commands.
 ```bash
 KUBERNETES_API_SERVER_ADDRESS=$(aws elbv2 describe-load-balancers --load-balancer-arns ${LOAD_BALANCER_ARN} --output text --query 'LoadBalancers[].DNSName')
 ```
-1. Generate the kubelet kubeconfig file
+
 
 For each of the nodes running the kubelet component, it is very important that the client certificate configured for that node is used to generate the kubeconfig. This is because each certificate has the node's DNS name or IP Address configured at the time the certificate was generated. It will also ensure that the appropriate authorization is applied to that node through the Node Authorizer
 
@@ -1193,6 +1199,7 @@ Cluster "k8s-cluster-from-ground-up" set.
 User "system:node:ip-172-31-0-21.eu-central-1.compute.internal" set.
 
 Context "default" created.
+1. Generate the kubelet kubeconfig file
 
 Switched to context "default".
 
@@ -1204,6 +1211,9 @@ Context "default" created.
 
 Switched to context "default".
 ```
+
+![](assets/37.png)
+
 List the output
 ```bash
 ls -ltr *.kubeconfig
@@ -1214,6 +1224,9 @@ OUTPUT:
 -rw-------  1 james  staff  6602 22 Jun 20:40 k8s-cluster-from-ground-up-worker-1.kubeconfig
 -rw-------  1 james  staff  6606 22 Jun 20:40 k8s-cluster-from-ground-up-worker-2.kubeconfig
 ```
+
+![](assets/40.png)
+
 Open up the kubeconfig files generated and review the 3 different sections that have been configured:
 - Cluster
 - Credentials
@@ -1249,7 +1262,7 @@ kubectl config use-context %context-name%
   kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 }
 ```
-
+![](assets/41.png)
 3. Generate the Kube-Controller-Manager kubeconfig
 
 Notice that the --server is set to use 127.0.0.1. This is because, this component runs on the API-Server so there is no point routing through the Load Balancer.
@@ -1277,6 +1290,8 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
 }
 ```
 
+![](assets/42.png)
+
 4. Generating the Kube-Scheduler Kubeconfig
 ```bash
 {
@@ -1300,6 +1315,8 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
   kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 }
 ```
+
+![](assets/43.png)
 
 5. Finally, generate the kubeconfig file for the admin user
 ```bash
@@ -1325,6 +1342,10 @@ Notice that the --server is set to use 127.0.0.1. This is because, this componen
 }
 ```
 
+![](assets/44.png)
+
+![](assets/45.png)
+
 **TASK:**_Distribute the files to their respective servers, using scp and a for loop like we have done previously. This is a test to validate that you understand which component must go to which node._
 
 ## STEP 5 PREPARE THE ETCD DATABASE FOR ENCRYPTION AT REST.
@@ -1337,7 +1358,6 @@ To mitigate this risk, we must prepare to encrypt etcd at rest. "At rest" means 
 ```
 ETCD_ENCRYPTION_KEY=$(head -c 64 /dev/urandom | base64) 
 ```
-
 See the output that will be generated when called. Yours will be a different random string.
 
 ```bash
@@ -1348,6 +1368,9 @@ OUTPUT:
 ```
 OuxSvV5XUQVid4fNNbeyFEDTUPr1yozZPQ+E6Eqj80m1FSVDB6jOHt9miD/7kMdJIvVshlMgxY80wFajlqItug===$
 ```
+
+![](assets/46.png)
+
 ** Create an encryption-config.yaml file as documented officially by kubernetes
 ```bash
 cat > encryption-config.yaml <<EOF
@@ -1364,15 +1387,63 @@ resources:
       - identity: {}
 EOF
 ```
+
+![](assets/47.png)
+
 Send the encryption file to the **Controller nodes** using scp and a for loop.
 
-##### BOOTSTRAP ETCD CLUSTER
+### BOOTSTRAP ETCD CLUSTER
 
 **TIPS:** _Use a terminal multi-plexer like multi-tabbed putty or tmux to work with multiple terminal sessions simultaneously. It will make your life easier, especially when you need to work on multiple nodes and run the same command across all nodes. Imagine repeating the same commands on 10 different nodes, and you don not intend to start automating with a configuration management tool like Ansible yet._
 
 The primary purpose of the etcd component is to store the state of the cluster. This is because Kubernetes itself is stateless. Therefore, all its stateful data will persist in etcd. Since Kubernetes is a distributed system - it needs a distributed storage to keep persistent data in it. etcd is a highly-available key value store that fits the purpose. All K8s cluster configurations are stored in a form of key value pairs in etcd, it also stores the actual and desired states of the cluster. etcd cluster is intelligent enough to watch for changes made on one instance and almost instantly replicate those changes to the rest of the instances, so all of them will be always reconciled.
 
 **NOTE:** _Don not just copy and paste the commands, ensure that you go through each and understand exactly what they will do on your servers. Use tools like tmux to make it easy to run commands on multiple terminal screens at once._
+
+Installing tmux
+```brew
+# On macOS
+brew install tmux
+```
+```bash
+# On Linux
+sudo apt update
+sudo apt install tmux
+```
+##### Using tmux
+- Start a new session: `tmux`
+- To start a session with a name: `tmux new -s mysession`
+
+Detaching and Reattaching Sessions
+- To detach from a session (leave it running in the background): Press Ctrl-b then d
+- To list all sessions: tmux ls
+- To reattach to a session: tmux attach -t mysession
+
+Windows and Panes
+- To create a new window: `Press Ctrl-b then c`
+- To switch between windows: `Press Ctrl-b then a number (0, 1, 2, etc.)`
+- To split a window into panes:
+    - Vertically: `Ctrl-b then %`
+    - Horizontally: `Ctrl-b then "`
+- To switch between panes: `Press Ctrl-b then use the arrow keys`
+
+Exiting tmux
+- To close a pane or window, simply exit the shell running in it (type exit or use Ctrl-d).
+- To kill a session: tmux kill-session -t mysession
+
+##### Enabling Input Broadcasting
+
+Broadcast to All Panes in a Window:
+- To broadcast input to all panes in the current window
+  - `Press Ctrl-b then` : to bring up the command prompt.
+  - Type `setw synchronize-panes on` and `press Enter`.
+
+With input synchronization enabled, any command you type in one pane will be replicated in all panes in the current window.
+
+Disable Broadcasting
+- To stop broadcasting input to all panes, use the same steps:
+  - `Press Ctrl-b the`n `:`.
+  - Type `setw synchronize-panes off` and press `Enter`.
 
 1. SSH into the controller server
 
@@ -1397,7 +1468,10 @@ The primary purpose of the etcd component is to store the state of the cluster. 
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
   ssh -i k8s-cluster-from-ground-up.id_rsa ubuntu@${master_3_ip}
 ```
-You should have a a similar pane like below. You should be able to see all the files that have been sent to the nodes.
+You should have a a similar pane like below. 
+You should be able to see all the files that have been sent to the nodes.
+
+![](assets/48.png)
 
 2. Download and install etcd
 ```bash
@@ -1419,6 +1493,7 @@ You should have a a similar pane like below. You should be able to see all the f
   sudo cp ca.pem master-kubernetes-key.pem master-kubernetes.pem /etc/etcd/
 }
 ```
+
 5. The instance internal IP address will be used to serve client requests and communicate with etcd cluster peers. Retrieve the internal IP address for the current compute instance:
 ```bash
 export INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
@@ -1431,6 +1506,9 @@ ETCD_NAME=$(curl -s http://169.254.169.254/latest/user-data/ \
   
 echo ${ETCD_NAME}
 ```
+
+![](assets/49.png)
+
 7. Create the etcd.service systemd unit file:
 
 The flags are well documented [here](https://www.bookstack.cn/read/etcd-3.2.17-en/717bafd59fa87192.md)
@@ -1468,6 +1546,9 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+ 
+ ![](assets/50.png)   
+
 8. Start and enable the etcd Server
 ```bash
 {
@@ -1476,7 +1557,9 @@ EOF
   sudo systemctl start etcd
 }
 ```
-    
+
+![](assets/51.png)
+
 9. Verify the etcd installation
 ```bash
 sudo ETCDCTL_API=3 etcdctl member list \
@@ -1491,9 +1574,12 @@ Output:
 ade74a4f39c39f33, started, master-1, https://172.31.0.11:2380, https://172.31.0.11:2379, false
 ed33b44c0b153ee3, started, master-2, https://172.31.0.12:2380, https://172.31.0.12:2379, false
 ```
+
 ```bash
 systemctl status etcd
 ```
+
+![](assets/52.png)
 
 ### BOOTSTRAP THE CONTROL PLANE
 
@@ -1510,6 +1596,7 @@ wget -q --show-progress --https-only --timestamping \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-scheduler" \
   "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
 ```
+![](assets/53.png)
 
 3. Install the Kubernetes binaries:
 ```bash
@@ -1520,7 +1607,7 @@ wget -q --show-progress --https-only --timestamping \
 ```
 
 4. Configure the Kubernetes API Server:
-```
+```bash
 {
   sudo mkdir -p /var/lib/kubernetes/
 
@@ -1536,6 +1623,8 @@ The instance internal IP address will be used to advertise the API Server to mem
 export INTERNAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 export export KUBERNETES_API_SERVER_ADDRESS="k8s-api-server.svc.steghub.com"
 ```
+
+![](assets/54.png)
 
 Create the kube-apiserver.service systemd unit file: Ensure to read each startup flag used in below systemd file from the documentation here
 
@@ -1584,6 +1673,8 @@ WantedBy=multi-user.target
 EOF
 ```
 
+![](assets/55.png)
+
 5. Configure the Kubernetes Controller Manager:
 Move the kube-controller-manager kubeconfig into place:
 ```bash
@@ -1627,6 +1718,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+
 6. Configure the Kubernetes Scheduler:
 
 Move the kube-scheduler kubeconfig into place:
@@ -1647,6 +1739,8 @@ leaderElection:
 EOF
 ```
 
+![](assets/56.png)
+
 Create the kube-scheduler.service systemd unit file:
 ```bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-scheduler.service
@@ -1665,6 +1759,9 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
+
+![](assets/57.png)
+
 7. Start the Controller Services
 ```bash
 {
@@ -1673,15 +1770,27 @@ EOF
   sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 }
 ```
-Check the status of the services. Start with the kube-scheduler and kube-controller-manager. It may take up to 20 seconds for kube-apiserver to be fully loaded.
 
-{ sudo systemctl status kube-apiserver sudo systemctl status kube-controller-manager sudo systemctl status kube-scheduler }
+![](assets/58.png)
+
+Check the status of the services. Start with the kube-scheduler and kube-controller-manager. It may take up to 20 seconds for kube-apiserver to be fully loaded.
+```bash
+{ 
+  sudo systemctl status kube-apiserver 
+  sudo systemctl status kube-controller-manager 
+  sudo systemctl status kube-scheduler 
+}
+```
+
+![](assets/59.png)
 
 **NOTE:** _There is a trap in the entire setup you have been going through, and so the api-server will not start up on your server if you have followed the exact steps so far. As a DevOps engineer, you must be able to solve problems._
 
 **HINTS:**
   1. The problem relates to etcd configuration.
   2. Check the systemd logs for the api-server. The problem will be clearly logged, and it will give you an idea what is wrong. Find out how to fix it.
+
+![](assets/59.png)
 
 ## TEST THAT EVERYTHING IS WORKING FINE
 1. To get the cluster details run:
