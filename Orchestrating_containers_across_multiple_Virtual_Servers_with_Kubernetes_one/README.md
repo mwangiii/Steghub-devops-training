@@ -2480,8 +2480,7 @@ Now you should have the worker nodes joined to the cluster, and in a READY state
 
 # CONGRATULATIONS!
 
-You have created your first Kubernetes cluster From-Ground-Up!  
- It was not an easy task, but you have learned how different components of K8s work together - it will help you not just in creation of clusters in the real work experience, but will also help you with sound skills to maintain and troubleshoot them further.
+We have built our first Kubernetes cluster from the ground up! It wasn’t easy, but we gained a deep understanding of how K8s components work together. This experience not only helps with setting up clusters but also with maintaining and troubleshooting them in real-world scenarios.
 
-Proceed to the next exciting PBL projects to practice more Kubernetes and other cool technologies with us!
+On to the next project—more Kubernetes and exciting technologies ahead!
 
