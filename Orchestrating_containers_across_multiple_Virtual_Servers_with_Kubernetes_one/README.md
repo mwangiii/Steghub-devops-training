@@ -1829,7 +1829,7 @@ subjects:
 EOF
 ```
 
-## BOOTSTRAPING COMPONENTS ON THE WORKER NODES
+### BOOTSTRAPING COMPONENTS ON THE WORKER NODES
 
 The following components will be installed on each node:
 - kubelet
