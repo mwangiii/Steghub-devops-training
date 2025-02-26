@@ -1,8 +1,12 @@
-# Deploying Applications Into Kubernetes Cluster
+# DEPLOYING APPLICATIONS INTO KUBERNETES CLUSTER
+![](assets/hero.png)
 
-## Deploying a random Pod
+## DEPLOYING A RANDOM POD
 
-Lets see what it looks like to have a Pod running in a __k8s cluster__. This section is just to illustrate and get you to familiarise with how the object's fields work. Lets deploy a basic `Nginx` container to run inside a `Pod`.
+![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTVjbGN5Ymp3dmFjbGN5cG1oMno0cWV3dDJtZGF0Nnlza2t4azFpeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8Aj4L8QZm2hmDE21UT/giphy.gif)
+
+Lets see what it looks like to have a Pod running in a __k8s cluster__.  
+ This section is just to illustrate and get you to familiarise with how the object's fields work. Lets deploy a basic `Nginx` container to run inside a `Pod`.
 
 - __apiVersion__ is __v1__
 - __kind__ is __Pod__
@@ -111,7 +115,7 @@ kubectl describe pod nginx-pod
 ![](assets/8.png)
 
 
-## Accessing the app from the browser
+## ACCESSING THE APP FROM THE BROWSER
 
 Now you have a running Pod. What's next?
 
@@ -129,7 +133,7 @@ nginx-pod   1/1     Running   0          138m   172.50.202.214   ip-172-50-202-1
 ```
 ![](assets/9.png)
 
-### Let us try to access the Pod through its IP address from within the K8s cluster. To do this,
+### LET US TRY TO ACCESS THE POD THROUGH ITS IP ADDRESS FROM WITHIN THE K8S CLUSTER. TO DO THIS,
 
 1. We need an image that already has curl software installed. You can check it out [here](https://hub.docker.com/r/dareyregistry/curl)
 
@@ -206,7 +210,7 @@ Assuming that your requirement is to access the Nginx Pod internally, using the 
 
 To solve this problem, kubernetes uses __Service__ - An object that abstracts the underlining IP addresses of Pods. A service can serve as a load balancer, and a reverse proxy which basically takes the request using a human readable DNS name, resolves to a Pod IP that is running and forwards the request to it. This way, you do not need to use an IP address. Rather, you can simply refer to the service name directly.
 
-### Let us create a service to access the __Nginx Pod__
+### LET US CREATE A SERVICE TO ACCESS THE __NGINX POD__
 
 1. Create a Service `yaml` manifest file:
 
@@ -373,7 +377,7 @@ nginx-pod   1/1     Running   0          57m   172.50.197.236   ip-172-50-197-21
 
 Therefore, Service with IP `10.96.17.133` takes request and forwards to Pod with IP `10.244.0.2`
 
-# Expose a Service on a server's public IP address & static port
+# EXPOSE A SERVICE ON A SERVER'S PUBLIC IP ADDRESS & STATIC PORT
 
 Sometimes, it may be needed to directly access the application using the public IP of the server (when we speak of a K8s cluster we can replace 'server' with 'node') the Pod is running on. This is when the [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) service type comes in handy.
 
@@ -428,7 +432,7 @@ kubectl get pod nginx-pod -o wide
 You must understand that the port number `30080` is a port on the node in which the Pod is scheduled to run. If the Pod ever gets rescheduled elsewhere, that the same port number will be used on the new node it is running on. So, if you have multiple Pods running on several nodes at the same time - they all will be exposed on respective nodes' IP addresses with a static port number.
 
 
-## However, since we are using docker container to run our kubernetes cluster, heres how we can achieve same result.
+## HOWEVER, SINCE WE ARE USING DOCKER CONTAINER TO RUN OUR KUBERNETES CLUSTER, HERES HOW WE CAN ACHIEVE SAME RESULT.
 
 `STEPS`
 
@@ -460,7 +464,7 @@ You must understand that the port number `30080` is a port on the node in which 
 
 Read some more information regarding Services in Kubernetes in this [article](https://medium.com/avmconsulting-blog/service-types-in-kubernetes-24a1587677d6).
 
-## How Kubernetes ensures desired number of Pods is always running?
+## HOW KUBERNETES ENSURES DESIRED NUMBER OF PODS IS ALWAYS RUNNING?
 
 When we define a Pod manifest and appy it - we create a Pod that is running until it's terminated for some reason (e.g., error, Node reboot or some other reason), but what if we want to declare that we always need at least 3 replicas of the same Pod running at all times? Then we must use a [ResplicaSet (RS)](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) object - it's purpose is to maintain a stable set of Pod replicas running at any given time. As such, it is often used to guarantee the availability of a specified number of identical Pods.
 
@@ -560,7 +564,7 @@ kubectl get rs -o wide
 
 __Notice__, that ReplicaSet understands which Pods to create by using __SELECTOR__ key-value pair.
 
-## Get detailed information of a ReplicaSet
+## GET DETAILED INFORMATION OF A REPLICASET
 
 To display detailed information about any Kubernetes object, you can use 2 differen commands:
 
@@ -587,13 +591,13 @@ kubectl get rs nginx-rs -o json
 ```
 ![](assets/35.png)
 
-## Scale ReplicaSet up and down
+## SCALE REPLICASET UP AND DOWN
 
 In general, there are 2 approaches of [Kubernetes Object Management](https://kubernetes.io/docs/concepts/overview/working-with-objects/object-management/): __imperative__ and __declarative__.
 
 Let us see how we can use both to scale our Replicaset up and down:
 
-### Imperative:
+### IMPERATIVE:
 
 We can easily scale our ReplicaSet up by specifying the desired number of replicas in an imperative command, like this:
 
@@ -625,7 +629,7 @@ nginx-rc-zlgvp   1/1     Running   0          4m30s
 Scaling down will work the same way, so scale it down to 3 replicas.
 
 
-### Declarative:
+### DECLARATIVE:
 
 Declarative way would be to open our `rs.yaml` manifest, change desired number of replicas in respective section.
 
@@ -644,7 +648,7 @@ There is another method - `ad-hoc`, it is definitely not the best practice and w
 kubectl edit -f rs.yaml
 ```
 
-## Advanced label matching
+## ADVANCED LABEL MATCHING
 
 As Kubernetes mature as a technology, so does its features and improvements to k8s objects. `ReplicationControllers` do not meet certain complex business requirements when it comes to using selectors. Imagine if you need to select Pods with multiple lables that represents things like:
 
@@ -718,7 +722,7 @@ nginx-rs   3         3         3       5m34s   nginx-container   nginx:latest   
 
 ![](assets/39.png)
 
-## Using AWS Load Balancer to access your service in Kubernetes.
+## USING AWS LOAD BALANCER TO ACCESS YOUR SERVICE IN KUBERNETES.
 
 ___Note:__ You will only be able to test this using AWS EKS. You don not have to set this up in current project yet. In the next project, you will update your Terraform code to build an EKS cluster._
 
@@ -1057,7 +1061,8 @@ for skills acquisition
 </html>
 ```
 
-### HINT: PORT FORWARDING : Use the following command to forward a local port to the port on the NGINX pod. 
+### HINT: PORT FORWARDING : USE THE FOLLOWING COMMAND TO FORWARD A LOCAL PORT TO THE PORT ON THE NGINX POD. 
+
 ```bash
   kubectl port-forward nginx-deployment-7d476d754d-5bbqq 8080:80
 ```
@@ -1065,6 +1070,8 @@ for skills acquisition
 5. Check the browser - You should see this
 
 ![](assets/52.png)
+
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTY1YWdxbmh5YXN1d3pqdzJrOXJlZWxtcXppZTl5ZmtxcG4zN2xvayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6UB3VhArvomJHtdK/giphy.gif)
 
 6. Now, delete the only running Pod so that a new one is automatically recreated.
 
@@ -1074,7 +1081,8 @@ kubectl delete pod nginx-deployment-7d746d754d-829qn
 
 ![](assets/51.png)
 
-7. __Refresh the web page__ - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called `ephemeral` or `stateless`. (_But not to worry, we will address this with persistent volumes in the next project_)
+7. __Refresh the web page__ - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called `ephemeral` or `stateless`.   
+(_But not to worry, we will address this with persistent volumes in the next project_)
 
 ![](assets/53.png)
 
