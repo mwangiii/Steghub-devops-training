@@ -102,16 +102,14 @@ nginx-pod   0/1     Pending   0          111s
 ```bash
 kubectl get pod nginx-pod -o yaml
 ```
-![](assets/8.png)
 ![](assets/7.png)
 
 OR
 ```bash
 kubectl describe pod nginx-pod
 ```
-![](assets/9.png)
+![](assets/8.png)
 
-![](assets/10.png)
 
 ## Accessing the app from the browser
 
@@ -129,7 +127,7 @@ Output:
 NAME        READY   STATUS    RESTARTS   AGE    IP               NODE                                              NOMINATED NODE   READINESS GATES
 nginx-pod   1/1     Running   0          138m   172.50.202.214   ip-172-50-202-161.eu-central-1.compute.internal   <none>           <none>
 ```
-![](assets/11.png)
+![](assets/9.png)
 
 ### Let us try to access the Pod through its IP address from within the K8s cluster. To do this,
 
@@ -198,7 +196,9 @@ Commercial support is available at
 </body>
 </html>
 ```
-![](assets/13.png)
+
+![](assets/10.png)
+
 
 If the use case for your solution is required for internal use ONLY, without public Internet requirement. Then, this should be OK. But in most cases, it is NOT!
 
@@ -224,8 +224,8 @@ spec:
       port: 80
       targetPort: 80
 EOF
-```
-![](assets/14.png)
+```7
+![](assets/11.png)
 
 2. Create a nginx-service resource by applying your manifest
 
@@ -249,7 +249,8 @@ NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
 kubernetes      ClusterIP   10.100.0.1      <none>        443/TCP   68d
 nginx-service   ClusterIP   10.100.71.130   <none>        80/TCP    85s
 ```
-![](assets/16.png)
+
+![](assets/13.png)
 
 __Observation:__
 
@@ -267,13 +268,16 @@ Now that we have a service created, how can we access the app? Since there is no
 ```bash
 kubectl  port-forward svc/nginx-service 8089:80
 ```
+
+![](assets/14.png)
+
 __8089__ is an arbitrary port number on your laptop or client PC, and we want to tunnel traffic through it to the port number of the `nginx-service` __80__.
 
 
 
 Unfortunately, this will not work quite yet. Because there is no way the service will be able to select the actual Pod it is meant to route traffic to. If there are hundreds of Pods running, there must be a way to ensure that the service only forwards requests to the specific Pod it is intended for.
 
-![](assets/17.png)
+![](assets/16.png)
 
 To make this work, you must reconfigure the Pod manifest and introduce `labels` to match the `selectors` key in the field section of the service manifest.
 
@@ -304,7 +308,7 @@ Apply the manifest with:
 ```bash
 kubectl apply -f nginx-pod.yaml
 ```
-![](assets/18.png)
+![](assets/15.png)
 
 2. Run kubectl port-forward command again
 
@@ -317,11 +321,12 @@ kubectl  port-forward svc/nginx-service 8089:80
 Forwarding from 127.0.0.1:8089 -> 80
 Forwarding from [::1]:8089 -> 80
 ```
-![](assets/19.png)
+
+![](assets/16.png)
 
 Then go to your web browser and enter __localhost:8089__ - You should now be able to see the nginx page in the browser.
 
-![](assets/20.png)
+![](assets/17.png)
 
 Let us try to understand a bit more about how the service object is able to route traffic to the Pod.
 
@@ -335,7 +340,8 @@ You will get the output similar to this:
 NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
 nginx-service   ClusterIP   10.100.71.130   <none>        80/TCP    4d    app=nginx-pod
 ```
-![](assets/21.png)
+
+![](assets/18.png)
 
 As you already know, the service's type is `ClusterIP`, and in the above output, it has the IP address of __10.96.17.133__ - This IP works just like an internal loadbalancer. It accepts requests and forwards it to an IP address of any Pod that has the respective `selector` label. In this case, it is `app=nginx-pod`. If there is more than one Pod with that label, service will distribute the traffic to all theese pods in a [Round Robin](https://en.wikipedia.org/wiki/Round-robin_scheduling) fashion.
 
@@ -349,7 +355,8 @@ Output:
 NAME        READY   STATUS    RESTARTS   AGE   LABELS
 nginx-pod   1/1     Running   0          31m   app=nginx-pod
 ```
-![](assets/22.png)
+
+![](assets/19.png)
 
 ___Notice__ that the IP address of the Pod, is NOT the IP address of the server it is running on. Kubernetes, through the implementation of network plugins assigns virtual IP adrresses to each Pod._
 
@@ -361,7 +368,8 @@ Output:
 NAME        READY   STATUS    RESTARTS   AGE   IP               NODE                                              NOMINATED NODE   READINESS GATES
 nginx-pod   1/1     Running   0          57m   172.50.197.236   ip-172-50-197-215.eu-central-1.compute.internal   <none>           <none>
 ```
-![](assets/23.png)
+
+![](assets/20.png)
 
 Therefore, Service with IP `10.96.17.133` takes request and forwards to Pod with IP `10.244.0.2`
 
@@ -389,14 +397,14 @@ spec:
       nodePort: 30080
 EOF
 ```
-![](assets/24.png)
+
+![](assets/21.png)
 
 What has changed is:
 
 - Specified the type of service (Nodeport)
 - Specified the NodePort number to use.
 
-<!-- ![](assets/25.png) -->
 
 To access the service, you must:
 
@@ -408,18 +416,17 @@ Apply the service update
 ```bash
 kubectl apply -f nginx-service.yaml
 ```
+
+![](assets/22.png)
+
 Confirm the node the pod is running on (Check the internal IP address)
 
 ```bash
 kubectl get pod nginx-pod -o wide
 ```
-<!-- ![](assets/node-int-ip.png) -->
-
-
 
 You must understand that the port number `30080` is a port on the node in which the Pod is scheduled to run. If the Pod ever gets rescheduled elsewhere, that the same port number will be used on the new node it is running on. So, if you have multiple Pods running on several nodes at the same time - they all will be exposed on respective nodes' IP addresses with a static port number.
 
-![](assets/nginx-startpage-nodeport.png)
 
 ## However, since we are using docker container to run our kubernetes cluster, heres how we can achieve same result.
 
@@ -429,23 +436,25 @@ You must understand that the port number `30080` is a port on the node in which 
 
       ```
      sudo kubectl get svc nginx-service
-![](assets/26.png)
+
+![](assets/23.png)
 
 2. Get the docker container ID of the node running in Kind
 
     ```
     sudo docker ps
-![](assets/27.png)
+![](assets/24.png)
 
 3. Find the container ip address 
 
     ```
    sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_id>
-![](assets/27.png)
+
+![](assets/25.png)
 
 4. Access the service via the container IP address with the NodePort `30080`
 
-![](assets/28.png)
+![](assets/26.png)
 
 
 Read some more information regarding Services in Kubernetes in this [article](https://medium.com/avmconsulting-blog/service-types-in-kubernetes-24a1587677d6).
@@ -465,7 +474,8 @@ Output:
 ```
 pod "nginx-pod" deleted
 ```
-![](assets/29.png)
+
+![](assets/27.png)
 
 ## Create a ReplicaSet
 
@@ -496,12 +506,14 @@ spec:
           protocol: TCP
 EOF
 ```
-![](assets/30.png)
+
+![](assets/28.png)
 
 ```bash
 kubectl apply -f rs.yaml
 ```
-![](assets/31.png)
+
+![](assets/29.png)
 
 The manifest file of ReplicaSet consist of the following fields:
 
@@ -522,16 +534,18 @@ nginx-pod-j784r   1/1     Running   0          7m41s   172.50.197.5     ip-172-5
 nginx-pod-kg7v6   1/1     Running   0          7m41s   172.50.192.152   ip-172-50-192-173.eu-central-1.compute.internal   <none>           <none>
 nginx-pod-ntbn4   1/1     Running   0          7m41s   172.50.202.162   ip-172-50-202-18.eu-central-1.compute.internal    <none>           <none>
 ```
-![](assets/32.png)
+
+![](assets/30.png)
 
 Here we see three `ngix-pods` with some random suffixes (e.g., `-j784r`) - it means, that these Pods were created and named automatically by some other object (higher level of abstraction) such as ReplicaSet.
 
 Try to delete one of the Pods:
 
 ```bash
-kubectl delete pod nginx-rs-52597
+kubectl delete pod nginx-rs-ct27n
 ```
-![](assets/33.png)
+
+![](assets/31.png)
 
 You can see, that we still have all 3 Pods, but one has been recreated (can you differentiate the new one?)
 
@@ -540,7 +554,8 @@ Explore the ReplicaSet created:
 ```bash
 kubectl get rs -o wide
 ```
-![](assets/34.png)
+
+![](assets/32.png)
 
 __Notice__, that ReplicaSet understands which Pods to create by using __SELECTOR__ key-value pair.
 
@@ -556,21 +571,20 @@ Try both commands in action and see the difference. Also try `get` with `-o json
 ```bash
 kubectl describe rs nginx-rs
 ```
-![](assets/35.png)
+
+![](assets/33.png)
 
 ```bash
 kubectl get rs nginx-rs -o yaml
 ```
-![](assets/36.png)
 
-![](assets/37.png)
+![](assets/34.png)
+
 
 ```bash
 kubectl get rs nginx-rs -o json
 ```
-![](assets/38.png)
-![](assets/39.png)
-![](assets/40.png)
+![](assets/35.png)
 
 ## Scale ReplicaSet up and down
 
@@ -590,6 +604,8 @@ Output:
 replicationcontroller/nginx-rc scaled
 ```
 
+![](assets/36.png)
+
 ```bash
 kubectl get pods
 ```
@@ -602,11 +618,11 @@ nginx-rc-g4tvg   1/1     Running   0          6s
 nginx-rc-kmh8m   1/1     Running   0          6s
 nginx-rc-zlgvp   1/1     Running   0          4m30s
 ```
-![](assets/41.png)
+
+![](assets/37.png)
 
 Scaling down will work the same way, so scale it down to 3 replicas.
 
-![](assets/42.png)
 
 ### Declarative:
 
@@ -679,7 +695,8 @@ spec:
           protocol: TCP
 EOF
 ```
-![](assets/43.png)
+
+![](assets/38.png)
 
 In the above spec file, under the selector, __matchLabels__ and __matchExpression__ are used to specify the key-value pair. The __matchLabel__ works exactly the same way as the equality-based selector, and the matchExpression is used to specify the set based selectors. This feature is the main differentiator between __ReplicaSet__ and previously mentioned obsolete __ReplicationController__.
 
@@ -697,7 +714,8 @@ Output:
 NAME       DESIRED   CURRENT   READY   AGE     CONTAINERS        IMAGES         SELECTOR
 nginx-rs   3         3         3       5m34s   nginx-container   nginx:latest   env=prod,tier in (frontend)
 ```
-![](assets/44.png)
+
+![](assets/39.png)
 
 ## Using AWS Load Balancer to access your service in Kubernetes.
 
@@ -723,13 +741,14 @@ spec:
       targetPort: 80 # This is the port the container is listening at
 EOF
 ```
-![](assets/nginx-service-ELB.png)
 
 Apply the configuration:
 
 ```bash
 kubectl apply -f nginx-service.yaml
 ```
+
+![](assets/40.png)
 
 Get the newly created service :
 
@@ -741,20 +760,18 @@ Output:
 NAME            TYPE           CLUSTER-IP      EXTERNAL-IP                                                                  PORT(S)        AGE
 nginx-service   LoadBalancer   10.100.71.130   aab159950f39e43d39195e23c77417f8-1167953448.eu-central-1.elb.amazonaws.com   80:31388/TCP   5d18h
 ```
+![](assets/40.png)
+
 ```bash
 export AWS_SDK_LOAD_CONFIG=1
 ```
 This environment variable ensures that the AWS SDK checks both __~/.aws/credentials__ and __~/.aws/config__ files.
 
-![](assets/nginx-service-update.png)
 
 An ELB resource will be created in your AWS console.
 
-![](assets/ELB.png)
-
 A Kubernetes component in the control plane called [Cloud-controller-manager](https://kubernetes.io/docs/concepts/architecture/cloud-controller/) is responsible for triggeriong this action. It connects to your specific cloud provider's (AWS) APIs and create resources such as Load balancers. It will ensure that the resource is appropriately tagged:
 
-![](assets/ELB-tag.png)
 
 Get the output of the entire `yaml` for the service. You will see additional information about this service in which you did not define them in the `yaml` manifest. Kubernetes did this for you.
 
@@ -830,7 +847,7 @@ Let us see Deployment in action.
 ```bash
 kubectl delete rs nginx-rs
 ```
-![](assets/delete-rs.png)
+
 
 2. Understand the layout of the deployment.yaml manifest below. Lets go through the 3 separated sections:
 
@@ -890,12 +907,14 @@ spec:
         - containerPort: 80
 EOF
 ```
-![](assets/45.png)
+
+![](assets/41.png)
 
 ```bash
 kubectl apply -f deployment.yaml
 ```
-![](assets/46.png)
+
+![](assets/42.png)
 
 Run commands to get the following
 
@@ -908,7 +927,8 @@ kubectl get deployment
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3/3     3            3           39s
 ```
-![](assets/47.png)
+
+![](assets/43.png)
 
 2. Get the ReplicaSet
 
@@ -919,7 +939,8 @@ kubectl get rs
 NAME                          DESIRED   CURRENT   READY   AGE
 nginx-deployment-56466d4948   3         3         3       24s
 ```
-![](assets/48.png)
+
+![](assets/44.png)
 
 3. Get the Pods
 
@@ -932,35 +953,38 @@ nginx-deployment-56466d4948-5zdbx   1/1     Running   0          12s
 nginx-deployment-56466d4948-tg9j8   1/1     Running   0          12s
 nginx-deployment-56466d4948-ttn5t   1/1     Running   0          12s
 ```
-![](assets/49.png)
+![](assets/45.png)
 
 4. Scale the replicas in the Deployment to 15 Pods
 
 ```bash
 kubectl scale deployment nginx-deployment --replicas=15
 ```
-![](assets/50.png)
+
+![](assets/46.png)
 
 5. Exec into one of the Pod's container to run Linux commands
 
 ```bash
 kubectl exec -it  nginx-deployment-7d476d754d-829qn bash
 ```
+
+
 List the files and folders in the Nginx directory
 
 ```bash
 ls -ltr /etc/nginx/
 ```
-![](assets/51.png)
+
+![](assets/47.png)
 
 Check the content of the default Nginx configuration file
 
 ```bash
 cat  /etc/nginx/conf.d/default.conf
 ```
-![](assets/52.png)
 
-![](assets/53.png)
+![](assets/48.png)
 
 Now, as we have got acquainted with most common Kubernetes workloads to deploy applications:
 
@@ -981,14 +1005,14 @@ Let us try that:
 ```bash
 kubectl scale deployment nginx-deployment --replicas=1
 ```
-![](assets/54.png)
+![](assets/49.png)
 
 2. Exec into the running container (figure out the command yourself)
 
 ```bash
 kubectl exec -it  nginx-deployment-7d476d754d-829qn -- /bin/bash
 ```
-![](assets/55.png)
+![](assets/50.png)
 
 3. Install vim so that you can edit the file
 
@@ -996,8 +1020,7 @@ kubectl exec -it  nginx-deployment-7d476d754d-829qn -- /bin/bash
 apt-get update
 apt-get install vim
 ```
-![](assets/56.png)
-![](assets/57.png)
+
 
 4. Update the content of the file and add the code below __/usr/share/nginx/html/index.html__
 
@@ -1033,27 +1056,25 @@ for skills acquisition
 </html>
 ```
 
-![](assets/58.png)
-
 ### HINT: PORT FORWARDING : Use the following command to forward a local port to the port on the NGINX pod. 
-    ```
-    kubectl port-forward nginx-deployment-7d476d754d-5bbqq 8080:80
-
+```bash
+  kubectl port-forward nginx-deployment-7d476d754d-5bbqq 8080:80
+```
 
 5. Check the browser - You should see this
 
-![](assets/59.png)
+![](assets/52.png)
 
 6. Now, delete the only running Pod so that a new one is automatically recreated.
 
 ```bash
-kubectl delete pod nginx-deployment-56466d4948-tg9j8
+kubectl delete pod nginx-deployment-7d746d754d-829qn
 ```
-![](assets/60.png)
+![](assets/51.png)
 
 7. __Refresh the web page__ - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called `ephemeral` or `stateless`. (_But not to worry, we will address this with persistent volumes in the next project_)
 
-![](assets/61.png)
+![](assets/26.png)
 
 __Storage__ is a critical part of running containers, and Kubernetes offers some powerful primitives for managing it. __Dynamic volume provisioning__, a feature unique to Kubernetes, which allows storage volumes to be created on-demand. Without dynamic provisioning, DevOps engineers must manually make calls to the cloud or storage provider to create new storage volumes, and then create __PersistentVolume__ objects to represent them in Kubernetes. The dynamic provisioning feature eliminates the need for DevOps to pre-provision storage. Instead, it automatically provisions storage when it is requested by users.
 
