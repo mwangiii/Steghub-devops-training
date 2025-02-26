@@ -1074,7 +1074,7 @@ kubectl delete pod nginx-deployment-7d746d754d-829qn
 
 7. __Refresh the web page__ - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called `ephemeral` or `stateless`. (_But not to worry, we will address this with persistent volumes in the next project_)
 
-![](assets/26.png)
+![](assets/53.png)
 
 __Storage__ is a critical part of running containers, and Kubernetes offers some powerful primitives for managing it. __Dynamic volume provisioning__, a feature unique to Kubernetes, which allows storage volumes to be created on-demand. Without dynamic provisioning, DevOps engineers must manually make calls to the cloud or storage provider to create new storage volumes, and then create __PersistentVolume__ objects to represent them in Kubernetes. The dynamic provisioning feature eliminates the need for DevOps to pre-provision storage. Instead, it automatically provisions storage when it is requested by users.
 
