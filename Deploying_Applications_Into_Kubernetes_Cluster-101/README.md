@@ -434,20 +434,21 @@ You must understand that the port number `30080` is a port on the node in which 
 
 1. Get the service  `NodePort` by running
 
-      ```
+      ```bash
      sudo kubectl get svc nginx-service
 
 ![](assets/23.png)
 
 2. Get the docker container ID of the node running in Kind
 
-    ```
+    ```bash
     sudo docker ps
+    
 ![](assets/24.png)
 
 3. Find the container ip address 
 
-    ```
+    ```bash
    sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_id>
 
 ![](assets/25.png)
@@ -1070,6 +1071,7 @@ for skills acquisition
 ```bash
 kubectl delete pod nginx-deployment-7d746d754d-829qn
 ```
+
 ![](assets/51.png)
 
 7. __Refresh the web page__ - You will see that the content you saved in the container is no longer there. That is because Pods do not store data when they are being recreated - that is why they are called `ephemeral` or `stateless`. (_But not to worry, we will address this with persistent volumes in the next project_)
