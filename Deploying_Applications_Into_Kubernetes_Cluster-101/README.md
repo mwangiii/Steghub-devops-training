@@ -944,7 +944,7 @@ kubectl scale deployment nginx-deployment --replicas=15
 5. Exec into one of the Pod's container to run Linux commands
 
 ```bash
-kubectl exec -it nginx-deployment-56466d4948-78j9c bash
+kubectl exec -it  nginx-deployment-7d476d754d-829qn bash
 ```
 List the files and folders in the Nginx directory
 
@@ -986,7 +986,7 @@ kubectl scale deployment nginx-deployment --replicas=1
 2. Exec into the running container (figure out the command yourself)
 
 ```bash
-kubectl exec -it nginx-deployment-56466d4948-78j9c -- /bin/bash
+kubectl exec -it  nginx-deployment-7d476d754d-829qn -- /bin/bash
 ```
 ![](./images/55.png)
 
