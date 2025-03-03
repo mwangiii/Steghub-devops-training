@@ -6,7 +6,7 @@
 
 - Ensure AWS CLI is already installed and access key credentials have been configured.
 
-![](image/aws-version.jpg)
+
 
 - Install **eksctl**
 
@@ -18,7 +18,7 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/download
 eksctl version
 ```
 
-![](image/install-eks.jpg)
+
 
 - Create EKS cluster using `eksctl`
 
@@ -26,9 +26,9 @@ eksctl version
 eksctl create cluster --name cdk-eks-cluster --region us-east-1 --nodegroup-name cdk-node-group --node-type t3.medium --nodes 2
 ```
 
-![](image/eks.jpg)
 
-![](image/eks1.jpg)
+
+
 
 - Enable **OIDC** to allow the cluster to use **IAM roles** for service accounts and automatically configure **IAM permissions** for addons.
 
@@ -36,7 +36,7 @@ eksctl create cluster --name cdk-eks-cluster --region us-east-1 --nodegroup-name
 eksctl utils associate-iam-oidc-provider --cluster cdk-eks-cluster --approve
 ```
 
-![](image/enable.jpg)
+
 
 - Check the cluster status and verify API connection
 
@@ -54,27 +54,27 @@ kubectl get ns
 eksctl get cluster --region us-east-1
 ```
 
-![](image/clusters.jpg)
+
 
 - Check the cluster in the AWS console
 
-![](image/r.jpg)
 
-![](image/r1.jpg)
 
-![](image/r2.jpg)
 
-![](image/r3.jpg)
 
-![](image/r4.jpg)
 
-![](image/r5.jpg)
 
-![](image/r6.jpg)
 
-![](image/r7.jpg)
 
-![](image/r8.jpg)
+
+
+
+
+
+
+
+
+
 
 - ConfigMap
 
@@ -86,7 +86,7 @@ kubectl auth can-i list pods --all-namespaces
 kubectl get pods --all-namespaces
 ```
 
-![](image/configmap.jpg)
+
 
 Now we know that containers are stateless by design, which means that data does not persist in the containers. Even when you run the containers in kubernetes pods, they still remain stateless unless you ensure that your configuration supports statefulness.
 
@@ -178,7 +178,7 @@ EOF
 kubectl apply -f nginx-pod.yaml
 ```
 
-![](image/nginx-pod.yml.jpg)
+
 
 **Tasks**
 
@@ -188,7 +188,7 @@ kubectl apply -f nginx-pod.yaml
 kubectl get pods
 ```
 
-![](image/get-pods.jpg)
+
 
 - Check the logs of the pod
 
@@ -204,7 +204,7 @@ else
 fi
 ```
 
-![](image/epoll.jpg)
+
 
 - Exec into the pod and navigate to the nginx configuration file **/etc/nginx/conf.d**
 
@@ -216,9 +216,9 @@ cd /etc/nginx/conf.d
 
 - Open the config files to see the default configuration.
 
-![](image/confd.jpg)
 
-![](image/confd1.jpg)
+
+
 
 **NOTE:** There are some restrictions when using an awsElasticBlockStore volume:
 
@@ -247,7 +247,7 @@ NAME                                READY   STATUS    RESTARTS   AGE   IP       
 nginx-deployment-6fdcffd8fc-thcfp   1/1     Running   0          64m   10.0.3.159   ip-10-0-3-233.eu-west-2.compute.internal   <none>           <none>
 ```
 
-![](image/inxdp.jpg)
+
 
 The NODE column shows the node the pode is running on
 
@@ -257,7 +257,7 @@ The NODE column shows the node the pode is running on
 kubectl describe node ip-192-168-11-24.ec2.internal
 ```
 
-![](image/topology.jpg)
+
 
 The information is written in the labels section of the describe command.
 
@@ -265,13 +265,13 @@ The information is written in the labels section of the describe command.
 
 The **create volume** selection should be like:
 
-![](image/volume.jpg)
 
-![](image/volume1.jpg)
+
+
 
 5. Copy the **VolumeID**
 
-![](image/vid.jpg)
+
 
 6. Update the deployment configuration with the volume spec.
 
@@ -307,7 +307,7 @@ spec:
 EOF
 ```
 
-![](image/gpv.jpg)
+
 
 Apply the new configuration and check the pod. As you can see, the old pod is being terminated while the updated one is up and running.
 
@@ -315,7 +315,7 @@ Apply the new configuration and check the pod. As you can see, the old pod is be
 kubectl apply -f nginx-pod.yaml
 ```
 
-![](image/applyp.jpg)
+
 
 Now, the new pod has a volume attached to it, and can be used to run a container for statefuleness. Go ahead and explore the running pod. Run `describe` on both the **pod** and **deployment**
 
@@ -323,13 +323,13 @@ Now, the new pod has a volume attached to it, and can be used to run a container
 kubectl describe pod nginx-deployment-6fbdb6d65f-jslb9
 ```
 
-![](image/describe-p.jpg)
+
 
 ```bash
 kubectl describe deployment nginx-deployment
 ```
 
-![](image/describe-d.jpg)
+
 
 At this point, even though the pod can be used for a stateful application, the configuration is not yet complete. This is because, the **volume is not yet mounted onto any specific filesystem inside the container**. The directory **/usr/share/nginx/html** which holds the software/website code is still **ephemeral**, and if there is any kind of update to the `index.html` file, the new changes will only be there for as long as the pod is still running. If the pod dies after, all previously written data will be erased.
 
@@ -372,8 +372,8 @@ spec:
 EOF
 ```
 
-![](image/sudo-n.jpg)
-![](image/nfigured.jpg)
+
+
 
 Notice the newly added section:
 
@@ -391,13 +391,13 @@ In as much as we now have a way to persist data, we also have new problems.
 
 2. It is still a manual process to create a volume, manually ensure that the volume created is in the same Avaioability zone in which the pod is running, and then update the manifest file to use the volume ID. All of these is against DevOps principles because it will mean having a lot of road blocks to getting a simple thing done.
 
-![](image/port.jpg)
 
-![](image/port1.jpg)
 
-![](image/port2.jpg)
 
-![](image/port3.jpg)
+
+
+
+
 
 The more elegant way to achieve this is through **Persistent Volume** and **Persistent Volume claims**.
 
@@ -429,7 +429,7 @@ NAME               PROVISIONER        RECLAIMPOLICY      VOLUMEBINDINGMODE    AL
 gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer        false             18d
 ```
 
-![](image/class.jpg)
+
 
 Of course, if the cluster is not EKS, then the storage class will be different. For example if the cluster is based on Google's `GKE` or Azure's `AKS`, then the storage class will be different.
 
@@ -513,7 +513,7 @@ spec:
   storageClassName: gp2
 ```
 
-![](image/pvc.jpg)
+
 
 Apply the manifest file and you will get an output like below
 
@@ -525,7 +525,7 @@ persistentvolumeclaim/nginx-volume-claim created
 kubectl apply -f nginx-pvc.yaml
 ```
 
-![](image/claim.jpg)
+
 
 **Run get on the pvc and you will notice that it is in pending state.**
 
@@ -538,7 +538,7 @@ NAME                 STATUS      VOLUME            CAPACITY   ACCESS MODES   STO
 nginx-volume-claim   Pending                                                 gp2            61s
 ```
 
-![](image/pend.jpg)
+
 
 **To troubleshoot this**, simply run a describe on the pvc. Then you will see in the Message section that this pvc is waiting for the first consumer to be created before binding the PVC to a PV.
 
@@ -565,7 +565,7 @@ Events:
   Normal  WaitForFirstConsumer  7s (x11 over 2m24s)  persistentvolume-controller  waiting for first consumer to be created before binding
 ```
 
-![](image/pvc1.jpg)
+
 
 If you run `kubectl get pv` you will see that no PV is created yet. The _waiting for first consumer to be created before binding_ is a configuration setting from the storageClass. See the `VolumeBindingMode` section below.
 
@@ -587,7 +587,7 @@ VolumeBindingMode:     WaitForFirstConsumer
 Events:                <none>
 ```
 
-![](image/storage.jpg)
+
 
 To proceed, simply apply the new deployment configuration below.
 
@@ -622,7 +622,7 @@ spec:
             claimName: nginx-volume-claim
 ```
 
-![](image/deployment.jpg)
+
 
 **Notice** that the volumes section now has a **persistentVolumeClaim**. With the new deployment manifest, the **/tmp/cdk** directory will be persisted, and any data written in there will be stored permanetly on the volume, which can be used by another Pod if the current one gets replaced.
 
@@ -632,7 +632,7 @@ Apply the manifest
 kubectl apply -f nginx-deployment.yaml
 ```
 
-![](image/dpc.jpg)
+
 
 Now lets check the dynamically created PV
 
@@ -652,7 +652,7 @@ After running the command above, there was this output "No resource found"
 
 Confirm PVC status `kubectl get pvc`
 
-![](image/pdn.jpg)
+
 
 The status remained Pending.
 
@@ -665,7 +665,7 @@ Normal  WaitForFirstConsumer  5m9s (x26 over 11m)   persistentvolume-controller 
 Normal  ExternalProvisioning  69s (x10 over 3m11s)  persistentvolume-controller  waiting for a volume to be created, either by external provisioner "ebs.csi.aws.com" or manually created by system administrator
 ```
 
-![](image/err.jpg)
+
 
 This shows that the eks cluster is attempting to provision an EBS volume using the AWS EBS CSI driver, but it is unable to complete the process. Specifically, it is waiting for the volume to be created by the external provisioner (ebs.csi.aws.com).
 
@@ -679,7 +679,7 @@ eksctl create addon --name aws-ebs-csi-driver --cluster cdk-eks-cluster
 eks utils migrate-to-pod-identity --cluster cdk-eks-cluster --approve
 ```
 
-![](image/addon.jpg)
+
 
 The EBS CSI driver requires proper IAM permissions to create and manage EBS volumes. If the necessary permissions are not attached to the EBS CSI service account or the worker node role, it will fail to provision the volume.
 
@@ -704,14 +704,14 @@ The EBS CSI driver requires proper IAM permissions to create and manage EBS volu
 }
 ```
 
-![](image/policy.jpg)
+
 
 - Click Next
 - Search for and select the AmazonEBSCSIDriverPolicy.
 - Click Next and provide a role name - **EBSCSIControllerRole**
 - Review and click Create Role
 
-![](image/policy1.jpg)
+
 
 2. Annotate the Kubernetes Service Account to Use the IAM Role
 
@@ -740,7 +740,7 @@ The EBS CSI driver requires proper IAM permissions to create and manage EBS volu
 - Replace <oidc-provider> with your OIDC provider URL, which can be retrieved from your EKS cluster.
 - Save the changes to the trust relationship.
 
-![](image/effects.jpg)
+
 
 Now confirm PVC status again
 
@@ -748,7 +748,7 @@ Now confirm PVC status again
 kubectl get pvc
 ```
 
-![](image/pvc2.jpg)
+
 
 Now lets check the dynamically created PV
 
@@ -756,15 +756,15 @@ Now lets check the dynamically created PV
 kubectl get pv
 ```
 
-![](image/pv.jpg)
+
 
 ```bash
 kubectl describe pvc nginx-volume-claim
 ```
 
-![](image/clam.jpg)
 
-![](image/ekss.jpg)
+
+
 
 ### Approach 2 (Attempt this on your own). [See an example here](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-volume-claim-templates.html)
 
@@ -822,9 +822,9 @@ Lets go through the below process so that you can see an example of a `configMap
 1. Remove the **volumeMounts** and **PVC** sections of the manifest and use kubectl to apply the configuration
 2. port forward the service and ensure that you are able to see the **Welcome to nginx** page
 
-![](image/fwd.jpg)
 
-![](image/fwd1.jpg)
+
+
 
 3. exec into the running container and keep a copy of the **index.html** file somewhere. For example
 
@@ -834,11 +834,11 @@ kubectl exec -it nginx-deployment-79d8c764bc-j6sp9 -- bash
 cat /usr/share/nginx/html/index.html
 ```
 
-![](image/welcome.jpg)
+
 
 4. Copy the output and save the file on your local pc because we will need it to create a configmap.
 
-![](image/html.jpg)
+
 
 ## Persisting configuration data with configMaps
 
@@ -883,7 +883,7 @@ data:
 EOF
 ```
 
-![](image/karibu.jpg)
+
 
 - Apply the new manifest file
 
@@ -891,7 +891,7 @@ EOF
 kubectl apply -f nginx-configmap.yaml
 ```
 
-![](image/created.jpg)
+
 
 - Update the deployment file to use the configmap in the volumeMounts section
 
@@ -936,9 +936,9 @@ EOF
 kubectl apply -f nginx-pod-with-cm.yaml
 ```
 
-![](image/html2.jpg)
 
-![](image/html1.jpg)
+
+
 
 - Now the `index.html` file is no longer ephemeral because it is using a configMap that has been mounted onto the filesystem. This is now evident when you **exec** into the pod and list the **/usr/share/nginx/html** directory
 
@@ -952,7 +952,7 @@ lrwxrwxrwx 1 root root 17 Feb 19 16:16 index.html -> ..data/index.html
 kubectl exec -it nginx-deployment-5f5874b487-z9ctz -- /bin/bash
 ```
 
-![](image/ltr.jpg)
+
 
 You can now see that the `index.html` is now a soft link to `../data`
 
@@ -978,7 +978,7 @@ kube-root-ca.crt     1      17d
 website-index-file   1      46m
 ```
 
-![](image/get.jpg)
+
 
 We are interested in the **website-index-file** configmap
 
@@ -996,7 +996,7 @@ You should see an output like this
 configmap/website-index-file edited
 ```
 
-![](image/edit.jpg)
+
 
 ```yaml
 apiVersion: v1
@@ -1038,9 +1038,9 @@ kubectl get pods
 kubectl port-forward pod/nginx-deployment-74b5dcf9f5-zqgjq  8089:80
 ```
 
-![](image/pfd.jpg)
 
-![](image/pfd1.jpg)
+
+
 
 If you wish to restart the deployment for any reason, simply use the command
 
@@ -1062,7 +1062,7 @@ To delete all the resources created
 eksctl delete cluster --name cdk-eks-cluster --region us-east-1
 ```
 
-![](image/delete.jpg)
+
 
 **The End**
 
