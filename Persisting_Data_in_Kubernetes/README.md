@@ -6,7 +6,7 @@
 
 - Ensure AWS CLI is already installed and access key credentials have been configured.
 
-
+![](assets/1.png)
 
 - Install **eksctl**
 
@@ -18,7 +18,7 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/download
 eksctl version
 ```
 
-
+![](assets/2.png)
 
 - Create EKS cluster using `eksctl`
 
@@ -26,17 +26,14 @@ eksctl version
 eksctl create cluster --name cdk-eks-cluster --region us-east-1 --nodegroup-name cdk-node-group --node-type t3.medium --nodes 2
 ```
 
-
-
-
+![](assets/3.png)
 
 - Enable **OIDC** to allow the cluster to use **IAM roles** for service accounts and automatically configure **IAM permissions** for addons.
 
 ```bash
 eksctl utils associate-iam-oidc-provider --cluster cdk-eks-cluster --approve
 ```
-
-
+![](assets/4.png)
 
 - Check the cluster status and verify API connection
 
@@ -54,27 +51,21 @@ kubectl get ns
 eksctl get cluster --region us-east-1
 ```
 
-
+![](assets/5.png)
 
 - Check the cluster in the AWS console
 
+![](assets/6.png)
 
+![](assets/7.png)
 
+![](assets/8.png)
 
+![](assets/9.png)
 
+![](assets/10.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
+![](assets/11.png)
 
 - ConfigMap
 
@@ -86,13 +77,13 @@ kubectl auth can-i list pods --all-namespaces
 kubectl get pods --all-namespaces
 ```
 
-
+![](assets/12.png)
 
 Now we know that containers are stateless by design, which means that data does not persist in the containers. Even when you run the containers in kubernetes pods, they still remain stateless unless you ensure that your configuration supports statefulness.
 
 To achieve statefuleness in kubernetes, you must understand how `volumes`, `persistent volumes`, and `persistent volume claims` work.
 
-# Volumes
+## VOLUMES
 
 On-disk files in a container are ephemeral, which presents some problems for non-trivial applications when running in containers. One problem is the loss of files when a container crashes. The kubelet restarts the container but with a clean state. A second problem occurs when sharing files between containers running together in a Pod. The Kubernetes volume abstraction solves both of these problems
 
@@ -104,7 +95,7 @@ At its core, a volume is a directory, possibly with some data in it, which is ac
 
 Lets have a look at a few of them.
 
-## awsElasticBlockStore
+### AWSELASTICBLOCKSTORE
 
 An awsElasticBlockStore volume mounts an **Amazon Web Services (AWS) EBS** volume into your pod. The contents of an EBS volume are persisted and the volume is only unmmounted when the pod crashes, or terminates. This means that an EBS volume can be pre-populated with data, and that data can be shared between pods.
 
@@ -178,6 +169,7 @@ EOF
 kubectl apply -f nginx-pod.yaml
 ```
 
+![](assets/13.png)
 
 
 **Tasks**
@@ -188,6 +180,7 @@ kubectl apply -f nginx-pod.yaml
 kubectl get pods
 ```
 
+![](assets/14.png)
 
 
 - Check the logs of the pod
@@ -204,6 +197,7 @@ else
 fi
 ```
 
+![](assets/15.png)
 
 
 - Exec into the pod and navigate to the nginx configuration file **/etc/nginx/conf.d**
@@ -214,11 +208,9 @@ kubectl exec -it $POD_NAME -- /bin/bash
 cd /etc/nginx/conf.d
 ```
 
+![](assets/16.png)
+
 - Open the config files to see the default configuration.
-
-
-
-
 
 **NOTE:** There are some restrictions when using an awsElasticBlockStore volume:
 
@@ -247,6 +239,7 @@ NAME                                READY   STATUS    RESTARTS   AGE   IP       
 nginx-deployment-6fdcffd8fc-thcfp   1/1     Running   0          64m   10.0.3.159   ip-10-0-3-233.eu-west-2.compute.internal   <none>           <none>
 ```
 
+![](assets/17.png)
 
 
 The NODE column shows the node the pode is running on
@@ -258,19 +251,15 @@ kubectl describe node ip-192-168-11-24.ec2.internal
 ```
 
 
-
 The information is written in the labels section of the describe command.
 
 4. So, in the case above, we know the AZ for the node is in `us-east-1f` hence, the volume must be created in the same AZ. Choose the size of the required volume.
 
 The **create volume** selection should be like:
 
-
-
-
-
 5. Copy the **VolumeID**
 
+![](assets/40.png)
 
 
 6. Update the deployment configuration with the volume spec.
@@ -307,28 +296,30 @@ spec:
 EOF
 ```
 
-
-
 Apply the new configuration and check the pod. As you can see, the old pod is being terminated while the updated one is up and running.
 
 ```bash
 kubectl apply -f nginx-pod.yaml
 ```
+<!-- ![](assets/18.png) -->
 
+![](assets/19.png)
 
 
 Now, the new pod has a volume attached to it, and can be used to run a container for statefuleness. Go ahead and explore the running pod. Run `describe` on both the **pod** and **deployment**
 
 ```bash
-kubectl describe pod nginx-deployment-6fbdb6d65f-jslb9
+kubectl describe pod nginx-deployment-c8cb4ddd9-h9glm
 ```
 
+![](assets/20.png)
 
 
 ```bash
 kubectl describe deployment nginx-deployment
 ```
 
+![](assets/21.png)
 
 
 At this point, even though the pod can be used for a stateful application, the configuration is not yet complete. This is because, the **volume is not yet mounted onto any specific filesystem inside the container**. The directory **/usr/share/nginx/html** which holds the software/website code is still **ephemeral**, and if there is any kind of update to the `index.html` file, the new changes will only be there for as long as the pod is still running. If the pod dies after, all previously written data will be erased.
@@ -372,9 +363,6 @@ spec:
 EOF
 ```
 
-
-
-
 Notice the newly added section:
 
 ```yaml
@@ -391,13 +379,11 @@ In as much as we now have a way to persist data, we also have new problems.
 
 2. It is still a manual process to create a volume, manually ensure that the volume created is in the same Avaioability zone in which the pod is running, and then update the manifest file to use the volume ID. All of these is against DevOps principles because it will mean having a lot of road blocks to getting a simple thing done.
 
+![](assets/22.png)
 
+![](assets/24.png)
 
-
-
-
-
-
+![](assets/23.png)
 
 The more elegant way to achieve this is through **Persistent Volume** and **Persistent Volume claims**.
 
@@ -406,7 +392,7 @@ In kubernetes, there are many elegant ways of persisting data. Each of which is 
 - **Persistent Volume (PV)** and **Persistent Volume Claim (PVC)**
 - **configMap**
 
-# Managing Volumes Dynamically with PVs and PVCs
+## MANAGING VOLUMES DYNAMICALLY WITH PVS AND PVCS
 
 Kubernetes provides API objects for storage management such that, the lower level details of volume provisioning, storage allocation, access management etc are all abstracted away from the user, and all you have to do is present manifest files that describes what you want to get done.
 
@@ -428,7 +414,7 @@ kubectl get storageclass
 NAME               PROVISIONER        RECLAIMPOLICY      VOLUMEBINDINGMODE    ALLOWVOLUMEEXPANSION    AGE
 gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer        false             18d
 ```
-
+![](assets/25.png)
 
 
 Of course, if the cluster is not EKS, then the storage class will be different. For example if the cluster is based on Google's `GKE` or Azure's `AKS`, then the storage class will be different.
@@ -450,11 +436,11 @@ kind: StorageClass
 
 A **PersistentVolumeClaim** (PVC) on the other hand is a request for storage. Just as Pods consume node resources, PVCs consume PV resources. Pods can request specific levels of resources (CPU and Memory). Claims can request specific size and access modes (e.g., they can be mounted `ReadWriteOnce`, `ReadOnlyMany` or `ReadWriteMany`, see [AccessModes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)).
 
-## Lifecycle of a PV and PVC
+## LIFECYCLE OF A PV AND PVC
 
 **PVs** are resources in the cluster. **PVCs** are requests for those resources and also act as **claim checks** to the resource. The interaction between PVs and PVCs follows this lifecycle:
 
-### 1. Provisioning
+### 1. PROVISIONING
 
 There are two ways PVs may be provisioned: **statically** or **dynamically**.
 
@@ -462,20 +448,20 @@ There are two ways PVs may be provisioned: **statically** or **dynamically**.
 
 - **Dynamic:** When there is no PV matching a PVC's request, then based on the available StorageClass, a dynamic PV will be created for use by the PVC. If there is no StorageClass, then the request for a PV by the PVC will fail.
 
-### 2. Binding
+### 2. BINDING
 
 PVCs are bound to specific PVs. This binding is exclusive. A PVC to PV binding is a one-to-one mapping. Claims will remain unbound indefinitely if a matching volume does not exist. Claims will be bound as matching volumes become available. For example, a cluster provisioned with many 50Gi PVs would not match a PVC requesting 100Gi. The PVC can be bound when a 100Gi PV is added to the cluster.
 
-### 3. Using
+### 3. USING
 
 Pods use claims as volumes. The cluster inspects the claim to find the bound volume and mounts that volume for a Pod. For volumes that support multiple access modes, the user specifies which mode is desired when using their claim as a volume in a Pod. Once a user has a claim and that claim is bound, the bound PV belongs to the user for as long as they need it. Users schedule Pods and access their claimed PVs by including a persistentVolumeClaim section in a Pod's volumes block
 
-### 4. Storage Object in Use Protection
+### 4. STORAGE OBJECT IN USE PROTECTION
 
 The purpose of the Storage Object in Use Protection feature is to ensure that PersistentVolumeClaims (PVCs) in active use by a Pod and PersistentVolume (PVs) that are bound to PVCs are not removed from the system, as this may result in data loss.
 **Note:** PVC is in active use by a Pod when a Pod object exists that is using the PVC. If a user deletes a PVC in active use by a Pod, the PVC is not removed immediately. PVC removal is postponed until the PVC is no longer actively used by any Pods. Also, if an admin deletes a PV that is bound to a PVC, the PV is not removed immediately. PV removal is postponed until the PV is no longer bound to a PVC.
 
-### 5. Reclaiming
+### 5. RECLAIMING
 
 When a user is done with their volume, they can delete the PVC objects from the API that allows reclamation of the resource. The reclaim policy for a PersistentVolume tells the cluster what to do with the volume after it has been released of its claim. Currently, volumes can either be Retained, Recycled, or Deleted.
 
@@ -495,7 +481,7 @@ Learn more about the different types of [persistent volumes here](https://kubern
 
 Now lets create some persistence for our nginx deployment. We will use 2 different approaches.
 
-### Approach 1
+### APPROACH 1
 
 1. Create a manifest file for a PVC, and based on the `gp2` storageClass a PV will be dynamically created
 
@@ -524,6 +510,7 @@ persistentvolumeclaim/nginx-volume-claim created
 ```bash
 kubectl apply -f nginx-pvc.yaml
 ```
+![](assets/26.png)
 
 
 
@@ -532,11 +519,11 @@ kubectl apply -f nginx-pvc.yaml
 ```bash
 kubectl get pvc
 ```
-
 ```
 NAME                 STATUS      VOLUME            CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 nginx-volume-claim   Pending                                                 gp2            61s
 ```
+![](assets/27.png)
 
 
 
@@ -564,6 +551,7 @@ Events:
   ----    ------                ----                 ----                         -------
   Normal  WaitForFirstConsumer  7s (x11 over 2m24s)  persistentvolume-controller  waiting for first consumer to be created before binding
 ```
+![](assets/28.png)
 
 
 
@@ -587,6 +575,7 @@ VolumeBindingMode:     WaitForFirstConsumer
 Events:                <none>
 ```
 
+![](assets/29.png)
 
 
 To proceed, simply apply the new deployment configuration below.
@@ -632,6 +621,7 @@ Apply the manifest
 kubectl apply -f nginx-deployment.yaml
 ```
 
+![](assets/30.png)
 
 
 Now lets check the dynamically created PV
@@ -648,15 +638,20 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 pvc-89ba00d9-68f4-4039-b19e-a6471aad6a1e   2Gi        RWO            Delete           Bound    default/nginx-volume-claim               gp2                     7s
 ```
 
+![](assets/31.png)
+
+
 After running the command above, there was this output "No resource found"
 
 Confirm PVC status `kubectl get pvc`
 
 
-
 The status remained Pending.
 
 then I described the PVC - `kubectl describe pvc nginx-volume-claim`.
+
+![](assets/32.png)
+
 
 The logs below was present in the Event section
 
@@ -680,13 +675,15 @@ eks utils migrate-to-pod-identity --cluster cdk-eks-cluster --approve
 ```
 
 
+![](assets/33.png)
+
 
 The EBS CSI driver requires proper IAM permissions to create and manage EBS volumes. If the necessary permissions are not attached to the EBS CSI service account or the worker node role, it will fail to provision the volume.
 
 1. Create an IAM Role with the Required Policy
 
-- From IAM console, Click Roles > Create Role
-- Under Trusted entity type, select **Custom Trust Policy**
+- From IAM console, Click `Role`s > `Create Role`
+- Under Trusted entity type, select `Custom Trust Policy`
 - In the trust policy editor, paste the below trust relationship to allow the role to be assumed by your EKS cluster:
 
 ```json
@@ -704,14 +701,16 @@ The EBS CSI driver requires proper IAM permissions to create and manage EBS volu
 }
 ```
 
+![](assets/34.png)
 
 
-- Click Next
-- Search for and select the AmazonEBSCSIDriverPolicy.
-- Click Next and provide a role name - **EBSCSIControllerRole**
-- Review and click Create Role
+- Click `Next`
+- Search for and select the `AmazonEBSCSIDriverPolicy`.
+- Click Next and provide a role name - `EBSCSIControllerRole`
+- Review and click `Create Role`
 
 
+![](assets/35.png)
 
 2. Annotate the Kubernetes Service Account to Use the IAM Role
 
@@ -736,11 +735,11 @@ The EBS CSI driver requires proper IAM permissions to create and manage EBS volu
 }
 ```
 
+![](assets/36.png)
+
 - Replace <account-id> with your AWS account ID.
 - Replace <oidc-provider> with your OIDC provider URL, which can be retrieved from your EKS cluster.
 - Save the changes to the trust relationship.
-
-
 
 Now confirm PVC status again
 
@@ -748,6 +747,7 @@ Now confirm PVC status again
 kubectl get pvc
 ```
 
+![](assets/37.png)
 
 
 Now lets check the dynamically created PV
@@ -756,12 +756,14 @@ Now lets check the dynamically created PV
 kubectl get pv
 ```
 
+![](assets/38.png)
 
 
 ```bash
 kubectl describe pvc nginx-volume-claim
 ```
 
+![](assets/39.png)
 
 
 
@@ -811,7 +813,7 @@ spec:
         storageClassName: gp2
 ```
 
-## ConfigMap
+## CONFIGMAP
 
 Using **configMaps** for persistence is not something you would consider for data storage. Rather it is a way to manage configuration files and ensure they are not lost as a result of Pod replacement.
 
@@ -830,17 +832,19 @@ Lets go through the below process so that you can see an example of a `configMap
 
 ```bash
 kubectl exec -it nginx-deployment-79d8c764bc-j6sp9 -- bash
-
+```
+```bash
 cat /usr/share/nginx/html/index.html
 ```
 
+![](assets/41.png)
 
 
 4. Copy the output and save the file on your local pc because we will need it to create a configmap.
 
 
 
-## Persisting configuration data with configMaps
+## PERSISTING CONFIGURATION DATA WITH CONFIGMAPS
 
 According to the official documentation of [configMaps](https://kubernetes.io/docs/concepts/configuration/configmap/), A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
 
@@ -890,8 +894,6 @@ EOF
 ```bash
 kubectl apply -f nginx-configmap.yaml
 ```
-
-
 
 - Update the deployment file to use the configmap in the volumeMounts section
 
@@ -948,11 +950,11 @@ root@nginx-deployment-84b799b888-fqzwk:/# ls -ltr  /usr/share/nginx/html
 lrwxrwxrwx 1 root root 17 Feb 19 16:16 index.html -> ..data/index.html
 ```
 
+![](assets/42.png)
+
 ```bash
 kubectl exec -it nginx-deployment-5f5874b487-z9ctz -- /bin/bash
 ```
-
-
 
 You can now see that the `index.html` is now a soft link to `../data`
 
@@ -966,9 +968,9 @@ Lets try that;
 
 ```bash
 kubectl get configmap
-
+```
 or
-
+```bash
 kubectl get cm
 ```
 
@@ -978,6 +980,7 @@ kube-root-ca.crt     1      17d
 website-index-file   1      46m
 ```
 
+![](assets/43.png)
 
 
 We are interested in the **website-index-file** configmap
@@ -995,7 +998,6 @@ You should see an output like this
 ```
 configmap/website-index-file edited
 ```
-
 
 
 ```yaml
@@ -1037,9 +1039,7 @@ kubectl get pods
 
 kubectl port-forward pod/nginx-deployment-74b5dcf9f5-zqgjq  8089:80
 ```
-
-
-
+![](assets/44.png)
 
 
 If you wish to restart the deployment for any reason, simply use the command
@@ -1062,12 +1062,16 @@ To delete all the resources created
 eksctl delete cluster --name cdk-eks-cluster --region us-east-1
 ```
 
+![](assets/45.png)
 
 
-**The End**
+# THE END
 
 In the next project
 
 - We will also be introduced to packaging Kubernetes manifests using Helm
 - Deploying applications into Kubernetes using [Helm Charts](https://helm.sh/)
 - And many more awesome technologies.
+
+
+![](https://media1.giphy.com/media/dWr3USuQEwr9qCAD8n/200.webp?cid=ecf05e47q5d7hpyjzd5lvemr9ww191mzgue35jb5jslkbts8&ep=v1_gifs_related&rid=200.webp&ct=g)
