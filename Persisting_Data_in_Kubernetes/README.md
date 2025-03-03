@@ -1,8 +1,8 @@
-# Persisting Data in Kubernetes
+# PERSISTING DATA IN KUBERNETES
 
 **NOTE:** Create EKS cluster first before the below section
 
-### 1. Set up an Amazon Elastic Kubernetes Service (EKS) cluster.
+### 1. SET UP AN AMAZON ELASTIC KUBERNETES SERVICE (EKS) CLUSTER.
 
 - Ensure AWS CLI is already installed and access key credentials have been configured.
 
@@ -137,7 +137,7 @@ spec:
       - name: nginx-volume
         # This AWS EBS volume must already exist.
         awsElasticBlockStore:
-          volumeID: "<volume id>"
+          volumeID: "vol-09f2aaa73d35288a6"
           fsType: ext4
 EOF
 ```
@@ -302,7 +302,7 @@ spec:
       - name: nginx-volume
         # This AWS EBS volume must already exist.
         awsElasticBlockStore:
-          volumeID: "vol-01d59773bbb64f8c5"
+          volumeID: "vol-09f2aaa73d35288a6"
           fsType: ext4
 EOF
 ```
@@ -367,7 +367,7 @@ spec:
       - name: nginx-volume
         # This AWS EBS volume must already exist.
         awsElasticBlockStore:
-          volumeID: "vol-01d59773bbb64f8c5"
+          volumeID: "vol-09f2aaa73d35288a6"
           fsType: ext4
 EOF
 ```
