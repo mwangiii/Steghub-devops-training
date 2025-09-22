@@ -2,6 +2,8 @@
 
 ![](assets/kube-cert-cover.png)
 
+<img style="width:100vw" src="./assets/kube-cert-cover.png" alt="intro-image"/>
+
 In this project, we'll enhance the security of our Artifactory deployment by implementing HTTPS using [Cert-Manager](https://cert-manager.io) to request and manage TLS certificates from Let's Encrypt automatically. Cert-manager creates TLS certificates for workloads in your Kubernetes cluster and renews the certificates before they expire. This will provide a trusted HTTPS URL for our application.
 
 #### Prerequisites:
